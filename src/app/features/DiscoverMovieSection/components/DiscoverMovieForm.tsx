@@ -13,7 +13,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { discoverMovie } from "@/app/actions";
-import { TMDBMovie } from "@/app/types";
+import { TMDBDiscoverResponse, TMDBMovie } from "@/app/types";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -81,6 +81,14 @@ export function DiscoverMovieForm({
             genres: ["28"],
         },
     });
+    // cycle through the pages, and get a random entry from each page, looping back to page 1 if out of bounds
+    function cyclePageNumber(res: TMDBDiscoverResponse | null) {
+        if (res?.total_pages && resultsPageNumber < res.total_pages) {
+            resultsPageNumber += 1;
+        } else if (res?.total_pages && resultsPageNumber >= res.total_pages) {
+            resultsPageNumber = 1;
+        }
+    }
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         try {
             // take form data and modify it to satisfy api url params
@@ -93,13 +101,8 @@ export function DiscoverMovieForm({
             if (res?.total_results === 0) {
                 throw new Error("No results found");
             }
-            // cycle through the pages, and get a random entry from each page, looping back to page 1 if out of bounds
+            cyclePageNumber(res);
 
-            if (res?.total_pages && resultsPageNumber < res.total_pages) {
-                resultsPageNumber += 1;
-            } else if (res?.total_pages && resultsPageNumber >= res.total_pages) {
-                resultsPageNumber = 1;
-            }
             const results = res?.results ?? [];
 
             const randomPageEntry = Math.floor(Math.random() * results.length);
@@ -112,10 +115,10 @@ export function DiscoverMovieForm({
     }
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)}>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline">Streaming Services</Button>
+                        <Button variant="outline">Streams</Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
                         <FormField

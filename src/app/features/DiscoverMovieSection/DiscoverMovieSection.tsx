@@ -30,22 +30,23 @@ export default function DiscoverMovieSection() {
 
     return (
         <div className="max-w-3xl">
+            {displayErrors()}
             <DiscoverMovieForm
                 onDiscoverMovieFormSuccess={(data: TMDBMovie | undefined) => setMovieData(data)}
                 onDiscoverMovieFormError={(data: Error | null) => setError(data)}
             />
-            <div className="relative h-[750px] w-[100vw] md:w-[500px]">
+
+            <div className="relative h-[150vw] w-[100vw] rounded-lg md:h-[750px] md:w-[500px]">
                 <Image
                     alt={`${movieData?.original_title} poster`}
                     src={`https://image.tmdb.org/t/p/w500${movieData?.poster_path}`}
                     fill={true}
-                    className="object-cover"
+                    className="rounded-2xl object-contain"
                 />
             </div>
 
             <p className="mt-4">{movieData?.original_title}</p>
             <p className="mt-4">{movieData?.overview}</p>
-            {displayErrors()}
         </div>
     );
 }
