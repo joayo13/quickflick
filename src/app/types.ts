@@ -14,6 +14,7 @@ interface TMDBMovie {
     vote_average: number;
     vote_count: number;
     poster_path: string | null;
+    backdrop_path: string | null;
     // add any other fields you care about
 }
 

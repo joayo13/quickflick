@@ -16,8 +16,11 @@ import { discoverMovie } from "@/app/actions";
 import { TMDBMovie } from "@/app/types";
 
 interface DiscoverMovieFormProps {
-    onDiscoverMovieFormSubmit: (data: TMDBMovie | undefined) => void;
+    onDiscoverMovieFormSuccess: (data: TMDBMovie | undefined) => void;
+    onDiscoverMovieFormError: (data: Error | null) => void;
 }
+
+let resultsPageNumber = 1;
 
 const watchProviders = [
     { id: "8", label: "Netflix" },
@@ -52,6 +55,7 @@ const genres = [
     { id: "10752", label: "War" },
     { id: "37", label: "Western" },
 ] as const;
+
 const FormSchema = z.object({
     watchProviders: z
         .array(z.string())
@@ -62,8 +66,10 @@ const FormSchema = z.object({
         message: "You have to select at least one item.",
     }),
 });
+
 export function DiscoverMovieForm({
-    onDiscoverMovieFormSubmit,
+    onDiscoverMovieFormSuccess,
+    onDiscoverMovieFormError,
 }: DiscoverMovieFormProps) {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -74,15 +80,35 @@ export function DiscoverMovieForm({
     });
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         try {
+            // take form data and modify it to satisfy api url params
             const res = await discoverMovie(
                 data.watchProviders.join("|"),
-                data.genres.join(",")
+                data.genres.join(","),
+                resultsPageNumber
             );
+
             if (res?.total_results === 0) {
+                throw new Error("No results found");
             }
-            onDiscoverMovieFormSubmit(res?.results[0]);
+            // cycle through the pages, and get a random entry from each page, looping back to page 1 if out of bounds
+
+            if (res?.total_pages && resultsPageNumber < res.total_pages) {
+                resultsPageNumber += 1;
+            } else if (
+                res?.total_pages &&
+                resultsPageNumber >= res.total_pages
+            ) {
+                resultsPageNumber = 1;
+                // this does not account for bug of being on page 2 when theres only one page availiable
+            }
+            const results = res?.results ?? [];
+
+            const randomPageEntry = Math.floor(Math.random() * results.length);
+            // pass successfully retrieved result to state in parent component
+            onDiscoverMovieFormSuccess(results[randomPageEntry]);
         } catch (err) {
-            return err as Error;
+            // pass error result to state in parent component
+            onDiscoverMovieFormError(err as Error);
         }
     }
     return (
@@ -98,7 +124,7 @@ export function DiscoverMovieForm({
                                     Streaming Services
                                 </FormLabel>
                             </div>
-                            <div className="flex flex-wrap gap-4 max-w-xl">
+                            <div className="flex flex-wrap gap-4">
                                 {watchProviders.map((item) => (
                                     <FormField
                                         key={item.id}
@@ -160,7 +186,7 @@ export function DiscoverMovieForm({
                                     Genres
                                 </FormLabel>
                             </div>
-                            <div className="flex flex-wrap gap-4 max-w-xl">
+                            <div className="flex flex-wrap gap-4">
                                 {genres.map((item) => (
                                     <FormField
                                         key={item.id}
