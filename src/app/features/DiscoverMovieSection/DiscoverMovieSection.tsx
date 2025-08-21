@@ -1,10 +1,10 @@
 "use client";
 import { TMDBMovie } from "@/app/types";
 import { useEffect, useState } from "react";
-import { DiscoverMovieForm } from "./DiscoverMovieForm";
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import Image from "next/image";
+import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
 
 export default function DiscoverMovieSection() {
     const [movieData, setMovieData] = useState<TMDBMovie | undefined>(

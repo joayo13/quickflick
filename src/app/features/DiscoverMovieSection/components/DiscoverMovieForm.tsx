@@ -14,6 +14,11 @@ import {
 } from "@/components/ui/form";
 import { discoverMovie } from "@/app/actions";
 import { TMDBMovie } from "@/app/types";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from "../../../../components/ui/dropdown-menu";
 
 interface DiscoverMovieFormProps {
     onDiscoverMovieFormSuccess: (data: TMDBMovie | undefined) => void;
@@ -114,68 +119,75 @@ export function DiscoverMovieForm({
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                    control={form.control}
-                    name="watchProviders"
-                    render={() => (
-                        <FormItem>
-                            <div className="mb-4">
-                                <FormLabel className="text-base">
-                                    Streaming Services
-                                </FormLabel>
-                            </div>
-                            <div className="flex flex-wrap gap-4">
-                                {watchProviders.map((item) => (
-                                    <FormField
-                                        key={item.id}
-                                        control={form.control}
-                                        name="watchProviders"
-                                        render={({ field }) => {
-                                            return (
-                                                <FormItem
-                                                    key={item.id}
-                                                    className="flex flex-row items-center gap-2"
-                                                >
-                                                    <FormControl>
-                                                        <Checkbox
-                                                            checked={field.value?.includes(
-                                                                item.id
-                                                            )}
-                                                            onCheckedChange={(
-                                                                checked
-                                                            ) => {
-                                                                return checked
-                                                                    ? field.onChange(
-                                                                          [
-                                                                              ...field.value,
-                                                                              item.id,
-                                                                          ]
-                                                                      )
-                                                                    : field.onChange(
-                                                                          field.value?.filter(
-                                                                              (
-                                                                                  value
-                                                                              ) =>
-                                                                                  value !==
-                                                                                  item.id
-                                                                          )
-                                                                      );
-                                                            }}
-                                                        />
-                                                    </FormControl>
-                                                    <FormLabel className="text-sm font-normal">
-                                                        {item.label}
-                                                    </FormLabel>
-                                                </FormItem>
-                                            );
-                                        }}
-                                    />
-                                ))}
-                            </div>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline">Open</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <FormField
+                            control={form.control}
+                            name="watchProviders"
+                            render={() => (
+                                <FormItem>
+                                    <div className="mb-4">
+                                        <FormLabel className="text-base">
+                                            Streaming Services
+                                        </FormLabel>
+                                    </div>
+                                    <div className="flex flex-wrap gap-4">
+                                        {watchProviders.map((item) => (
+                                            <FormField
+                                                key={item.id}
+                                                control={form.control}
+                                                name="watchProviders"
+                                                render={({ field }) => {
+                                                    return (
+                                                        <FormItem
+                                                            key={item.id}
+                                                            className="flex flex-row items-center gap-2"
+                                                        >
+                                                            <FormControl>
+                                                                <Checkbox
+                                                                    checked={field.value?.includes(
+                                                                        item.id
+                                                                    )}
+                                                                    onCheckedChange={(
+                                                                        checked
+                                                                    ) => {
+                                                                        return checked
+                                                                            ? field.onChange(
+                                                                                  [
+                                                                                      ...field.value,
+                                                                                      item.id,
+                                                                                  ]
+                                                                              )
+                                                                            : field.onChange(
+                                                                                  field.value?.filter(
+                                                                                      (
+                                                                                          value
+                                                                                      ) =>
+                                                                                          value !==
+                                                                                          item.id
+                                                                                  )
+                                                                              );
+                                                                    }}
+                                                                />
+                                                            </FormControl>
+                                                            <FormLabel className="text-sm font-normal">
+                                                                {item.label}
+                                                            </FormLabel>
+                                                        </FormItem>
+                                                    );
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </DropdownMenuContent>
+                </DropdownMenu>
                 <FormField
                     control={form.control}
                     name="genres"
