@@ -99,7 +99,6 @@ export function DiscoverMovieForm({
                 resultsPageNumber += 1;
             } else if (res?.total_pages && resultsPageNumber >= res.total_pages) {
                 resultsPageNumber = 1;
-                // this does not account for bug of being on page 2 when theres only one page availiable
             }
             const results = res?.results ?? [];
 
@@ -143,6 +142,9 @@ export function DiscoverMovieForm({
                                                         >
                                                             <FormControl>
                                                                 <Checkbox
+                                                                    onClick={() =>
+                                                                        (resultsPageNumber = 1)
+                                                                    }
                                                                     checked={field.value?.includes(
                                                                         item.id
                                                                     )}
@@ -204,6 +206,9 @@ export function DiscoverMovieForm({
                                                         >
                                                             <FormControl>
                                                                 <Checkbox
+                                                                    onClick={() =>
+                                                                        (resultsPageNumber = 1)
+                                                                    }
                                                                     checked={field.value?.includes(
                                                                         item.id
                                                                     )}
