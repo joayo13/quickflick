@@ -7,9 +7,7 @@ import Image from "next/image";
 import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
 
 export default function DiscoverMovieSection() {
-    const [movieData, setMovieData] = useState<TMDBMovie | undefined>(
-        undefined
-    );
+    const [movieData, setMovieData] = useState<TMDBMovie | undefined>(undefined);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
@@ -33,20 +31,17 @@ export default function DiscoverMovieSection() {
     return (
         <div className="max-w-3xl">
             <DiscoverMovieForm
-                onDiscoverMovieFormSuccess={(data: TMDBMovie | undefined) =>
-                    setMovieData(data)
-                }
-                onDiscoverMovieFormError={(data: Error | null) =>
-                    setError(data)
-                }
+                onDiscoverMovieFormSuccess={(data: TMDBMovie | undefined) => setMovieData(data)}
+                onDiscoverMovieFormError={(data: Error | null) => setError(data)}
             />
-
-            <Image
-                alt={`${movieData?.original_title} poster`}
-                src={`https://image.tmdb.org/t/p/w500${movieData?.poster_path}`}
-                width={500}
-                height={750} // most posters are 2:3 aspect ratio
-            />
+            <div className="relative max-h-[750px] max-w-[500px]">
+                <Image
+                    alt={`${movieData?.original_title} poster`}
+                    src={`https://image.tmdb.org/t/p/w500${movieData?.poster_path}`}
+                    fill={true}
+                    className="object-cover"
+                />
+            </div>
 
             <p className="mt-4">{movieData?.original_title}</p>
             <p className="mt-4">{movieData?.overview}</p>

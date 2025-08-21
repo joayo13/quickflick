@@ -62,11 +62,9 @@ const genres = [
 ] as const;
 
 const FormSchema = z.object({
-    watchProviders: z
-        .array(z.string())
-        .refine((value) => value.some((item) => item), {
-            message: "You have to select at least one item.",
-        }),
+    watchProviders: z.array(z.string()).refine((value) => value.some((item) => item), {
+        message: "You have to select at least one item.",
+    }),
     genres: z.array(z.string()).refine((value) => value.some((item) => item), {
         message: "You have to select at least one item.",
     }),
@@ -99,10 +97,7 @@ export function DiscoverMovieForm({
 
             if (res?.total_pages && resultsPageNumber < res.total_pages) {
                 resultsPageNumber += 1;
-            } else if (
-                res?.total_pages &&
-                resultsPageNumber >= res.total_pages
-            ) {
+            } else if (res?.total_pages && resultsPageNumber >= res.total_pages) {
                 resultsPageNumber = 1;
                 // this does not account for bug of being on page 2 when theres only one page availiable
             }
@@ -121,9 +116,9 @@ export function DiscoverMovieForm({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline">Open</Button>
+                        <Button variant="outline">Streaming Services</Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
+                    <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
                         <FormField
                             control={form.control}
                             name="watchProviders"
@@ -151,21 +146,15 @@ export function DiscoverMovieForm({
                                                                     checked={field.value?.includes(
                                                                         item.id
                                                                     )}
-                                                                    onCheckedChange={(
-                                                                        checked
-                                                                    ) => {
+                                                                    onCheckedChange={(checked) => {
                                                                         return checked
-                                                                            ? field.onChange(
-                                                                                  [
-                                                                                      ...field.value,
-                                                                                      item.id,
-                                                                                  ]
-                                                                              )
+                                                                            ? field.onChange([
+                                                                                  ...field.value,
+                                                                                  item.id,
+                                                                              ])
                                                                             : field.onChange(
                                                                                   field.value?.filter(
-                                                                                      (
-                                                                                          value
-                                                                                      ) =>
+                                                                                      (value) =>
                                                                                           value !==
                                                                                           item.id
                                                                                   )
@@ -188,68 +177,67 @@ export function DiscoverMovieForm({
                         />
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <FormField
-                    control={form.control}
-                    name="genres"
-                    render={() => (
-                        <FormItem>
-                            <div className="mb-4">
-                                <FormLabel className="text-base">
-                                    Genres
-                                </FormLabel>
-                            </div>
-                            <div className="flex flex-wrap gap-4">
-                                {genres.map((item) => (
-                                    <FormField
-                                        key={item.id}
-                                        control={form.control}
-                                        name="genres"
-                                        render={({ field }) => {
-                                            return (
-                                                <FormItem
-                                                    key={item.id}
-                                                    className="flex flex-row items-center gap-2"
-                                                >
-                                                    <FormControl>
-                                                        <Checkbox
-                                                            checked={field.value?.includes(
-                                                                item.id
-                                                            )}
-                                                            onCheckedChange={(
-                                                                checked
-                                                            ) => {
-                                                                return checked
-                                                                    ? field.onChange(
-                                                                          [
-                                                                              ...field.value,
-                                                                              item.id,
-                                                                          ]
-                                                                      )
-                                                                    : field.onChange(
-                                                                          field.value?.filter(
-                                                                              (
-                                                                                  value
-                                                                              ) =>
-                                                                                  value !==
-                                                                                  item.id
-                                                                          )
-                                                                      );
-                                                            }}
-                                                        />
-                                                    </FormControl>
-                                                    <FormLabel className="text-sm font-normal">
-                                                        {item.label}
-                                                    </FormLabel>
-                                                </FormItem>
-                                            );
-                                        }}
-                                    />
-                                ))}
-                            </div>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline">Genres</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
+                        <FormField
+                            control={form.control}
+                            name="genres"
+                            render={() => (
+                                <FormItem>
+                                    <div className="mb-4">
+                                        <FormLabel className="text-base">Genres</FormLabel>
+                                    </div>
+                                    <div className="flex flex-wrap gap-4">
+                                        {genres.map((item) => (
+                                            <FormField
+                                                key={item.id}
+                                                control={form.control}
+                                                name="genres"
+                                                render={({ field }) => {
+                                                    return (
+                                                        <FormItem
+                                                            key={item.id}
+                                                            className="flex flex-row items-center gap-2"
+                                                        >
+                                                            <FormControl>
+                                                                <Checkbox
+                                                                    checked={field.value?.includes(
+                                                                        item.id
+                                                                    )}
+                                                                    onCheckedChange={(checked) => {
+                                                                        return checked
+                                                                            ? field.onChange([
+                                                                                  ...field.value,
+                                                                                  item.id,
+                                                                              ])
+                                                                            : field.onChange(
+                                                                                  field.value?.filter(
+                                                                                      (value) =>
+                                                                                          value !==
+                                                                                          item.id
+                                                                                  )
+                                                                              );
+                                                                    }}
+                                                                />
+                                                            </FormControl>
+                                                            <FormLabel className="text-sm font-normal">
+                                                                {item.label}
+                                                            </FormLabel>
+                                                        </FormItem>
+                                                    );
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </DropdownMenuContent>
+                </DropdownMenu>
                 <Button type="submit">Find Movie</Button>
             </form>
         </Form>
