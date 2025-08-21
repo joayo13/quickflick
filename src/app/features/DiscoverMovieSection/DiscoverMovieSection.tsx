@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import Image from "next/image";
 import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
+import MovieTitle from "@/components/typography/movieTitle";
 
 export default function DiscoverMovieSection() {
     const [movieData, setMovieData] = useState<TMDBMovie | undefined>(undefined);
@@ -36,17 +37,19 @@ export default function DiscoverMovieSection() {
                 onDiscoverMovieFormError={(data: Error | null) => setError(data)}
             />
 
-            <div className="relative h-[150vw] w-[100vw] rounded-lg md:h-[750px] md:w-[500px]">
+            <div className="relative h-[100vh] w-[100vw] overflow-hidden rounded-lg md:h-[750px] md:w-[500px]">
                 <Image
                     alt={`${movieData?.original_title} poster`}
                     src={`https://image.tmdb.org/t/p/w500${movieData?.poster_path}`}
                     fill={true}
-                    className="rounded-2xl object-contain"
+                    className="z-10 rounded-2xl object-cover"
                 />
+                <div className="relative z-20 h-full w-full bg-gradient-to-b to-black"></div>
+                <div className="absolute bottom-0 z-30 p-4">
+                    <MovieTitle text={movieData?.original_title} />
+                    <p className="mt-4">{movieData?.overview}</p>
+                </div>
             </div>
-
-            <p className="mt-4">{movieData?.original_title}</p>
-            <p className="mt-4">{movieData?.overview}</p>
         </div>
     );
 }
