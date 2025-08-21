@@ -13,6 +13,12 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { discoverMovie } from "@/app/actions";
+import { TMDBMovie } from "@/app/types";
+
+interface DiscoverMovieFormProps {
+    onDiscoverMovieFormSubmit: (data: TMDBMovie | undefined) => void;
+}
+
 const watchProviders = [
     { id: "8", label: "Netflix" },
     { id: "119", label: "Prime Video" },
@@ -56,7 +62,9 @@ const FormSchema = z.object({
         message: "You have to select at least one item.",
     }),
 });
-export function DiscoverMovieForm() {
+export function DiscoverMovieForm({
+    onDiscoverMovieFormSubmit,
+}: DiscoverMovieFormProps) {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -64,8 +72,18 @@ export function DiscoverMovieForm() {
             genres: ["28"],
         },
     });
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        discoverMovie(data.watchProviders.join("|"), data.genres.join(","));
+    async function onSubmit(data: z.infer<typeof FormSchema>) {
+        try {
+            const res = await discoverMovie(
+                data.watchProviders.join("|"),
+                data.genres.join(",")
+            );
+            if (res?.total_results === 0) {
+            }
+            onDiscoverMovieFormSubmit(res?.results[0]);
+        } catch (err) {
+            return err as Error;
+        }
     }
     return (
         <Form {...form}>
