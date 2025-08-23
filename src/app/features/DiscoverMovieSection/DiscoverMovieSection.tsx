@@ -31,9 +31,6 @@ export default function DiscoverMovieSection() {
                 1
             );
 
-            if (res?.total_results === 0) {
-                throw new Error("No results found");
-            }
             // pass successfully retrieved result to state in parent component
             setError(null);
             setMovieData(res);
