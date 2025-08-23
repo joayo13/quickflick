@@ -52,7 +52,7 @@ export default function DiscoverMovieMovieCard({
                 opacity,
                 rotate,
             }}
-            className="col-start-1 row-start-1 flex h-[100vh] w-[100vw] rounded-xl bg-cover bg-center hover:cursor-grab active:cursor-grabbing md:h-[750px] md:w-[500px]"
+            className="col-start-1 row-start-1 flex h-[100dvh] w-[100vw] rounded-xl bg-cover bg-center hover:cursor-grab active:cursor-grabbing md:h-[750px] md:w-[500px]"
         >
             <div className="mt-auto p-4">
                 <MovieTitle text={movieData?.original_title} />
