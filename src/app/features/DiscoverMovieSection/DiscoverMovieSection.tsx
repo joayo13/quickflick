@@ -53,6 +53,7 @@ export default function DiscoverMovieSection() {
                 <DiscoverMovieMovieCard
                     key={movieData.id}
                     movieData={movieData}
+                    setMovieData={setMovieData}
                 ></DiscoverMovieMovieCard>
             ));
         }
