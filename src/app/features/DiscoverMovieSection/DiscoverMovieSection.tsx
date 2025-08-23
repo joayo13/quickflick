@@ -60,8 +60,8 @@ export default function DiscoverMovieSection() {
     }
 
     return (
-        <div className="max-w-3xl">
-            <div className="fixed top-0 right-0 z-10">
+        <div className="relative max-w-3xl">
+            <div className="absolute top-0 right-0 z-10">
                 <DiscoverMovieForm form={form} />
                 <Button onClick={() => form.handleSubmit(onSubmit)()}>Find Movie</Button>
             </div>
