@@ -22,6 +22,6 @@ export async function discoverMovies(watchProviders: string, genres: string, pag
         return data;
     } catch (err) {
         console.error(err);
-        return null;
+        throw err;
     }
 }
