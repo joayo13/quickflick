@@ -47,7 +47,7 @@ export default function DiscoverMovieMovieCard({
             onDragEnd={handleDragEnd}
             data-testid="movie-bg"
             style={{
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(https://image.tmdb.org/t/p/w500${movieData?.poster_path})`,
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(https://image.tmdb.org/t/p/original${movieData?.poster_path})`,
                 x,
                 opacity,
                 rotate,
