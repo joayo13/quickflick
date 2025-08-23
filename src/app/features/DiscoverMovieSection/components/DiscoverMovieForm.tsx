@@ -1,7 +1,6 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useForm, UseFormReturn } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -12,20 +11,11 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { discoverMovies } from "@/app/actions";
-import { TMDBDiscoverResponse } from "@/app/types";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "../../../../components/ui/dropdown-menu";
-
-interface DiscoverMovieFormProps {
-    onDiscoverMovieFormSuccess: (data: TMDBDiscoverResponse | null) => void;
-    onDiscoverMovieFormError: (data: Error | null) => void;
-}
-
-let resultsPageNumber = 1;
 
 const watchProviders = [
     { id: "8", label: "Netflix" },
@@ -61,58 +51,23 @@ const genres = [
     { id: "37", label: "Western" },
 ] as const;
 
-const FormSchema = z.object({
-    watchProviders: z.array(z.string()).refine((value) => value.some((item) => item), {
-        message: "You have to select at least one item.",
-    }),
-    genres: z.array(z.string()).refine((value) => value.some((item) => item), {
-        message: "You have to select at least one item.",
-    }),
-});
-
-export function DiscoverMovieForm({
-    onDiscoverMovieFormSuccess,
-    onDiscoverMovieFormError,
-}: DiscoverMovieFormProps) {
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: {
-            watchProviders: ["8"],
-            genres: ["28"],
+interface useForm {
+    form: UseFormReturn<
+        {
+            watchProviders: string[];
+            genres: string[];
         },
-    });
-    // cycle through the pages, and get a random entry from each page, looping back to page 1 if out of bounds
-    function cyclePageNumber(res: TMDBDiscoverResponse | null) {
-        if (res?.total_pages && resultsPageNumber < res.total_pages) {
-            resultsPageNumber += 1;
-        } else if (res?.total_pages && resultsPageNumber >= res.total_pages) {
-            resultsPageNumber = 1;
+        {
+            watchProviders: string[];
+            genres: string[];
         }
-    }
-    async function onSubmit(data: z.infer<typeof FormSchema>) {
-        try {
-            // take form data and modify it to satisfy api url params
-            const res = await discoverMovies(
-                data.watchProviders.join("|"),
-                data.genres.join(","),
-                resultsPageNumber
-            );
+    >;
+}
 
-            if (res?.total_results === 0) {
-                throw new Error("No results found");
-            }
-            cyclePageNumber(res);
-
-            // pass successfully retrieved result to state in parent component
-            onDiscoverMovieFormSuccess(res);
-        } catch (err) {
-            // pass error result to state in parent component
-            onDiscoverMovieFormError(err as Error);
-        }
-    }
+export function DiscoverMovieForm({ form }: useForm) {
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline">Streams</Button>
@@ -142,9 +97,6 @@ export function DiscoverMovieForm({
                                                         >
                                                             <FormControl>
                                                                 <Checkbox
-                                                                    onClick={() =>
-                                                                        (resultsPageNumber = 1)
-                                                                    }
                                                                     checked={field.value?.includes(
                                                                         item.id
                                                                     )}
@@ -206,9 +158,6 @@ export function DiscoverMovieForm({
                                                         >
                                                             <FormControl>
                                                                 <Checkbox
-                                                                    onClick={() =>
-                                                                        (resultsPageNumber = 1)
-                                                                    }
                                                                     checked={field.value?.includes(
                                                                         item.id
                                                                     )}
@@ -243,7 +192,6 @@ export function DiscoverMovieForm({
                         />
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <Button type="submit">Find Movie</Button>
             </form>
         </Form>
     );

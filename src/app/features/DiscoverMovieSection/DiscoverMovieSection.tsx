@@ -1,19 +1,47 @@
 "use client";
 import { TMDBDiscoverResponse } from "@/app/types";
-import { useEffect, useState } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircleIcon } from "lucide-react";
+import { useState } from "react";
 import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
 import DiscoverMovieMovieCard from "./components/DiscoverMovieMovieCard";
 import DiscoverMovieErrorCard from "./components/DiscoverMovieErrorCard";
+import { useForm } from "react-hook-form";
+import { FormSchema } from "./schemas/FormSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import { discoverMovies } from "@/app/actions";
+import { Button } from "@/components/ui/button";
 
 export default function DiscoverMovieSection() {
     const [movieData, setMovieData] = useState<TMDBDiscoverResponse | null>(null);
     const [error, setError] = useState<Error | null>(null);
 
-    useEffect(() => {
-        setError(null);
-    }, [movieData]);
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            watchProviders: ["8"],
+            genres: ["28"],
+        },
+    });
+    async function onSubmit(data: z.infer<typeof FormSchema>) {
+        try {
+            // take form data and modify it to satisfy api url params
+            const res = await discoverMovies(
+                data.watchProviders.join("|"),
+                data.genres.join(","),
+                1
+            );
+
+            if (res?.total_results === 0) {
+                throw new Error("No results found");
+            }
+            // pass successfully retrieved result to state in parent component
+            setError(null);
+            setMovieData(res);
+        } catch (err) {
+            // pass error result to state in parent component
+            setError(err as Error);
+        }
+    }
 
     function displayDiscoverMovieResults() {
         if (error) {
@@ -31,12 +59,8 @@ export default function DiscoverMovieSection() {
 
     return (
         <div className="max-w-3xl">
-            <DiscoverMovieForm
-                onDiscoverMovieFormSuccess={(data: TMDBDiscoverResponse | null) =>
-                    setMovieData(data)
-                }
-                onDiscoverMovieFormError={(data: Error | null) => setError(data)}
-            />
+            <DiscoverMovieForm form={form} />
+            <Button onClick={() => form.handleSubmit(onSubmit)()}>Find Movie</Button>
             {displayDiscoverMovieResults()}
         </div>
     );
