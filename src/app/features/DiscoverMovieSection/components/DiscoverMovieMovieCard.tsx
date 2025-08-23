@@ -8,15 +8,13 @@ interface DiscoverMovieMovieCardProps {
 
 export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovieCardProps) {
     return (
-        <div className="relative h-[100vh] w-[100vw] overflow-hidden rounded-lg md:h-[750px] md:w-[500px]">
-            <Image
-                alt={`${movieData?.original_title} poster`}
-                src={`https://image.tmdb.org/t/p/w500${movieData?.poster_path}`}
-                fill={true}
-                className="z-10 rounded-2xl object-cover"
-            />
-            <div className="relative z-20 h-full w-full bg-gradient-to-b to-black"></div>
-            <div className="absolute bottom-0 z-30 p-4">
+        <div
+            style={{
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(https://image.tmdb.org/t/p/w500${movieData?.poster_path})`,
+            }}
+            className="col-start-1 row-start-1 flex h-[100vh] w-[100vw] rounded-xl bg-cover bg-center md:h-[750px] md:w-[500px]"
+        >
+            <div className="mt-auto p-4">
                 <MovieTitle text={movieData?.original_title} />
                 <p className="mt-4">{movieData?.overview}</p>
             </div>

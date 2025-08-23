@@ -61,7 +61,7 @@ export default function DiscoverMovieSection() {
         <div className="max-w-3xl">
             <DiscoverMovieForm form={form} />
             <Button onClick={() => form.handleSubmit(onSubmit)()}>Find Movie</Button>
-            {displayDiscoverMovieResults()}
+            <div className="grid place-items-center">{displayDiscoverMovieResults()}</div>
         </div>
     );
 }
