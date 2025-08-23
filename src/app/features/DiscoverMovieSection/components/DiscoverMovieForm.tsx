@@ -16,6 +16,7 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "../../../../components/ui/dropdown-menu";
+import { SlidersHorizontalIcon } from "lucide-react";
 
 const watchProviders = [
     { id: "8", label: "Netflix" },
@@ -70,126 +71,147 @@ export function DiscoverMovieForm({ form }: useForm) {
             <form>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline">Streams</Button>
+                        <Button variant="outline">
+                            <SlidersHorizontalIcon />
+                        </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
-                        <FormField
-                            control={form.control}
-                            name="watchProviders"
-                            render={() => (
-                                <FormItem>
-                                    <div className="mb-4">
-                                        <FormLabel className="text-base">
-                                            Streaming Services
-                                        </FormLabel>
-                                    </div>
-                                    <div className="flex flex-wrap gap-4">
-                                        {watchProviders.map((item) => (
-                                            <FormField
-                                                key={item.id}
-                                                control={form.control}
-                                                name="watchProviders"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem
-                                                            key={item.id}
-                                                            className="flex flex-row items-center gap-2"
-                                                        >
-                                                            <FormControl>
-                                                                <Checkbox
-                                                                    checked={field.value?.includes(
-                                                                        item.id
-                                                                    )}
-                                                                    onCheckedChange={(checked) => {
-                                                                        return checked
-                                                                            ? field.onChange([
-                                                                                  ...field.value,
-                                                                                  item.id,
-                                                                              ])
-                                                                            : field.onChange(
-                                                                                  field.value?.filter(
-                                                                                      (value) =>
-                                                                                          value !==
-                                                                                          item.id
-                                                                                  )
-                                                                              );
-                                                                    }}
-                                                                />
-                                                            </FormControl>
-                                                            <FormLabel className="text-sm font-normal">
-                                                                {item.label}
-                                                            </FormLabel>
-                                                        </FormItem>
-                                                    );
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </DropdownMenuContent>
-                </DropdownMenu>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline">Genres</Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
-                        <FormField
-                            control={form.control}
-                            name="genres"
-                            render={() => (
-                                <FormItem>
-                                    <div className="mb-4">
-                                        <FormLabel className="text-base">Genres</FormLabel>
-                                    </div>
-                                    <div className="flex flex-wrap gap-4">
-                                        {genres.map((item) => (
-                                            <FormField
-                                                key={item.id}
-                                                control={form.control}
-                                                name="genres"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem
-                                                            key={item.id}
-                                                            className="flex flex-row items-center gap-2"
-                                                        >
-                                                            <FormControl>
-                                                                <Checkbox
-                                                                    checked={field.value?.includes(
-                                                                        item.id
-                                                                    )}
-                                                                    onCheckedChange={(checked) => {
-                                                                        return checked
-                                                                            ? field.onChange([
-                                                                                  ...field.value,
-                                                                                  item.id,
-                                                                              ])
-                                                                            : field.onChange(
-                                                                                  field.value?.filter(
-                                                                                      (value) =>
-                                                                                          value !==
-                                                                                          item.id
-                                                                                  )
-                                                                              );
-                                                                    }}
-                                                                />
-                                                            </FormControl>
-                                                            <FormLabel className="text-sm font-normal">
-                                                                {item.label}
-                                                            </FormLabel>
-                                                        </FormItem>
-                                                    );
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <DropdownMenuContent>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline">Streams</Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
+                                <FormField
+                                    control={form.control}
+                                    name="watchProviders"
+                                    render={() => (
+                                        <FormItem>
+                                            <div className="mb-4">
+                                                <FormLabel className="text-base">
+                                                    Streaming Services
+                                                </FormLabel>
+                                            </div>
+                                            <div className="flex flex-wrap gap-4">
+                                                {watchProviders.map((item) => (
+                                                    <FormField
+                                                        key={item.id}
+                                                        control={form.control}
+                                                        name="watchProviders"
+                                                        render={({ field }) => {
+                                                            return (
+                                                                <FormItem
+                                                                    key={item.id}
+                                                                    className="flex flex-row items-center gap-2"
+                                                                >
+                                                                    <FormControl>
+                                                                        <Checkbox
+                                                                            checked={field.value?.includes(
+                                                                                item.id
+                                                                            )}
+                                                                            onCheckedChange={(
+                                                                                checked
+                                                                            ) => {
+                                                                                return checked
+                                                                                    ? field.onChange(
+                                                                                          [
+                                                                                              ...field.value,
+                                                                                              item.id,
+                                                                                          ]
+                                                                                      )
+                                                                                    : field.onChange(
+                                                                                          field.value?.filter(
+                                                                                              (
+                                                                                                  value
+                                                                                              ) =>
+                                                                                                  value !==
+                                                                                                  item.id
+                                                                                          )
+                                                                                      );
+                                                                            }}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormLabel className="text-sm font-normal">
+                                                                        {item.label}
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            );
+                                                        }}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline">Genres</Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
+                                <FormField
+                                    control={form.control}
+                                    name="genres"
+                                    render={() => (
+                                        <FormItem>
+                                            <div className="mb-4">
+                                                <FormLabel className="text-base">Genres</FormLabel>
+                                            </div>
+                                            <div className="flex flex-wrap gap-4">
+                                                {genres.map((item) => (
+                                                    <FormField
+                                                        key={item.id}
+                                                        control={form.control}
+                                                        name="genres"
+                                                        render={({ field }) => {
+                                                            return (
+                                                                <FormItem
+                                                                    key={item.id}
+                                                                    className="flex flex-row items-center gap-2"
+                                                                >
+                                                                    <FormControl>
+                                                                        <Checkbox
+                                                                            checked={field.value?.includes(
+                                                                                item.id
+                                                                            )}
+                                                                            onCheckedChange={(
+                                                                                checked
+                                                                            ) => {
+                                                                                return checked
+                                                                                    ? field.onChange(
+                                                                                          [
+                                                                                              ...field.value,
+                                                                                              item.id,
+                                                                                          ]
+                                                                                      )
+                                                                                    : field.onChange(
+                                                                                          field.value?.filter(
+                                                                                              (
+                                                                                                  value
+                                                                                              ) =>
+                                                                                                  value !==
+                                                                                                  item.id
+                                                                                          )
+                                                                                      );
+                                                                            }}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormLabel className="text-sm font-normal">
+                                                                        {item.label}
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            );
+                                                        }}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </form>
