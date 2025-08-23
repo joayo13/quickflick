@@ -9,6 +9,7 @@ interface DiscoverMovieMovieCardProps {
 export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovieCardProps) {
     return (
         <div
+            data-testid="movie-bg"
             style={{
                 backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(https://image.tmdb.org/t/p/w500${movieData?.poster_path})`,
             }}
