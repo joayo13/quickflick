@@ -12,8 +12,8 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { discoverMovie } from "@/app/actions";
-import { TMDBDiscoverResponse, TMDBMovie } from "@/app/types";
+import { discoverMovies } from "@/app/actions";
+import { TMDBDiscoverResponse } from "@/app/types";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -21,7 +21,7 @@ import {
 } from "../../../../components/ui/dropdown-menu";
 
 interface DiscoverMovieFormProps {
-    onDiscoverMovieFormSuccess: (data: TMDBMovie | undefined) => void;
+    onDiscoverMovieFormSuccess: (data: TMDBDiscoverResponse | null) => void;
     onDiscoverMovieFormError: (data: Error | null) => void;
 }
 
@@ -92,7 +92,7 @@ export function DiscoverMovieForm({
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         try {
             // take form data and modify it to satisfy api url params
-            const res = await discoverMovie(
+            const res = await discoverMovies(
                 data.watchProviders.join("|"),
                 data.genres.join(","),
                 resultsPageNumber
@@ -103,11 +103,8 @@ export function DiscoverMovieForm({
             }
             cyclePageNumber(res);
 
-            const results = res?.results ?? [];
-
-            const randomPageEntry = Math.floor(Math.random() * results.length);
             // pass successfully retrieved result to state in parent component
-            onDiscoverMovieFormSuccess(results[randomPageEntry]);
+            onDiscoverMovieFormSuccess(res);
         } catch (err) {
             // pass error result to state in parent component
             onDiscoverMovieFormError(err as Error);

@@ -2,7 +2,7 @@
 
 import { TMDBDiscoverResponse } from "@/app/types";
 
-export async function discoverMovie(watchProviders: string, genres: string, page: number) {
+export async function discoverMovies(watchProviders: string, genres: string, page: number) {
     const options = {
         method: "GET",
         headers: {
