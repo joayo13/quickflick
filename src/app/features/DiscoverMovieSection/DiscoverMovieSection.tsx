@@ -4,6 +4,7 @@ import { useState } from "react";
 import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
 import DiscoverMovieMovieCard from "./components/DiscoverMovieMovieCard";
 import DiscoverMovieErrorCard from "./components/DiscoverMovieErrorCard";
+import DiscoverMovieNoResultsCard from "./components/DiscoverMovieNoResultsCard";
 import { useForm } from "react-hook-form";
 import { FormSchema } from "./schemas/FormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +28,7 @@ export default function DiscoverMovieSection() {
             // take form data and modify it to satisfy api url params
             const res = await discoverMovies(
                 data.watchProviders.join("|"),
-                data.genres.join(","),
+                data.genres.join("|"),
                 1
             );
 
@@ -43,6 +44,9 @@ export default function DiscoverMovieSection() {
     function displayDiscoverMovieResults() {
         if (error) {
             return <DiscoverMovieErrorCard error={error} />;
+        }
+        if (movieData?.total_results === 0) {
+            return <DiscoverMovieNoResultsCard />;
         }
         if (movieData?.results) {
             return movieData.results.map((movieData) => (

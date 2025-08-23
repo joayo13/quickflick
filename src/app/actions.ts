@@ -19,9 +19,6 @@ export async function discoverMovies(watchProviders: string, genres: string, pag
 
         const data: TMDBDiscoverResponse = await res.json();
         console.log(data);
-        if (data.total_results === 0) {
-            throw new Error("No results found");
-        }
         return data;
     } catch (err) {
         console.error(err);

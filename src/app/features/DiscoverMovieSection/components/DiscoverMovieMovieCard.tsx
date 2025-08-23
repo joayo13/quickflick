@@ -1,6 +1,5 @@
 import { TMDBMovie } from "@/app/types";
 import MovieTitle from "@/components/typography/movieTitle";
-import Image from "next/image";
 
 interface DiscoverMovieMovieCardProps {
     movieData: TMDBMovie;
