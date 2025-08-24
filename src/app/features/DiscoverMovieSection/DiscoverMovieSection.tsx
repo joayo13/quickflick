@@ -11,6 +11,7 @@ import { FormSchema } from "./schemas/FormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { discoverMovies } from "@/app/actions";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DiscoverMovieSection() {
     const [movieData, setMovieData] = useState<TMDBDiscoverResponse | null>(null);
@@ -85,11 +86,14 @@ export default function DiscoverMovieSection() {
 
     return (
         <div className="relative max-w-3xl">
-            <div className="absolute top-0 right-0 z-10">
+            <div className="absolute top-0 right-0 z-30">
                 <DiscoverMovieForm form={form} setFormStatus={setFormStatus} />
             </div>
 
-            <div className="grid place-items-center">{displayDiscoverMovieResults()}</div>
+            <div className="grid place-items-center">
+                <Skeleton className="z-10 col-start-1 row-start-1 h-[100dvh] w-[100vw] rounded-xl bg-[#313244] md:h-[750px] md:w-[500px]" />
+                {displayDiscoverMovieResults()}
+            </div>
         </div>
     );
 }
