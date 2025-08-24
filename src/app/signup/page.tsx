@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-export default function LoginPage() {
+export default function SignupPage() {
     return (
         <div className={"grid h-screen w-screen place-items-center"}>
             <Card className="relative w-full max-w-lg">
