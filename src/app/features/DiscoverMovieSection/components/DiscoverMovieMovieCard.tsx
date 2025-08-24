@@ -19,6 +19,7 @@ export default function DiscoverMovieMovieCard({
     const rotate = useTransform(x, [-150, 150], [-18, 18]);
 
     const handleDragEnd = () => {
+        // discard
         if (x.get() > 50) {
             setMovieData((data) =>
                 data
@@ -29,6 +30,7 @@ export default function DiscoverMovieMovieCard({
                     : data
             );
         } else if (x.get() < -50) {
+            // save
             setMovieData((data) =>
                 data
                     ? {

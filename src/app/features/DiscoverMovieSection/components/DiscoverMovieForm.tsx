@@ -1,5 +1,5 @@
 "use client";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -52,7 +52,7 @@ const genres = [
     { id: "37", label: "Western" },
 ] as const;
 
-interface useForm {
+interface form {
     form: UseFormReturn<
         {
             watchProviders: string[];
@@ -63,9 +63,10 @@ interface useForm {
             genres: string[];
         }
     >;
+    setFormStatus: React.Dispatch<React.SetStateAction<"initial" | "changed" | "unchanged">>;
 }
 
-export function DiscoverMovieForm({ form }: useForm) {
+export function DiscoverMovieForm({ form, setFormStatus }: form) {
     return (
         <Form {...form}>
             <form>
@@ -111,6 +112,9 @@ export function DiscoverMovieForm({ form }: useForm) {
                                                                             onCheckedChange={(
                                                                                 checked
                                                                             ) => {
+                                                                                setFormStatus(
+                                                                                    "changed"
+                                                                                );
                                                                                 return checked
                                                                                     ? field.onChange(
                                                                                           [
@@ -178,6 +182,9 @@ export function DiscoverMovieForm({ form }: useForm) {
                                                                             onCheckedChange={(
                                                                                 checked
                                                                             ) => {
+                                                                                setFormStatus(
+                                                                                    "changed"
+                                                                                );
                                                                                 return checked
                                                                                     ? field.onChange(
                                                                                           [
