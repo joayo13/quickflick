@@ -5,6 +5,7 @@ import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
 import DiscoverMovieMovieCard from "./components/DiscoverMovieMovieCard";
 import DiscoverMovieErrorCard from "./components/DiscoverMovieErrorCard";
 import DiscoverMovieNoResultsCard from "./components/DiscoverMovieNoResultsCard";
+import DiscoverMovieEndOfResultsCard from "./components/DiscoverMovieEndOfResultsCard";
 import { useForm } from "react-hook-form";
 import { FormSchema } from "./schemas/FormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +32,7 @@ export default function DiscoverMovieSection() {
             try {
                 const res = await discoverMovies(
                     data.watchProviders.join("|"),
-                    data.genres.join("|"),
+                    data.genres.join(","),
                     pageNumberRef.current
                 );
                 setError(null);
@@ -67,6 +68,9 @@ export default function DiscoverMovieSection() {
         }
         if (movieData?.total_results === 0) {
             return <DiscoverMovieNoResultsCard />;
+        }
+        if (movieData?.results.length === 0 && movieData.page === movieData.total_pages) {
+            return <DiscoverMovieEndOfResultsCard />;
         }
         if (movieData?.results) {
             return movieData.results.map((movieData) => (
