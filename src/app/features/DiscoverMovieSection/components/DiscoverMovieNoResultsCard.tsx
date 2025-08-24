@@ -4,7 +4,7 @@ import React from "react";
 
 export default function DiscoverMovieErrorCard() {
     return (
-        <div className="relative h-[100vh] w-[100vw] overflow-hidden rounded-lg md:h-[750px] md:w-[500px]">
+        <div className="z-20 col-start-1 row-start-1 h-[100vh] w-[100vw] overflow-hidden rounded-lg md:h-[750px] md:w-[500px]">
             <Alert
                 className="flex h-full w-full flex-col items-center justify-center"
                 variant="default"
