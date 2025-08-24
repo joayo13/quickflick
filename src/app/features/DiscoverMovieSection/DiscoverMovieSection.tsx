@@ -47,8 +47,9 @@ export default function DiscoverMovieSection() {
 
     useEffect(() => {
         console.log("fired useeffect");
-        // if the formstatus is initial or changed state, we will run the onsubmit
+        // if the formstatus is set to initial or changed state, we will rerun the onsubmit, and reset pagenumber to 1
         if (formStatus !== "unchanged") {
+            pageNumberRef.current = 1;
             form.handleSubmit(onSubmit)();
             setFormStatus("unchanged");
         }

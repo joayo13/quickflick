@@ -20,7 +20,7 @@ export default function DiscoverMovieMovieCard({
 
     const handleDragEnd = () => {
         // discard
-        if (x.get() > 50) {
+        if (x.get() > 40) {
             setMovieData((data) =>
                 data
                     ? {
@@ -29,7 +29,7 @@ export default function DiscoverMovieMovieCard({
                       }
                     : data
             );
-        } else if (x.get() < -50) {
+        } else if (x.get() < -40) {
             // save
             setMovieData((data) =>
                 data
