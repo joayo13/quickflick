@@ -17,5 +17,5 @@ export async function login(formData: FormData) {
     if (error) {
         throw error;
     }
-    return "success";
+    return "login success";
 }
