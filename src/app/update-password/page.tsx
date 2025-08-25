@@ -32,7 +32,7 @@ export default function UpdatePassword() {
 
     const form = useForm<z.infer<typeof resetPasswordFormSchema>>({
         resolver: zodResolver(resetPasswordFormSchema),
-        defaultValues: { password: "" },
+        defaultValues: { password: "", confirmPassword: "" },
     });
 
     async function onSubmit(values: z.infer<typeof resetPasswordFormSchema>) {
