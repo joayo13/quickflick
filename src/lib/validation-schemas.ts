@@ -25,5 +25,17 @@ export const registerFormSchema = z
         }
     });
 
-// Type for use with react-hook-form or other TS usage
-export type loginFormSchema = z.infer<typeof loginFormSchema>;
+// Only email is required
+export const forgotPasswordFormSchema = z.object({
+    email: z.email("Please enter a valid email address."),
+});
+
+export const resetPasswordFormSchema = z
+    .object({
+        password: z.string().min(6, "Password must be at least 6 characters."),
+        confirmPassword: z.string().min(6, "Please confirm your password."),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords do not match.",
+        path: ["confirmPassword"],
+    });
