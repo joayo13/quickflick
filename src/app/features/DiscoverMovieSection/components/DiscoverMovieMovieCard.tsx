@@ -1,16 +1,14 @@
-import { TMDBDiscoverResponse, TMDBMovie } from "@/app/types";
+import { TMDBMovie } from "@/app/types";
 import MovieTitle from "@/components/typography/movieTitle";
+import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
 
 interface DiscoverMovieMovieCardProps {
     movieData: TMDBMovie;
-    setMovieData: React.Dispatch<React.SetStateAction<TMDBDiscoverResponse | null>>;
 }
 
-export default function DiscoverMovieMovieCard({
-    movieData,
-    setMovieData,
-}: DiscoverMovieMovieCardProps) {
+export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovieCardProps) {
+    const { setMovieData } = useMovieStore();
     const x = useMotionValue(0);
 
     useMotionValueEvent(x, "change", (latest) => console.log(latest));

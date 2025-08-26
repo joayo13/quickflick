@@ -12,9 +12,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { discoverMovies } from "@/app/actions";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMovieStore } from "@/store/useStore";
 
 export default function DiscoverMovieSection() {
-    const [movieData, setMovieData] = useState<TMDBDiscoverResponse | null>(null);
+    const { movieData, setMovieData } = useMovieStore();
     const [error, setError] = useState<Error | null>(null);
     const [formStatus, setFormStatus] = useState<"initial" | "changed" | "unchanged">("initial");
     const pageNumberRef = useRef(1);
@@ -48,7 +49,10 @@ export default function DiscoverMovieSection() {
     useEffect(() => {
         console.log("fired useeffect");
         // if the formstatus is set to initial or changed state, we will rerun the onsubmit, and reset pagenumber to 1
-        if (formStatus !== "unchanged") {
+        if (formStatus === "initial" && pageNumberRef.current === 1) {
+            form.handleSubmit(onSubmit)();
+            setFormStatus("unchanged");
+        } else if (formStatus === "changed") {
             pageNumberRef.current = 1;
             form.handleSubmit(onSubmit)();
             setFormStatus("unchanged");
@@ -79,7 +83,6 @@ export default function DiscoverMovieSection() {
                 <DiscoverMovieMovieCard
                     key={movieData.id}
                     movieData={movieData}
-                    setMovieData={setMovieData}
                 ></DiscoverMovieMovieCard>
             ));
         }
