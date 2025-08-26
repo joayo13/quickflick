@@ -2,7 +2,27 @@
 
 import { TMDBDiscoverResponse } from "@/app/types";
 
+function buildDiscoverURL({
+    watchProviders,
+    genres,
+    page,
+}: {
+    watchProviders: string;
+    genres: string;
+    page: number;
+}) {
+    return `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc&vote_average.gte=6&vote_count.gte=100&watch_region=CA&with_genres=${genres}&with_original_language=en&with_watch_monetization_types=flatrate|ads|free&with_watch_providers=${watchProviders}`;
+}
+
+function assertParams(params: Record<string, unknown>) {
+    for (const [key, value] of Object.entries(params)) {
+        if (!value) throw new Error(`Parameter "${key}" is missing`);
+    }
+}
+
 export async function discoverMovies(watchProviders: string, genres: string, page: number) {
+    assertParams({ watchProviders, genres, page });
+
     const options = {
         method: "GET",
         headers: {
@@ -12,10 +32,7 @@ export async function discoverMovies(watchProviders: string, genres: string, pag
     };
 
     try {
-        const res = await fetch(
-            `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc&vote_average.gte=6&vote_count.gte=100&watch_region=CA&with_genres=${genres}&with_original_language=en&with_watch_monetization_types=flatrate|ads|free&with_watch_providers=${watchProviders}`,
-            options
-        );
+        const res = await fetch(buildDiscoverURL({ watchProviders, genres, page }), options);
 
         const data: TMDBDiscoverResponse = await res.json();
         console.log(data);
