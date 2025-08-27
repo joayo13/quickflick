@@ -21,12 +21,14 @@ export default function DiscoverMovieSection() {
 
     const fetchMovies = useCallback(
         async (data: Partial<z.infer<typeof FormSchema>>) => {
-            if (!data.watchProviders || !data.genres) return;
+            if (!data.watchProviders || !data.genres || !data.releaseYear) return;
 
             try {
                 const res = await discoverMovies(
                     data.watchProviders.join("|"),
                     data.genres.join("|"),
+                    new Date(`${data.releaseYear[0]}-01-01`),
+                    new Date(`${data.releaseYear[1]}-01-01`),
                     pageNumberRef.current
                 );
                 // filterOutListItems

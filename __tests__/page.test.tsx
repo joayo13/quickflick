@@ -13,6 +13,7 @@ function createMockMovie(overrides?: Partial<TMDBMovie>): TMDBMovie {
         vote_count: 0,
         poster_path: null,
         backdrop_path: null,
+        genre_ids: ["8"],
         ...overrides,
     };
 }
@@ -22,7 +23,7 @@ describe("discoverMovies api", () => {
         vi.resetAllMocks();
     });
 
-    it("returns a promise response if data provided", async () => {
+    it("returns a promise response with constructed url if data provided", async () => {
         // Mock the API response you expect
         const mockResponse: TMDBDiscoverResponse = {
             page: 1,
@@ -36,7 +37,13 @@ describe("discoverMovies api", () => {
                 Promise.resolve({ json: () => Promise.resolve(mockResponse) }) as Promise<Response>
         );
 
-        const res = await discoverMovies("8", "8", 6);
+        const res = await discoverMovies(
+            "8",
+            "8",
+            new Date("2024-01-01"),
+            new Date("2025-01-01"),
+            6
+        );
 
         // Verify output is transformed correctly
         expect(res.results).toEqual(mockResponse.results);
@@ -47,6 +54,6 @@ describe("discoverMovies api", () => {
 
     it("rejects a promise if no data provided", async () => {
         // If discoverMovies throws an error when called with invalid args:
-        await expect(discoverMovies("", "", 1)).rejects.toThrow();
+        await expect(discoverMovies("", "", new Date(), new Date(), 1)).rejects.toThrow();
     });
 });

@@ -24,7 +24,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircleIcon } from "lucide-react";
+import { AlertCircleIcon, UserRoundCheckIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 
 const formSchema = loginFormSchema;
@@ -52,7 +52,9 @@ export default function LoginPreview() {
             formData.append("password", values.password);
             const result = await login(formData);
             if (result === "login success") {
-                toast("Login Successful. Redirecting to Dashboard.");
+                toast("Login Successful. Redirecting to Dashboard.", {
+                    icon: <UserRoundCheckIcon />,
+                });
                 setTimeout(() => {
                     redirect("/");
                 }, 2000);

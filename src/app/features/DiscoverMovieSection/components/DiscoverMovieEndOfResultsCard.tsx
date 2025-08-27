@@ -1,5 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { SearchCheckIcon, SearchXIcon } from "lucide-react";
+import { SearchCheckIcon } from "lucide-react";
 import React from "react";
 
 export default function DiscoverMovieErrorCard() {

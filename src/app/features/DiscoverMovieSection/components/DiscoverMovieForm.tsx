@@ -16,12 +16,14 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "../../../../components/ui/dropdown-menu";
-import { SlidersHorizontalIcon } from "lucide-react";
+import { CircleAlertIcon, CircleCheckIcon, SlidersHorizontalIcon } from "lucide-react";
 import z from "zod";
 import { FormSchema } from "../schemas/FormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormStore } from "@/store/useStore";
-import { useEffect } from "react";
+import { Slider } from "@/components/ui/slider";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 const watchProviders = [
     { id: "8", label: "Netflix" },
@@ -60,22 +62,26 @@ const genres = [
 export function DiscoverMovieForm() {
     const { values, setValues } = useFormStore();
 
+    const deepEqual = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: values,
-        mode: "onChange",
+        mode: "onSubmit",
     });
 
-    useEffect(() => {
-        const subscription = form.watch((newValues) => {
-            // newValues has { watchProviders: [...], genres: [...] }
-            setValues(newValues);
-        });
-        return () => subscription.unsubscribe();
-    }, [form, form.watch, setValues]);
+    const onSubmit = (data: z.infer<typeof FormSchema>) => {
+        if (deepEqual(data, values)) {
+            toast("Filters already applied.", { icon: <CircleAlertIcon /> });
+            return;
+        }
+        setValues(data);
+        toast("Filters applied successfully.", { icon: <CircleCheckIcon /> });
+    };
 
     return (
         <Form {...form}>
+            <Toaster />
             <form>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -220,6 +226,48 @@ export function DiscoverMovieForm() {
                                 />
                             </DropdownMenuContent>
                         </DropdownMenu>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline">Release Year</Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
+                                <FormField
+                                    control={form.control}
+                                    name="releaseYear"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <div className="mb-4">
+                                                <FormLabel className="text-base">
+                                                    Release Year
+                                                </FormLabel>
+                                            </div>
+                                            <FormControl>
+                                                <Slider
+                                                    value={field.value}
+                                                    onValueChange={field.onChange}
+                                                    min={1950}
+                                                    max={2025}
+                                                    step={1}
+                                                    className="w-[250px]"
+                                                />
+                                            </FormControl>
+                                            <div className="mt-2 flex justify-between text-sm">
+                                                <span>{field.value?.[0]}</span>
+                                                <span>{field.value?.[1]}</span>
+                                            </div>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <Button
+                            onClick={() => form.handleSubmit(onSubmit)()}
+                            type="submit"
+                            variant="default"
+                        >
+                            Apply Filters
+                        </Button>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </form>
