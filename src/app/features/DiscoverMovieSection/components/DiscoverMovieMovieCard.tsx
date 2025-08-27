@@ -16,6 +16,30 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
     const opacity = useTransform(x, [-50, 0, 50], [0, 1, 0]);
     const rotate = useTransform(x, [-150, 150], [-18, 18]);
 
+    const movieYear = new Date(movieData.release_date).getFullYear();
+
+    const genres = {
+        28: "Action",
+        12: "Adventure",
+        16: "Animation",
+        35: "Comedy",
+        80: "Crime",
+        99: "Documentary",
+        18: "Drama",
+        10751: "Family",
+        14: "Fantasy",
+        36: "History",
+        27: "Horror",
+        10402: "Music",
+        9648: "Mystery",
+        10749: "Romance",
+        878: "Science Fiction",
+        10770: "TV Movie",
+        53: "Thriller",
+        10752: "War",
+        37: "Western",
+    };
+
     const handleDragEnd = () => {
         // discard
         if (x.get() > 40) {
@@ -55,7 +79,16 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
             className="z-20 col-start-1 row-start-1 flex h-[100dvh] w-[100vw] rounded-xl bg-[#313244] bg-cover bg-center hover:cursor-grab active:cursor-grabbing md:h-[750px] md:w-[500px]"
         >
             <div className="mt-auto p-4">
-                <MovieTitle text={movieData?.original_title} />
+                <MovieTitle title={movieData?.original_title} />
+                <span className="flex items-center gap-4">
+                    <p>{movieYear}</p>
+                    <p>⭐{movieData.vote_average.toFixed(1)}</p>
+                    {movieData.genre_ids?.slice(0, 3).map((id) => (
+                        <p key={id}>
+                            {genres[parseInt(id) as keyof typeof genres] ?? "Unknown Genre"}
+                        </p>
+                    ))}
+                </span>
                 <p className="mt-4">{movieData?.overview}</p>
             </div>
         </motion.div>

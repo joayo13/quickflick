@@ -1,3 +1,3 @@
-export default function MovieTitle({ text }: { text?: string }) {
-    return <h1 className="text-4xl font-bold tracking-tight">{text ? text : "Unknown Title"}</h1>;
+export default function MovieTitle({ title }: { title?: string }) {
+    return <h1 className="text-4xl font-bold tracking-tight">{title ? title : "Unknown Title"}</h1>;
 }

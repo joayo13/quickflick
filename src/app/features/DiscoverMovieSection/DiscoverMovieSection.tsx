@@ -26,7 +26,7 @@ export default function DiscoverMovieSection() {
             try {
                 const res = await discoverMovies(
                     data.watchProviders.join("|"),
-                    data.genres.join(","),
+                    data.genres.join("|"),
                     pageNumberRef.current
                 );
                 // filterOutListItems
@@ -80,7 +80,7 @@ export default function DiscoverMovieSection() {
 
     return (
         <div className="relative max-w-3xl">
-            <div className="absolute top-0 right-0 z-30">
+            <div className="absolute top-2 right-2 z-30">
                 {formHydrated ? <DiscoverMovieForm /> : null}
             </div>
 
