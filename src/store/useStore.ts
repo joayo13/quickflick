@@ -23,12 +23,14 @@ export const useMovieStore = create<MovieStore>((set) => ({
 }));
 
 interface FormState {
-    values: Record<string, string[]>;
-    hydrated: boolean;
+    values: Record<string, (string | undefined)[] | undefined>;
+    formHydrated: boolean;
     setValues: (
         updater:
-            | Record<string, string[]>
-            | ((prev: Record<string, string[]>) => Record<string, string[]>)
+            | Record<string, (string | undefined)[] | undefined>
+            | ((
+                  prev: Record<string, (string | undefined)[] | undefined>
+              ) => Record<string, (string | undefined)[] | undefined>)
     ) => void;
     resetValues: () => void;
 }
@@ -37,7 +39,7 @@ export const useFormStore = create(
     persist<FormState>(
         (set) => ({
             values: { watchProviders: ["8"], genres: ["28"] },
-            hydrated: false,
+            formHydrated: false,
             setValues: (updater) =>
                 set((state) => ({
                     values: typeof updater === "function" ? updater(state.values) : updater,
@@ -47,7 +49,7 @@ export const useFormStore = create(
         {
             name: "form-storage", // key in localStorage
             onRehydrateStorage: () => (state) => {
-                if (state) state.hydrated = true;
+                if (state) state.formHydrated = true;
             },
         }
     )

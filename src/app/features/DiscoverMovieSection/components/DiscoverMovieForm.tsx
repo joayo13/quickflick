@@ -1,5 +1,5 @@
 "use client";
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +17,11 @@ import {
     DropdownMenuTrigger,
 } from "../../../../components/ui/dropdown-menu";
 import { SlidersHorizontalIcon } from "lucide-react";
+import z from "zod";
+import { FormSchema } from "../schemas/FormSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormStore } from "@/store/useStore";
+import { useEffect } from "react";
 
 const watchProviders = [
     { id: "8", label: "Netflix" },
@@ -52,21 +57,23 @@ const genres = [
     { id: "37", label: "Western" },
 ] as const;
 
-interface form {
-    form: UseFormReturn<
-        {
-            watchProviders: string[];
-            genres: string[];
-        },
-        {
-            watchProviders: string[];
-            genres: string[];
-        }
-    >;
-    setFormStatus: React.Dispatch<React.SetStateAction<"initial" | "changed" | "unchanged">>;
-}
+export function DiscoverMovieForm() {
+    const { values, setValues } = useFormStore();
 
-export function DiscoverMovieForm({ form, setFormStatus }: form) {
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: values,
+        mode: "onChange",
+    });
+
+    useEffect(() => {
+        const subscription = form.watch((newValues) => {
+            // newValues has { watchProviders: [...], genres: [...] }
+            setValues(newValues);
+        });
+        return () => subscription.unsubscribe();
+    }, [form, form.watch, setValues]);
+
     return (
         <Form {...form}>
             <form>
@@ -112,9 +119,6 @@ export function DiscoverMovieForm({ form, setFormStatus }: form) {
                                                                             onCheckedChange={(
                                                                                 checked
                                                                             ) => {
-                                                                                setFormStatus(
-                                                                                    "changed"
-                                                                                );
                                                                                 return checked
                                                                                     ? field.onChange(
                                                                                           [
@@ -182,9 +186,6 @@ export function DiscoverMovieForm({ form, setFormStatus }: form) {
                                                                             onCheckedChange={(
                                                                                 checked
                                                                             ) => {
-                                                                                setFormStatus(
-                                                                                    "changed"
-                                                                                );
                                                                                 return checked
                                                                                     ? field.onChange(
                                                                                           [

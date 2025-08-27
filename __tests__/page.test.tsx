@@ -47,6 +47,6 @@ describe("discoverMovies api", () => {
 
     it("rejects a promise if no data provided", async () => {
         // If discoverMovies throws an error when called with invalid args:
-        await expect(discoverMovies("", "", 0)).rejects.toThrow();
+        await expect(discoverMovies("", "", 1)).rejects.toThrow();
     });
 });
