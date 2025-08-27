@@ -20,9 +20,7 @@ export default function DiscoverMovieSection() {
     const { values, formHydrated } = useFormStore();
 
     const fetchMovies = useCallback(
-        async (data: Partial<z.infer<typeof FormSchema>>) => {
-            if (!data.watchProviders || !data.genres || !data.releaseYear) return;
-
+        async (data: z.infer<typeof FormSchema>) => {
             try {
                 const res = await discoverMovies(
                     data.watchProviders.join("|"),
@@ -44,7 +42,7 @@ export default function DiscoverMovieSection() {
     useEffect(() => {
         if (formHydrated) {
             pageNumberRef.current = 1;
-            fetchMovies(values);
+            fetchMovies(values as z.infer<typeof FormSchema>);
         }
     }, [fetchMovies, values, formHydrated]);
 
@@ -53,7 +51,7 @@ export default function DiscoverMovieSection() {
             if (movieData?.results.length === 0) {
                 if (movieData.page < movieData.total_pages) {
                     pageNumberRef.current += 1;
-                    fetchMovies(values);
+                    fetchMovies(values as z.infer<typeof FormSchema>);
                 }
             }
         }
