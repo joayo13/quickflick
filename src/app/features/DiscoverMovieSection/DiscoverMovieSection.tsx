@@ -1,5 +1,4 @@
 "use client";
-import { TMDBDiscoverResponse } from "@/app/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
 import DiscoverMovieMovieCard from "./components/DiscoverMovieMovieCard";
@@ -12,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { discoverMovies } from "@/app/actions";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMovieStore } from "@/store/useStore";
+import { useFormStore, useMovieStore } from "@/store/useStore";
 
 export default function DiscoverMovieSection() {
     const { movieData, setMovieData } = useMovieStore();
@@ -20,12 +19,11 @@ export default function DiscoverMovieSection() {
     const [formStatus, setFormStatus] = useState<"initial" | "changed" | "unchanged">("initial");
     const pageNumberRef = useRef(1);
 
+    const { values, hydrated, setValues } = useFormStore();
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
-        defaultValues: {
-            watchProviders: ["8"],
-            genres: ["28"],
-        },
+        defaultValues: values,
     });
 
     const onSubmit = useCallback(
@@ -49,15 +47,17 @@ export default function DiscoverMovieSection() {
     useEffect(() => {
         console.log("fired useeffect");
         // if the formstatus is set to initial or changed state, we will rerun the onsubmit, and reset pagenumber to 1
-        if (formStatus === "initial" && pageNumberRef.current === 1) {
+        if (formStatus === "initial" && pageNumberRef.current === 1 && hydrated) {
+            form.reset(values);
             form.handleSubmit(onSubmit)();
             setFormStatus("unchanged");
         } else if (formStatus === "changed") {
             pageNumberRef.current = 1;
             form.handleSubmit(onSubmit)();
             setFormStatus("unchanged");
+            setValues(form.getValues());
         }
-    }, [formStatus, form, onSubmit]);
+    }, [formStatus, form, onSubmit, setValues, hydrated, values]);
 
     useEffect(() => {
         // this useeffect loads next page if we have reached end of current page results and more pages are left
@@ -91,12 +91,12 @@ export default function DiscoverMovieSection() {
     return (
         <div className="relative max-w-3xl">
             <div className="absolute top-0 right-0 z-30">
-                <DiscoverMovieForm form={form} setFormStatus={setFormStatus} />
+                {hydrated ? <DiscoverMovieForm form={form} setFormStatus={setFormStatus} /> : null}
             </div>
 
             <div className="grid place-items-center">
                 <Skeleton className="z-10 col-start-1 row-start-1 h-[100dvh] w-[100vw] rounded-xl bg-[#313244] md:h-[750px] md:w-[500px]" />
-                {displayDiscoverMovieResults()}
+                {hydrated ? displayDiscoverMovieResults() : null}
             </div>
         </div>
     );
