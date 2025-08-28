@@ -31,7 +31,7 @@ const formSchema = loginFormSchema;
 
 export default function LoginPreview() {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -44,30 +44,23 @@ export default function LoginPreview() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsSubmitting(true);
         setError(null);
-        try {
-            // Assuming an async login function
 
-            const formData = new FormData();
-            formData.append("email", values.email);
-            formData.append("password", values.password);
-            const result = await login(formData);
-            if (result === "login success") {
-                toast("Login Successful. Redirecting to Dashboard.", {
-                    icon: <UserRoundCheckIcon />,
-                });
-                setTimeout(() => {
-                    redirect("/");
-                }, 2000);
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                setError(error);
-            } else {
-                const error = new Error("Unexpected error");
-                setError(error);
-            }
-            setIsSubmitting(false);
+        const formData = new FormData();
+        formData.append("email", values.email);
+        formData.append("password", values.password);
+
+        const result = await login(formData);
+
+        if (result.success) {
+            toast(result.message, {
+                icon: <UserRoundCheckIcon />,
+            });
+            setTimeout(() => redirect("/"), 2000);
+        } else {
+            setError(result.message); // display the user-friendly message
         }
+
+        setIsSubmitting(false);
     }
     function displayErrors() {
         if (error) {
@@ -80,7 +73,7 @@ export default function LoginPreview() {
                         <AlertCircleIcon />
                     </div>
                     <AlertDescription>
-                        <p>{error?.message}</p>
+                        <p>{error}</p>
                     </AlertDescription>
                 </Alert>
             );

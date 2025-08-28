@@ -20,7 +20,16 @@ export async function signup(formData: FormData) {
     const { error } = await supabase.auth.signUp(data);
 
     if (error) {
-        throw error;
+        // Handle common Supabase signup errors with friendly messages
+        if (error.message.includes("Password")) {
+            return { success: false, message: "Password does not meet requirements." };
+        } else {
+            return { success: false, message: "Unexpected error occurred. Please try again." };
+        }
     }
-    return "signup success";
+
+    return {
+        success: true,
+        message: "Signup successful! Please check your email to confirm your account.",
+    };
 }

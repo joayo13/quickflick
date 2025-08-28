@@ -29,7 +29,7 @@ const formSchema = registerFormSchema;
 
 export default function RegisterPreview() {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [alert, setAlert] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -44,26 +44,21 @@ export default function RegisterPreview() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsSubmitting(true);
-        try {
-            const formData = new FormData();
-            formData.append("email", values.email);
-            formData.append("password", values.password);
-            formData.append("name", values.name);
 
-            const result = await signup(formData);
-            if (result === "signup success") {
-                setIsSubmitting(false);
-                setAlert("Signup successful. Check your email to verify your account.");
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                setError(error);
-            } else {
-                const error = new Error("Unexpected error");
-                setError(error);
-            }
+        const formData = new FormData();
+        formData.append("email", values.email);
+        formData.append("password", values.password);
+        formData.append("name", values.name);
+
+        const result = await signup(formData);
+        if (result.success) {
             setIsSubmitting(false);
+            setAlert(result.message);
+        } else {
+            setError(result.message);
         }
+
+        setIsSubmitting(false);
     }
     function displayErrors() {
         if (error) {
@@ -76,7 +71,7 @@ export default function RegisterPreview() {
                         <AlertCircleIcon />
                     </div>
                     <AlertDescription>
-                        <p>{error?.message}</p>
+                        <p>{error}</p>
                     </AlertDescription>
                 </Alert>
             );

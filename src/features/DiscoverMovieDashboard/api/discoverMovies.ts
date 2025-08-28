@@ -21,6 +21,8 @@ export async function discoverMovies(params: DiscoverMoviesParams) {
             throw new Error(data.status_message || "Unknown TMDB error");
         }
 
+        console.log(data);
+
         return data;
     } catch (err) {
         console.error(err);
