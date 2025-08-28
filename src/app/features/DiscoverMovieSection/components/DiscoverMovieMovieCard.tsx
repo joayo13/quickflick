@@ -33,7 +33,7 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
         10402: "Music",
         9648: "Mystery",
         10749: "Romance",
-        878: "Science Fiction",
+        878: "Sci-fi",
         10770: "TV Movie",
         53: "Thriller",
         10752: "War",

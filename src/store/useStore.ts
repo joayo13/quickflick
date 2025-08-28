@@ -38,7 +38,13 @@ interface FormState {
 export const useFormStore = create(
     persist<FormState>(
         (set) => ({
-            values: { watchProviders: ["8"], genres: ["28"], releaseYear: [1950, 2025] },
+            values: {
+                watchProviders: ["8"],
+                includeGenres: ["28"],
+                excludeGenres: [],
+                releaseYear: [1950, 2025],
+                rating: [6.5, 10],
+            },
             formHydrated: false,
             setValues: (updater) =>
                 set((state) => ({
@@ -48,8 +54,10 @@ export const useFormStore = create(
                 set({
                     values: {
                         watchProviders: ["8"],
-                        genres: ["28"],
+                        includeGenres: ["28"],
+                        excludeGenres: [],
                         releaseYear: [1950, 2025],
+                        rating: [6.5, 10],
                     },
                 }),
         }),

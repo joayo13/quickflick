@@ -166,18 +166,82 @@ export function DiscoverMovieForm() {
                             <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
                                     control={form.control}
-                                    name="genres"
+                                    name="includeGenres"
                                     render={() => (
                                         <FormItem>
                                             <div className="mb-4">
-                                                <FormLabel className="text-base">Genres</FormLabel>
+                                                <FormLabel className="text-base">
+                                                    Include Genres
+                                                </FormLabel>
                                             </div>
                                             <div className="flex flex-wrap gap-4">
                                                 {genres.map((item) => (
                                                     <FormField
                                                         key={item.id}
                                                         control={form.control}
-                                                        name="genres"
+                                                        name="includeGenres"
+                                                        render={({ field }) => {
+                                                            return (
+                                                                <FormItem
+                                                                    key={item.id}
+                                                                    className="flex flex-row items-center gap-2"
+                                                                >
+                                                                    <FormControl>
+                                                                        <Checkbox
+                                                                            checked={field.value?.includes(
+                                                                                item.id
+                                                                            )}
+                                                                            onCheckedChange={(
+                                                                                checked
+                                                                            ) => {
+                                                                                return checked
+                                                                                    ? field.onChange(
+                                                                                          [
+                                                                                              ...field.value,
+                                                                                              item.id,
+                                                                                          ]
+                                                                                      )
+                                                                                    : field.onChange(
+                                                                                          field.value?.filter(
+                                                                                              (
+                                                                                                  value
+                                                                                              ) =>
+                                                                                                  value !==
+                                                                                                  item.id
+                                                                                          )
+                                                                                      );
+                                                                            }}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormLabel className="text-sm font-normal">
+                                                                        {item.label}
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            );
+                                                        }}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="excludeGenres"
+                                    render={() => (
+                                        <FormItem>
+                                            <div className="mt-6 mb-4">
+                                                <FormLabel className="text-base">
+                                                    Exclude Genres
+                                                </FormLabel>
+                                            </div>
+                                            <div className="flex flex-wrap gap-4">
+                                                {genres.map((item) => (
+                                                    <FormField
+                                                        key={item.id}
+                                                        control={form.control}
+                                                        name="excludeGenres"
                                                         render={({ field }) => {
                                                             return (
                                                                 <FormItem
@@ -228,7 +292,7 @@ export function DiscoverMovieForm() {
                         </DropdownMenu>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline">Release Year</Button>
+                                <Button variant="outline">Year</Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
@@ -238,7 +302,7 @@ export function DiscoverMovieForm() {
                                         <FormItem>
                                             <div className="mb-4">
                                                 <FormLabel className="text-base">
-                                                    Release Year
+                                                    Release Year Range
                                                 </FormLabel>
                                             </div>
                                             <FormControl>
@@ -248,6 +312,41 @@ export function DiscoverMovieForm() {
                                                     min={1950}
                                                     max={2025}
                                                     step={1}
+                                                    className="w-[250px]"
+                                                />
+                                            </FormControl>
+                                            <div className="mt-2 flex justify-between text-sm">
+                                                <span>{field.value?.[0]}</span>
+                                                <span>{field.value?.[1]}</span>
+                                            </div>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline">Rating</Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
+                                <FormField
+                                    control={form.control}
+                                    name="rating"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <div className="mb-4">
+                                                <FormLabel className="text-base">
+                                                    Rating Range
+                                                </FormLabel>
+                                            </div>
+                                            <FormControl>
+                                                <Slider
+                                                    value={field.value}
+                                                    onValueChange={field.onChange}
+                                                    min={0.1}
+                                                    max={10}
+                                                    step={0.1}
                                                     className="w-[250px]"
                                                 />
                                             </FormControl>

@@ -4,18 +4,27 @@ import { TMDBDiscoverResponse } from "@/app/types";
 
 function buildDiscoverURL({
     watchProviders,
-    genres,
+    includeGenres,
+    excludeGenres,
     releaseDateGte,
     releaseDateLte,
+    voteAverageGte,
+    voteAverageLte,
     page,
 }: {
     watchProviders: string;
-    genres: string;
+    includeGenres: string;
+    excludeGenres: string;
     releaseDateGte: Date;
     releaseDateLte: Date;
+    voteAverageGte: number;
+    voteAverageLte: number;
     page: number;
 }) {
-    return `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&primary_release_date.gte=${releaseDateGte}&primary_release_date.lte=${releaseDateLte}&sort_by=popularity.desc&vote_average.gte=6&vote_count.gte=100&watch_region=CA&with_genres=${genres}&with_original_language=en&with_watch_monetization_types=flatrate|ads|free&with_watch_providers=${watchProviders}`;
+    return `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}
+    &primary_release_date.gte=${releaseDateGte}&primary_release_date.lte=${releaseDateLte}&sort_by=popularity.desc
+    &vote_average.gte=${voteAverageGte}&vote_average.lte=${voteAverageLte}&vote_count.gte=100&watch_region=CA&with_genres=${includeGenres}&without_genres=${excludeGenres}
+    &with_original_language=en&with_watch_monetization_types=flatrate|ads|free&with_watch_providers=${watchProviders}`;
 }
 
 function assertParams(params: Record<string, unknown>) {
@@ -26,12 +35,21 @@ function assertParams(params: Record<string, unknown>) {
 
 export async function discoverMovies(
     watchProviders: string,
-    genres: string,
+    includeGenres: string,
+    excludeGenres: string,
     releaseDateGte: Date,
     releaseDateLte: Date,
+    voteAverageGte: number,
+    voteAverageLte: number,
     page: number
 ) {
-    assertParams({ watchProviders, genres, page, releaseDateGte, releaseDateLte });
+    assertParams({
+        watchProviders,
+        includeGenres,
+        page,
+        releaseDateGte,
+        releaseDateLte,
+    });
 
     const options = {
         method: "GET",
@@ -43,7 +61,16 @@ export async function discoverMovies(
 
     try {
         const res = await fetch(
-            buildDiscoverURL({ watchProviders, genres, releaseDateGte, releaseDateLte, page }),
+            buildDiscoverURL({
+                watchProviders,
+                includeGenres,
+                excludeGenres,
+                releaseDateGte,
+                releaseDateLte,
+                voteAverageGte,
+                voteAverageLte,
+                page,
+            }),
             options
         );
 

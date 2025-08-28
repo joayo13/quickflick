@@ -19,4 +19,14 @@ interface TMDBMovie {
     // add any other fields you care about
 }
 
-export type { TMDBDiscoverResponse, TMDBMovie };
+interface DiscoverMoviesParams {
+    watchProviders: string;
+    includeGenres: string;
+    excludeGenres: string;
+    releaseDateGte: Date;
+    releaseDateLte: Date;
+    voteAverageGte?: number;
+    voteAverageLte?: number;
+    page: number;
+}
+export type { TMDBDiscoverResponse, TMDBMovie, DiscoverMoviesParams };

@@ -24,9 +24,12 @@ export default function DiscoverMovieSection() {
             try {
                 const res = await discoverMovies(
                     data.watchProviders.join("|"),
-                    data.genres.join("|"),
+                    data.includeGenres.join("|"),
+                    data.excludeGenres.join("|"),
                     new Date(`${data.releaseYear[0]}-01-01`),
                     new Date(`${data.releaseYear[1]}-01-01`),
+                    data.rating[0],
+                    data.rating[1],
                     pageNumberRef.current
                 );
                 // filterOutListItems
