@@ -124,7 +124,7 @@ export default function ForgotPassword() {
                     </Form>
                     <div className="mt-4 text-center text-sm">
                         Remembered your password?{" "}
-                        <Link href="/login" className="underline">
+                        <Link href="/auth/login" className="underline">
                             Login
                         </Link>
                     </div>

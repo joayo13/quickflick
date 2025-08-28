@@ -146,7 +146,7 @@ export default function UpdatePassword() {
                         </form>
                     </Form>
                     <div className="mt-4 text-center text-sm">
-                        <Link href="/login" className="underline">
+                        <Link href="/auth/login" className="underline">
                             Back to login
                         </Link>
                     </div>

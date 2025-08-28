@@ -129,7 +129,7 @@ export default function LoginPreview() {
                                             <div className="flex items-center justify-between">
                                                 <FormLabel htmlFor="password">Password</FormLabel>
                                                 <Link
-                                                    href="/forgot-password"
+                                                    href="/auth/forgot-password"
                                                     className="ml-auto inline-block text-sm underline"
                                                 >
                                                     Forgot your password?
@@ -158,7 +158,7 @@ export default function LoginPreview() {
                     </Form>
                     <div className="mt-4 text-center text-sm">
                         Don&apos;t have an account?{" "}
-                        <Link href="/signup" className="underline">
+                        <Link href="/auth/signup" className="underline">
                             Sign up
                         </Link>
                     </div>
