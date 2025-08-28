@@ -1,6 +1,6 @@
 "use server";
 
-import { DiscoverMoviesParams, TMDBDiscoverResponse } from "@/app/types";
+import { DiscoverMoviesParams } from "@/app/types";
 import { buildDiscoverURL } from "../utils";
 
 export async function discoverMovies(params: DiscoverMoviesParams) {
@@ -15,8 +15,12 @@ export async function discoverMovies(params: DiscoverMoviesParams) {
     try {
         const res = await fetch(buildDiscoverURL(params), options);
 
-        const data: TMDBDiscoverResponse = await res.json();
-        console.log(data);
+        const data = await res.json();
+
+        if (data?.success === false) {
+            throw new Error(data.status_message || "Unknown TMDB error");
+        }
+
         return data;
     } catch (err) {
         console.error(err);
