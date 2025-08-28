@@ -8,9 +8,10 @@ import DiscoverMovieEndOfResultsCard from "./components/DiscoverMovieEndOfResult
 import { FormSchema } from "./schemas/FormSchema";
 
 import z from "zod";
-import { discoverMovies } from "@/app/actions";
+import { discoverMovies } from "./api/discoverMovies";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFormStore, useMovieStore } from "@/store/useStore";
+import { mapFormToDiscoverParams } from "./utils";
 
 export default function DiscoverMovieSection() {
     const { movieData, setMovieData } = useMovieStore();
@@ -22,16 +23,8 @@ export default function DiscoverMovieSection() {
     const fetchMovies = useCallback(
         async (data: z.infer<typeof FormSchema>) => {
             try {
-                const res = await discoverMovies(
-                    data.watchProviders.join("|"),
-                    data.includeGenres.join("|"),
-                    data.excludeGenres.join("|"),
-                    new Date(`${data.releaseYear[0]}-01-01`),
-                    new Date(`${data.releaseYear[1]}-01-01`),
-                    data.rating[0],
-                    data.rating[1],
-                    pageNumberRef.current
-                );
+                const params = mapFormToDiscoverParams(data, pageNumberRef.current);
+                const res = await discoverMovies(params);
                 // filterOutListItems
                 setError(null);
                 setMovieData(res);

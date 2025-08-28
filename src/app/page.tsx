@@ -1,4 +1,4 @@
-import DiscoverMovieSection from "@/app/features/DiscoverMovieSection/DiscoverMovieSection";
+import DiscoverMovieSection from "@/features/DiscoverMovieDashboard/DiscoverMovieDashboard";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 

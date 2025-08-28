@@ -1,6 +1,6 @@
 "use client";
-import { useForm } from "react-hook-form";
 
+import { FieldErrors, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -15,7 +15,7 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuTrigger,
-} from "../../../../components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { CircleAlertIcon, CircleCheckIcon, SlidersHorizontalIcon } from "lucide-react";
 import z from "zod";
 import { FormSchema } from "../schemas/FormSchema";
@@ -24,6 +24,7 @@ import { useFormStore } from "@/store/useStore";
 import { Slider } from "@/components/ui/slider";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import { deepEqual } from "@/features/DiscoverMovieDashboard/utils";
 
 const watchProviders = [
     { id: "8", label: "Netflix" },
@@ -62,8 +63,6 @@ const genres = [
 export function DiscoverMovieForm() {
     const { values, setValues } = useFormStore();
 
-    const deepEqual = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
-
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: values,
@@ -72,11 +71,16 @@ export function DiscoverMovieForm() {
 
     const onSubmit = (data: z.infer<typeof FormSchema>) => {
         if (deepEqual(data, values)) {
-            toast("Filters already applied.", { icon: <CircleAlertIcon /> });
+            toast("Current filters already active.", { icon: <CircleAlertIcon /> });
             return;
         }
         setValues(data);
-        toast("Filters applied successfully.", { icon: <CircleCheckIcon /> });
+        toast("Filters updated successfully.", { icon: <CircleCheckIcon /> });
+    };
+
+    const onSubmitError = (errors: FieldErrors) => {
+        const firstError = Object.values(errors)[0]?.message;
+        toast(firstError as string, { icon: <CircleAlertIcon /> });
     };
 
     return (
@@ -361,7 +365,7 @@ export function DiscoverMovieForm() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                         <Button
-                            onClick={() => form.handleSubmit(onSubmit)()}
+                            onClick={form.handleSubmit(onSubmit, onSubmitError)}
                             type="submit"
                             variant="default"
                         >
