@@ -23,8 +23,8 @@ interface DiscoverMoviesParams {
     watchProviders: string;
     includeGenres: string;
     excludeGenres: string;
-    releaseDateGte: Date;
-    releaseDateLte: Date;
+    releaseDateGte: string; //YYYY-MM-DD
+    releaseDateLte: string; //YYYY-MM-DD
     voteAverageGte?: number;
     voteAverageLte?: number;
     page: number;
