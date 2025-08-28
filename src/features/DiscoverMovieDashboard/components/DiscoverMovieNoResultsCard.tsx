@@ -13,8 +13,8 @@ export default function DiscoverMovieErrorCard() {
                     <SearchXIcon />
                     <AlertTitle>No results found.</AlertTitle>
                 </div>
-                <AlertDescription>
-                    <p>Try making your search parameters less strict, then try again.</p>
+                <AlertDescription className="text-center">
+                    Try making your search parameters less strict, then try again.
                 </AlertDescription>
             </Alert>
         </div>

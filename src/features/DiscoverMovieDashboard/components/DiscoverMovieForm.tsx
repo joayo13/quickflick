@@ -61,7 +61,7 @@ const genres = [
 ] as const;
 
 export function DiscoverMovieForm() {
-    const { values, setValues } = useFormStore();
+    const { values, setValues, resetValues } = useFormStore();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -81,6 +81,12 @@ export function DiscoverMovieForm() {
     const onSubmitError = (errors: FieldErrors) => {
         const firstError = Object.values(errors)[0]?.message;
         toast(firstError as string, { icon: <CircleAlertIcon /> });
+    };
+
+    const resetFormValues = () => {
+        const defaults = resetValues();
+        form.reset(defaults);
+        toast("Filters reset to defaults.", { icon: <CircleCheckIcon /> });
     };
 
     return (
@@ -364,13 +370,24 @@ export function DiscoverMovieForm() {
                                 />
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button
-                            onClick={form.handleSubmit(onSubmit, onSubmitError)}
-                            type="submit"
-                            variant="default"
-                        >
-                            Apply Filters
-                        </Button>
+                        <div className="block w-full">
+                            <Button
+                                className="w-1/2"
+                                onClick={form.handleSubmit(onSubmit, onSubmitError)}
+                                type="submit"
+                                variant="default"
+                            >
+                                Apply Filters
+                            </Button>
+                            <Button
+                                className="w-1/2"
+                                onClick={resetFormValues}
+                                type="submit"
+                                variant="secondary"
+                            >
+                                Reset Filters
+                            </Button>
+                        </div>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </form>

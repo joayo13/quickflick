@@ -23,17 +23,27 @@ export const useMovieStore = create<MovieStore>((set) => ({
 }));
 
 interface FormState {
-    values: Record<string, (string | number | undefined)[] | undefined>;
+    values: {
+        watchProviders: string[];
+        includeGenres: string[];
+        excludeGenres: string[];
+        releaseYear: [number, number];
+        rating: [number, number];
+    };
     formHydrated: boolean;
     setValues: (
-        updater:
-            | Record<string, (string | number | undefined)[] | undefined>
-            | ((
-                  prev: Record<string, (string | number | undefined)[] | undefined>
-              ) => Record<string, (string | number | undefined)[] | undefined>)
+        updater: FormState["values"] | ((prev: FormState["values"]) => FormState["values"])
     ) => void;
-    resetValues: () => void;
+    resetValues: () => FormState["values"];
 }
+
+const defaultValues: FormState["values"] = {
+    watchProviders: [],
+    includeGenres: [],
+    excludeGenres: [],
+    releaseYear: [1950, 2025],
+    rating: [0, 10],
+};
 
 export const useFormStore = create(
     persist<FormState>(
@@ -50,16 +60,10 @@ export const useFormStore = create(
                 set((state) => ({
                     values: typeof updater === "function" ? updater(state.values) : updater,
                 })),
-            resetValues: () =>
-                set({
-                    values: {
-                        watchProviders: ["8"],
-                        includeGenres: ["28"],
-                        excludeGenres: [],
-                        releaseYear: [1950, 2025],
-                        rating: [6.5, 10],
-                    },
-                }),
+            resetValues: () => {
+                set({ values: defaultValues });
+                return defaultValues;
+            },
         }),
         {
             name: "form-storage", // key in localStorage

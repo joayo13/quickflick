@@ -11,10 +11,10 @@ export default function DiscoverMovieErrorCard() {
             >
                 <div className="flex gap-2">
                     <SearchCheckIcon />
-                    <AlertTitle>You&apos;ve reached the end of the results.</AlertTitle>
+                    <AlertTitle>You&apos;ve reached the end of the search results.</AlertTitle>
                 </div>
-                <AlertDescription>
-                    <p>Try expanding your search parameters. Or just pick a damn movie already.</p>
+                <AlertDescription className="text-center">
+                    Try expanding your search parameters.
                 </AlertDescription>
             </Alert>
         </div>

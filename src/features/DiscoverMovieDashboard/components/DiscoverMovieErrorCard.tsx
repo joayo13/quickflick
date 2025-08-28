@@ -17,9 +17,7 @@ export default function DiscoverMovieErrorCard({ error }: errorData) {
                     <AlertCircleIcon />
                     <AlertTitle>{error?.name}</AlertTitle>
                 </div>
-                <AlertDescription>
-                    <p>{error?.message}</p>
-                </AlertDescription>
+                <AlertDescription className="text-center">{error?.message}</AlertDescription>
             </Alert>
         </div>
     );
