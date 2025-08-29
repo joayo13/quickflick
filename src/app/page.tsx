@@ -9,8 +9,8 @@ export default async function Home() {
         redirect("/login");
     }
     return (
-        <div className="min-h-screen items-center justify-items-center font-sans">
-            <main className="flex flex-col items-start">
+        <div className="flex min-h-screen items-center justify-center font-sans">
+            <main>
                 <DiscoverMovieSection />
             </main>
         </div>

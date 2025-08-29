@@ -2,6 +2,7 @@ import { TMDBMovie } from "@/app/types";
 import MovieTitle from "@/components/typography/movieTitle";
 import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
+import { Heart, X } from "lucide-react";
 
 interface DiscoverMovieMovieCardProps {
     movieData: TMDBMovie;
@@ -13,8 +14,12 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
 
     useMotionValueEvent(x, "change", (latest) => console.log(latest));
 
-    const opacity = useTransform(x, [-50, 0, 50], [0, 1, 0]);
+    const opacity = useTransform(x, [-40, 0, 40], [0, 1, 0]);
     const rotate = useTransform(x, [-150, 150], [-18, 18]);
+
+    const heartIconScale = useTransform(x, [-25, 0, 25], [10, 0, 0]);
+
+    const xIconScale = useTransform(x, [-25, 0, 25], [0, 0, 10]);
 
     const movieYear = new Date(movieData.release_date).getFullYear();
 
@@ -69,15 +74,26 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             onDragEnd={handleDragEnd}
-            data-testid="movie-bg"
             style={{
                 backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(https://image.tmdb.org/t/p/original${movieData?.poster_path})`,
                 x,
                 opacity,
                 rotate,
             }}
-            className="z-20 col-start-1 row-start-1 flex h-[100dvh] w-[100vw] rounded-xl bg-[#313244] bg-cover bg-center hover:cursor-grab active:cursor-grabbing md:h-[750px] md:w-[500px]"
+            className="relative z-20 col-start-1 row-start-1 flex h-[100dvh] w-[100vw] rounded-xl bg-[#313244] bg-cover bg-center hover:cursor-grab active:cursor-grabbing md:h-[750px] md:w-[500px]"
         >
+            <motion.div
+                style={{ scale: heartIconScale }}
+                className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            >
+                <Heart className="text-green-500" fill="currentColor" />
+            </motion.div>
+            <motion.div
+                style={{ scale: xIconScale }}
+                className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            >
+                <X className="text-red-500" />
+            </motion.div>
             <div className="mt-auto p-4">
                 <MovieTitle title={movieData?.original_title} />
                 <span className="flex items-center gap-4">
