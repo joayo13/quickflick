@@ -3,6 +3,7 @@ import MovieTitle from "@/components/typography/movieTitle";
 import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
 import { Heart, X } from "lucide-react";
+import { useRef } from "react";
 
 interface DiscoverMovieMovieCardProps {
     movieData: TMDBMovie;
@@ -12,14 +13,13 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
     const { setMovieData } = useMovieStore();
     const x = useMotionValue(0);
 
-    useMotionValueEvent(x, "change", (latest) => console.log(latest));
+    const exitX = useRef(0);
 
-    const opacity = useTransform(x, [-40, 0, 40], [0, 1, 0]);
-    const rotate = useTransform(x, [-150, 150], [-18, 18]);
+    const rotate = useTransform(x, [-600, 600], [-20, 20]);
 
-    const heartIconScale = useTransform(x, [-25, 0, 25], [10, 0, 0]);
+    const heartIconScale = useTransform(x, [-40, 0, 40], [10, 0, 0]);
 
-    const xIconScale = useTransform(x, [-25, 0, 25], [0, 0, 10]);
+    const xIconScale = useTransform(x, [-40, 0, 40], [0, 0, 10]);
 
     const movieYear = new Date(movieData.release_date).getFullYear();
 
@@ -46,6 +46,8 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
     };
 
     const handleDragEnd = () => {
+        exitX.current = x.get();
+        console.log(exitX.current);
         // discard
         if (x.get() > 40) {
             setMovieData((data) =>
@@ -73,11 +75,12 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
         <motion.div
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
+            exit={{ opacity: 0, x: exitX.current * 4 }}
+            transition={{ duration: 0.2 }}
             onDragEnd={handleDragEnd}
             style={{
                 backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(https://image.tmdb.org/t/p/original${movieData?.poster_path})`,
                 x,
-                opacity,
                 rotate,
             }}
             className="relative z-20 col-start-1 row-start-1 flex h-[100dvh] w-[100vw] rounded-xl bg-[#313244] bg-cover bg-center hover:cursor-grab active:cursor-grabbing md:h-[750px] md:w-[500px]"

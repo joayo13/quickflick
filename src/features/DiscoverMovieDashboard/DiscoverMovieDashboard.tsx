@@ -6,6 +6,7 @@ import DiscoverMovieErrorCard from "./components/DiscoverMovieErrorCard";
 import DiscoverMovieNoResultsCard from "./components/DiscoverMovieNoResultsCard";
 import DiscoverMovieEndOfResultsCard from "./components/DiscoverMovieEndOfResultsCard";
 import { FormSchema } from "./schemas/FormSchema";
+import { AnimatePresence } from "framer-motion";
 
 import z from "zod";
 import { discoverMovies } from "./api/discoverMovies";
@@ -65,12 +66,16 @@ export default function DiscoverMovieSection() {
             return <DiscoverMovieEndOfResultsCard />;
         }
         if (movieData?.results) {
-            return movieData.results.map((movieData) => (
-                <DiscoverMovieMovieCard
-                    key={movieData.id}
-                    movieData={movieData}
-                ></DiscoverMovieMovieCard>
-            ));
+            return (
+                <AnimatePresence>
+                    {movieData.results.map((movieData) => (
+                        <DiscoverMovieMovieCard
+                            key={movieData.id}
+                            movieData={movieData}
+                        ></DiscoverMovieMovieCard>
+                    ))}
+                </AnimatePresence>
+            );
         }
     }
 
