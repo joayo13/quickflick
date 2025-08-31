@@ -14,6 +14,8 @@ export async function fetchMovies(url: string) {
     return data;
 }
 
+// unit tests
+
 describe("Discover movies API", () => {
     it("returns correct data for a valid page", async () => {
         const data = await fetchMovies(`${baseURL}?page=1`);
@@ -37,6 +39,8 @@ describe("Discover movies API", () => {
         }
     });
 });
+
+// intergration tests
 
 describe("DiscoverMovieDashboard UI", () => {
     beforeAll(() => {
@@ -69,5 +73,16 @@ describe("DiscoverMovieDashboard UI", () => {
         render(<DiscoverMovieDashboard />);
         const errorText = await screen.findByText("Error");
         expect(errorText.textContent).toBe("Error");
+    });
+    it("renders no results found card when results returned are empty", async () => {
+        vi.spyOn(api, "discoverMovies").mockResolvedValue({
+            page: 1,
+            total_results: 0,
+            total_pages: 0,
+            results: [],
+        });
+        render(<DiscoverMovieDashboard />);
+        const errorText = await screen.findByText("No results found.");
+        expect(errorText.textContent).toBe("No results found.");
     });
 });

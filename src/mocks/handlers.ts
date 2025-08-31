@@ -8,7 +8,7 @@ export const handlers = [
 
         const page = Number(url.searchParams.get("page")) || 1;
 
-        if (page > 500) {
+        if (page > 500 || page < 0) {
             return HttpResponse.json({
                 success: false,
                 status_code: 22,

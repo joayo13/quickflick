@@ -1,9 +1,11 @@
 import { TMDBMovie } from "@/app/types";
 import MovieTitle from "@/components/typography/movieTitle";
+import { addMovieToWatchlist } from "@/lib/watchlist";
 import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
 import { Heart, X } from "lucide-react";
 import { useRef } from "react";
+import { toast } from "sonner";
 
 interface DiscoverMovieMovieCardProps {
     movieData: TMDBMovie;
@@ -45,7 +47,7 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
         37: "Western",
     };
 
-    const handleDragEnd = () => {
+    const handleDragEnd = async () => {
         exitX.current = x.get();
         console.log(exitX.current);
         // discard
@@ -68,6 +70,17 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
                       }
                     : data
             );
+            try {
+                // try to add to watchlist
+                await addMovieToWatchlist(movieData);
+                // success feedback
+                console.log("Movie added to watchlist successfully");
+                // or set a success state, show toast, etc.
+            } catch (error) {
+                // error feedback
+                console.error("Failed to add movie:", error);
+                // or set an error state, show toast, etc.
+            }
         }
     };
 

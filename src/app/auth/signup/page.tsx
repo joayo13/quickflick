@@ -35,7 +35,6 @@ export default function RegisterPreview() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -48,7 +47,6 @@ export default function RegisterPreview() {
         const formData = new FormData();
         formData.append("email", values.email);
         formData.append("password", values.password);
-        formData.append("name", values.name);
 
         const result = await signup(formData);
         if (result.success) {
@@ -111,25 +109,6 @@ export default function RegisterPreview() {
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                             <div className="grid gap-4">
-                                {/* Name Field */}
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                        <FormItem className="grid gap-2">
-                                            <FormLabel htmlFor="name">Full Name</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    id="name"
-                                                    placeholder="John Doe"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
                                 {/* Email Field */}
                                 <FormField
                                     control={form.control}

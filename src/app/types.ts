@@ -16,6 +16,7 @@ interface TMDBMovie {
     poster_path: string | null;
     backdrop_path: string | null;
     genre_ids: string[] | null;
+    original_language: string | null;
     // add any other fields you care about
 }
 

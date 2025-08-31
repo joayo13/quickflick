@@ -10,11 +10,6 @@ export async function signup(formData: FormData) {
     const data = {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
-        options: {
-            data: {
-                name: formData.get("name") as string,
-            },
-        },
     };
 
     const { error } = await supabase.auth.signUp(data);
@@ -24,7 +19,7 @@ export async function signup(formData: FormData) {
         if (error.message.includes("Password")) {
             return { success: false, message: "Password does not meet requirements." };
         } else {
-            return { success: false, message: "Unexpected error occurred. Please try again." };
+            return { success: false, message: error.message };
         }
     }
 
