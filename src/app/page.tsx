@@ -8,11 +8,5 @@ export default async function Home() {
     if (error || !data?.user) {
         redirect("/login");
     }
-    return (
-        <div className="flex min-h-[100dvh] items-center justify-center font-sans">
-            <main>
-                <DiscoverMovieSection />
-            </main>
-        </div>
-    );
+    return <DiscoverMovieSection />;
 }

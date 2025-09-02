@@ -95,7 +95,10 @@ export function DiscoverMovieForm() {
             <form>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button className="h-8 w-8 rounded-full" variant="outline">
+                        <Button
+                            className="absolute top-2 right-2 z-30 h-8 w-8 rounded-full"
+                            variant="outline"
+                        >
                             <SlidersHorizontalIcon />
                         </Button>
                     </DropdownMenuTrigger>

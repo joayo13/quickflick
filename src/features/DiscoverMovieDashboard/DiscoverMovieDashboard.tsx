@@ -80,15 +80,13 @@ export default function DiscoverMovieSection() {
     }
 
     return (
-        <div className="relative max-w-3xl">
-            <div className="absolute top-2 right-2 z-30">
-                {formHydrated ? <DiscoverMovieForm /> : null}
-            </div>
+        <>
+            {formHydrated ? <DiscoverMovieForm /> : null}
 
-            <div className="grid place-items-center">
-                <Skeleton className="z-10 col-start-1 row-start-1 h-[100dvh] w-[100vw] rounded-xl bg-[#313244] md:h-[750px] md:w-[500px]" />
+            <div className="grid h-[100dvh] w-[100vw] place-items-center md:h-[750px] md:w-[500px]">
+                <Skeleton className="z-10 col-start-1 row-start-1 h-full w-full rounded-xl bg-[#313244]" />
                 {displayDiscoverMovieResults()}
             </div>
-        </div>
+        </>
     );
 }

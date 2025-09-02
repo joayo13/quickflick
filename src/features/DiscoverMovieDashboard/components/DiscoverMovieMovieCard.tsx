@@ -2,10 +2,9 @@ import { TMDBMovie } from "@/app/types";
 import MovieTitle from "@/components/typography/movieTitle";
 import { addMovieToWatchlist } from "@/lib/watchlist";
 import { useMovieStore } from "@/store/useStore";
-import { motion, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Heart, X } from "lucide-react";
 import { useRef } from "react";
-import { toast } from "sonner";
 
 interface DiscoverMovieMovieCardProps {
     movieData: TMDBMovie;
@@ -96,7 +95,7 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
                 x,
                 rotate,
             }}
-            className="relative z-20 col-start-1 row-start-1 flex h-[100dvh] w-[100vw] rounded-xl bg-[#313244] bg-cover bg-center hover:cursor-grab active:cursor-grabbing md:h-[750px] md:w-[500px]"
+            className="relative z-20 col-start-1 row-start-1 flex h-full w-full rounded-xl bg-[#313244] bg-cover bg-center hover:cursor-grab active:cursor-grabbing"
         >
             <motion.div
                 style={{ scale: heartIconScale }}
