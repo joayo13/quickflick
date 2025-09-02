@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { TMDBDiscoverResponse } from "@/app/types";
+import { TMDBDiscoverResponse, WatchlistData } from "@/app/types";
 
 interface MovieStore {
     movieData: TMDBDiscoverResponse | null;
@@ -69,6 +69,40 @@ export const useFormStore = create(
             name: "form-storage", // key in localStorage
             onRehydrateStorage: () => (state) => {
                 if (state) state.formHydrated = true;
+            },
+        }
+    )
+);
+
+interface WatchlistStore {
+    watchlistData: WatchlistData[] | null;
+    storeHydrated: boolean;
+    setWatchlistData: (
+        updater: WatchlistData[] | null | ((prev: WatchlistData[] | null) => WatchlistData[] | null)
+    ) => void;
+}
+
+const defaultWatchlistData = null;
+
+export const useWatchlistStore = create(
+    persist<WatchlistStore>(
+        (set) => ({
+            watchlistData: defaultWatchlistData,
+            storeHydrated: false,
+            setWatchlistData: (updater) =>
+                set((state) => ({
+                    watchlistData:
+                        typeof updater === "function" ? updater(state.watchlistData) : updater,
+                })),
+            resetWatchlistData: () => {
+                set({ watchlistData: defaultWatchlistData });
+                return defaultWatchlistData;
+            },
+        }),
+        {
+            name: "watchlist-storage", // key in localStorage
+            onRehydrateStorage: () => (state) => {
+                if (state) state.storeHydrated = true;
             },
         }
     )

@@ -1,11 +1,10 @@
 "use client";
-
-import { WatchlistData } from "@/app/types";
 import React, { useCallback, useEffect, useState } from "react";
 import fetchWatchlist from "./api/fetchWatchlist";
+import { useWatchlistStore } from "@/store/useStore";
 
 export default function WatchlistSection() {
-    const [watchlistData, setWatchlistData] = useState<WatchlistData[] | null>(null);
+    const { watchlistData, setWatchlistData } = useWatchlistStore();
     const [error, setError] = useState<string | null>(null);
 
     const fetchWatchlistCallback = useCallback(async () => {
@@ -24,7 +23,7 @@ export default function WatchlistSection() {
                 setError(err.message);
             }
         }
-    }, [setError]);
+    }, [setError, setWatchlistData]);
 
     useEffect(() => {
         fetchWatchlistCallback();
