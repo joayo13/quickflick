@@ -4,7 +4,7 @@ import { addMovieToWatchlist } from "@/lib/watchlist";
 import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Heart, X } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 interface DiscoverMovieMovieCardProps {
     movieData: TMDBMovie;
@@ -12,14 +12,14 @@ interface DiscoverMovieMovieCardProps {
 
 export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovieCardProps) {
     const { setMovieData } = useMovieStore();
-    const x = useMotionValue(0);
+
+    const [isExiting, setIsExiting] = useState(false);
 
     const exitX = useRef(0);
 
+    const x = useMotionValue(0);
     const rotate = useTransform(x, [-600, 600], [-20, 20]);
-
     const heartIconScale = useTransform(x, [-40, 0, 40], [10, 0, 0]);
-
     const xIconScale = useTransform(x, [-40, 0, 40], [0, 0, 10]);
 
     const movieYear = new Date(movieData.release_date).getFullYear();
@@ -51,24 +51,10 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
         console.log(exitX.current);
         // discard
         if (x.get() > 40) {
-            setMovieData((data) =>
-                data
-                    ? {
-                          ...data,
-                          results: data.results.filter((movie) => movie.id !== movieData.id),
-                      }
-                    : data
-            );
+            setIsExiting(true);
         } else if (x.get() < -40) {
             // save
-            setMovieData((data) =>
-                data
-                    ? {
-                          ...data,
-                          results: data.results.filter((movie) => movie.id !== movieData.id),
-                      }
-                    : data
-            );
+            setIsExiting(true);
             try {
                 // try to add to watchlist
                 await addMovieToWatchlist(movieData);
@@ -87,7 +73,21 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
         <motion.div
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
-            exit={{ opacity: 0, x: exitX.current * 4 }}
+            animate={isExiting ? { opacity: 0, x: exitX.current * 4 } : undefined}
+            onAnimationComplete={() => {
+                if (isExiting) {
+                    setMovieData((data) =>
+                        data
+                            ? {
+                                  ...data,
+                                  results: data.results.filter(
+                                      (movie) => movie.id !== movieData.id
+                                  ),
+                              }
+                            : data
+                    );
+                }
+            }}
             transition={{ duration: 0.2 }}
             onDragEnd={handleDragEnd}
             style={{
