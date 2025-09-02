@@ -41,10 +41,12 @@ export async function addMovieToWatchlist(movie: TMDBMovie) {
     }
 
     // 3. Add to watchlist with upsert
-    await supabase
-        .from("watchlist")
-        .upsert(
-            { user_id: userId, movie_id: movie.id, watched: false },
-            { onConflict: "user_id, movie_id" }
-        );
+    await supabase.from("watchlist").upsert(
+        {
+            user_id: userId,
+            movie_id: movie.id,
+            watched: false,
+        },
+        { onConflict: "user_id, movie_id" }
+    );
 }

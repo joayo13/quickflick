@@ -20,6 +20,14 @@ interface TMDBMovie {
     // add any other fields you care about
 }
 
+interface WatchlistData {
+    id: number;
+    movie_id: number;
+    movies: TMDBMovie;
+    user_id: string;
+    watched: boolean;
+}
+
 interface DiscoverMoviesParams {
     watchProviders: string;
     includeGenres: string;
@@ -30,4 +38,4 @@ interface DiscoverMoviesParams {
     voteAverageLte?: number;
     page: number;
 }
-export type { TMDBDiscoverResponse, TMDBMovie, DiscoverMoviesParams };
+export type { TMDBDiscoverResponse, TMDBMovie, DiscoverMoviesParams, WatchlistData };
