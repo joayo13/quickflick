@@ -3,7 +3,7 @@ import MovieTitle from "@/components/typography/movieTitle";
 import { addMovieToWatchlist } from "@/features/DiscoverMovieDashboard/api/addMovieToWatchlist";
 import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { CircleXIcon, Heart, ListCheckIcon, X } from "lucide-react";
+import { CircleXIcon, HeartIcon, ListCheckIcon, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -102,13 +102,13 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
                 style={{ scale: heartIconScale }}
                 className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
             >
-                <Heart className="text-green-500" fill="currentColor" />
+                <HeartIcon className="text-green-500" fill="currentColor" />
             </motion.div>
             <motion.div
                 style={{ scale: xIconScale }}
                 className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
             >
-                <X className="text-red-500" />
+                <XIcon className="text-red-500" />
             </motion.div>
             <div className="mt-auto p-4">
                 <MovieTitle title={movieData?.original_title} />
