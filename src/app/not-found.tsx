@@ -2,11 +2,9 @@
 
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 export default function ErrorPage() {
-    const searchParams = useSearchParams();
-    const code = searchParams.get("code");
     return (
         <div className="text-center">
             <Alert
@@ -15,10 +13,11 @@ export default function ErrorPage() {
             >
                 <div className="flex items-center gap-2">
                     <AlertCircleIcon />
-                    <AlertTitle>
-                        {code ? `Supabase: Error ${code}` : "Supabase: Unknown Error"}
-                    </AlertTitle>
+                    <AlertTitle>Error 404</AlertTitle>
                 </div>
+                <Link href="/" className="cursor-pointer underline">
+                    Back to home
+                </Link>
             </Alert>
         </div>
     );

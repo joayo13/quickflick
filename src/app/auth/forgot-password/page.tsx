@@ -43,7 +43,7 @@ export default function ForgotPassword() {
             formData.append("email", values.email);
 
             const result = await sendResetPasswordEmail(formData);
-            if (result === "reset email sent") {
+            if (result.success) {
                 setAlert("Password reset email sent. Please check your inbox.");
             }
         } catch (err) {

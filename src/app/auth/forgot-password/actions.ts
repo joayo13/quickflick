@@ -14,7 +14,7 @@ export async function sendResetPasswordEmail(formData: FormData) {
     const { error } = await supabase.auth.resetPasswordForEmail(data.email);
 
     if (error) {
-        throw error;
+        return { success: false, message: "Unknown error occurred, please try again." };
     }
-    return "reset email sent";
+    return { success: true, message: "reset email sent" };
 }

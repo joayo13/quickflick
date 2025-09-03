@@ -6,7 +6,7 @@ export default async function fetchWatchlist() {
     const supabase = await createClient();
     const { data, error } = await supabase.auth.getUser();
     if (error) {
-        console.log(error);
+        throw error;
     }
     if (!data.user) throw new Error("Not logged in");
 
