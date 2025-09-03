@@ -26,7 +26,9 @@ export default function ErrorPage() {
 
     return (
         <div className="text-center">
-            <Suspense>{ErrorCode()}</Suspense>
+            <Suspense>
+                <ErrorCode />
+            </Suspense>
         </div>
     );
 }
