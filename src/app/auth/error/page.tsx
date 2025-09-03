@@ -3,12 +3,13 @@
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function ErrorPage() {
-    const searchParams = useSearchParams();
-    const code = searchParams.get("code");
-    return (
-        <div className="text-center">
+    function ErrorCode() {
+        const searchParams = useSearchParams();
+        const code = searchParams.get("code");
+        return (
             <Alert
                 className="flex h-full w-full flex-col items-center justify-center"
                 variant="destructive"
@@ -20,6 +21,12 @@ export default function ErrorPage() {
                     </AlertTitle>
                 </div>
             </Alert>
+        );
+    }
+
+    return (
+        <div className="text-center">
+            <Suspense>{ErrorCode()}</Suspense>
         </div>
     );
 }
