@@ -20,7 +20,6 @@ import { PasswordInput } from "@/components/ui/password-input";
 
 import { loginFormSchema } from "@/lib/validation-schemas";
 import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -82,7 +81,6 @@ export default function LoginPreview() {
 
     return (
         <div className="flex h-[100dvh] w-screen flex-col items-center justify-center px-4">
-            <Toaster />
             <Card className="mx-auto w-full max-w-lg">
                 <CardHeader>
                     <CardTitle className="text-2xl">Login</CardTitle>

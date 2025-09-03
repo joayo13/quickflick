@@ -1,7 +1,6 @@
 "use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -10,13 +9,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export function GlobalNav() {
     const pathname = usePathname();
 
-    function handleLogout() {
-        // Replace with your real logout logic (Supabase, NextAuth, etc.)
-        console.log("Logging out...");
+    async function handleLogout() {
+        const supabase = await createClient();
+        await supabase.auth.signOut();
+        redirect("/auth/login");
     }
 
     const links = [

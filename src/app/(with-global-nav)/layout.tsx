@@ -1,5 +1,4 @@
 import { GlobalNav } from "@/components/GlobalNav";
-import "../globals.css";
 
 export default function RootLayout({
     children,

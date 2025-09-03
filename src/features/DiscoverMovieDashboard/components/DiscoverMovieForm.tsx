@@ -22,7 +22,6 @@ import { FormSchema } from "../schemas/FormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormStore } from "@/store/useStore";
 import { Slider } from "@/components/ui/slider";
-import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { deepEqual } from "@/features/DiscoverMovieDashboard/utils";
 
@@ -91,7 +90,6 @@ export function DiscoverMovieForm() {
 
     return (
         <Form {...form}>
-            <Toaster />
             <form>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

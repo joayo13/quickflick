@@ -4,26 +4,24 @@ import fetchWatchlist from "./api/fetchWatchlist";
 import { useWatchlistStore } from "@/store/useStore";
 import WatchlistListView from "./components/WatchlistListView";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { AlertCircleIcon } from "lucide-react";
+import { AlertCircleIcon, SearchXIcon } from "lucide-react";
 
 export default function WatchlistSection() {
     const { setWatchlistData } = useWatchlistStore();
     const [error, setError] = useState<string | null>(null);
+    const [alert, setAlert] = useState<string | null>(null);
 
     const fetchWatchlistCallback = useCallback(async () => {
         try {
             const res = await fetchWatchlist();
 
             if (res && !res.length) {
-                setError("No items in watchlist.");
+                setAlert("No movies found in watchlist.");
             }
-
-            console.log(res);
-
             setWatchlistData(res);
         } catch (err) {
             if (err instanceof Error) {
-                setError("Something went wrong. Please try again later.");
+                setError(err.message);
             }
         }
     }, [setError, setWatchlistData]);
@@ -32,9 +30,9 @@ export default function WatchlistSection() {
         fetchWatchlistCallback();
     }, [fetchWatchlistCallback]);
 
-    return (
-        <div className="grid h-[100dvh] w-[100vw] place-items-start md:h-[750px] md:w-[500px]">
-            {error ? (
+    function displayFetchWatchlistResults() {
+        if (error) {
+            return (
                 <Alert
                     className="flex h-full w-full flex-col items-center justify-center"
                     variant="destructive"
@@ -44,8 +42,27 @@ export default function WatchlistSection() {
                         <AlertTitle>{error}</AlertTitle>
                     </div>
                 </Alert>
-            ) : null}
-            <WatchlistListView />
+            );
+        } else if (alert) {
+            return (
+                <Alert
+                    className="flex h-full w-full flex-col items-center justify-center"
+                    variant="default"
+                >
+                    <div className="flex gap-2">
+                        <SearchXIcon />
+                        <AlertTitle>{alert}</AlertTitle>
+                    </div>
+                </Alert>
+            );
+        } else {
+            return <WatchlistListView />;
+        }
+    }
+
+    return (
+        <div className="grid h-[100dvh] w-[100vw] place-items-start md:h-[750px] md:w-[500px]">
+            {displayFetchWatchlistResults()}
         </div>
     );
 }

@@ -1,10 +1,11 @@
 import { TMDBMovie } from "@/app/types";
 import MovieTitle from "@/components/typography/movieTitle";
-import { addMovieToWatchlist } from "@/lib/watchlist";
+import { addMovieToWatchlist } from "@/features/DiscoverMovieDashboard/api/addMovieToWatchlist";
 import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { Heart, X } from "lucide-react";
+import { CircleXIcon, Heart, ListCheckIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface DiscoverMovieMovieCardProps {
     movieData: TMDBMovie;
@@ -56,15 +57,15 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
             // save
             setIsExiting(true);
             try {
-                // try to add to watchlist
                 await addMovieToWatchlist(movieData);
-                // success feedback
-                console.log("Movie added to watchlist successfully");
-                // or set a success state, show toast, etc.
+                toast(`${movieData.title} added to watchlist.`, { icon: <ListCheckIcon /> });
             } catch (error) {
                 // error feedback
-                console.error("Failed to add movie:", error);
-                // or set an error state, show toast, etc.
+                if (error instanceof Error) {
+                    toast(`Failed to add ${movieData.title} to watchlist.`, {
+                        icon: <CircleXIcon />,
+                    });
+                }
             }
         }
     };

@@ -13,7 +13,7 @@ export default function ErrorPage() {
             >
                 <div className="flex items-center gap-2">
                     <AlertCircleIcon />
-                    <AlertTitle>Error 404</AlertTitle>
+                    <AlertTitle>Whoops! This page doesn&apos;t exist.</AlertTitle>
                 </div>
                 <Link href="/" className="cursor-pointer underline">
                     Back to home

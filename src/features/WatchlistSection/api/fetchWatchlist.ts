@@ -4,23 +4,17 @@ import { createClient } from "@/utils/supabase/server";
 
 export default async function fetchWatchlist() {
     const supabase = await createClient();
-    const { data, error } = await supabase.auth.getUser();
-    if (error) {
-        throw error;
-    }
-    if (!data.user) throw new Error("Not logged in");
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+    if (authError) throw authError;
+    if (!authData.user) throw new Error("Not logged in");
 
-    const userId = data.user.id;
+    const userId = authData.user.id;
 
-    const watchListdata = await supabase
+    const { data: watchlist, error: watchlistError } = await supabase
         .from("watchlist")
-        .select(
-            `
-    *,
-    movies(*)
-  `
-        )
+        .select(`*, movies(*)`)
         .eq("user_id", userId);
 
-    return watchListdata.data;
+    if (watchlistError) throw watchlistError;
+    return watchlist;
 }
