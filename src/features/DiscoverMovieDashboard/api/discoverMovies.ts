@@ -25,7 +25,6 @@ export async function discoverMovies(params: DiscoverMoviesParams) {
 
         return data;
     } catch (err) {
-        console.error(err);
         throw err;
     }
 }
