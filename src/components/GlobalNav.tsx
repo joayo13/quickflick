@@ -8,7 +8,7 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export function GlobalNav() {
@@ -29,7 +29,7 @@ export function GlobalNav() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button className="absolute top-2 left-2 z-30 h-8 w-8" variant="outline">
-                    <Menu />
+                    <MenuIcon />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

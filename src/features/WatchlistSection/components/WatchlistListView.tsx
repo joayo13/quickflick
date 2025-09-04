@@ -34,7 +34,10 @@ export default function WatchlistListView() {
 
     function displayListData() {
         return (
-            <div className="mt-16 grid w-full grid-cols-[repeat(auto-fill,minmax(150px,150px))] justify-center gap-4 p-2">
+            <div
+                style={selectedListItem ? { visibility: "hidden" } : { visibility: "visible" }}
+                className="grid h-full w-full grid-cols-[repeat(auto-fill,minmax(145px,145px))] justify-center gap-4 overflow-y-scroll p-2"
+            >
                 {!watchlistData
                     ? skeletons.map((_, index) => (
                           <div className="grid h-[200px] w-[150px] place-items-center" key={index}>
@@ -67,11 +70,11 @@ export default function WatchlistListView() {
                     style={{
                         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(https://image.tmdb.org/t/p/original${selectedListItem.movies?.poster_path})`,
                     }}
-                    className="relative z-20 col-start-1 row-start-1 flex h-full w-full rounded-xl bg-[#313244] bg-cover bg-center"
+                    className="absolute z-20 col-start-1 row-start-1 flex h-full w-full rounded-xl bg-[#313244] bg-cover bg-center"
                 >
                     <Button
                         onClick={() => setSelectedListItem(null)}
-                        className="absolute top-2 right-2 h-8 w-8"
+                        className="absolute top-2 right-2 h-8 w-8 rounded-full"
                         variant={"outline"}
                     >
                         <Minimize2Icon />
@@ -98,5 +101,10 @@ export default function WatchlistListView() {
     // Show 6 skeletons while loading
     const skeletons = Array.from({ length: 9 });
 
-    return <>{selectedListItem ? displayListItemData() : displayListData()}</>;
+    return (
+        <>
+            {displayListItemData()}
+            {displayListData()}
+        </>
+    );
 }
