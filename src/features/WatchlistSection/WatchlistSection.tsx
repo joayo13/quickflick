@@ -2,14 +2,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 import fetchWatchlist from "./api/fetchWatchlist";
 import { useWatchlistStore } from "@/store/useStore";
-import WatchlistListView from "./components/WatchlistListView";
+import WatchlistListView from "./components/WatchlistList";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, SearchXIcon } from "lucide-react";
+import { WatchlistData } from "@/types/types";
+import WatchlistListItem from "./components/WatchlistListItem";
 
 export default function WatchlistSection() {
     const { setWatchlistData } = useWatchlistStore();
     const [error, setError] = useState<string | null>(null);
     const [alert, setAlert] = useState<string | null>(null);
+    const [selectedListItem, setSelectedListItem] = useState<WatchlistData | null>(null);
 
     const fetchWatchlistCallback = useCallback(async () => {
         try {
@@ -56,9 +59,24 @@ export default function WatchlistSection() {
                 </Alert>
             );
         } else {
-            return <WatchlistListView />;
+            return (
+                <WatchlistListView
+                    setSelectedListItem={setSelectedListItem}
+                    selectedListItem={selectedListItem}
+                />
+            );
         }
     }
 
-    return <>{displayFetchWatchlistResults()}</>;
+    return (
+        <>
+            {displayFetchWatchlistResults()}
+            {selectedListItem && (
+                <WatchlistListItem
+                    selectedListItem={selectedListItem}
+                    setSelectedListItem={setSelectedListItem}
+                />
+            )}
+        </>
+    );
 }

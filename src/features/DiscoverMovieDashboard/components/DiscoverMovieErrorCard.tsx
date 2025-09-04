@@ -2,11 +2,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import React from "react";
 
-interface errorData {
-    error: Error;
-}
-
-export default function DiscoverMovieErrorCard({ error }: errorData) {
+export default function DiscoverMovieErrorCard({ error }: { error: Error }) {
     return (
         <div className="z-20 col-start-1 row-start-1 h-full w-full overflow-hidden rounded-lg">
             <Alert
