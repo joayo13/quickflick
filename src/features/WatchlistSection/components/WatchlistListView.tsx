@@ -1,4 +1,4 @@
-import { WatchlistData } from "@/app/types";
+import { WatchlistData } from "@/types/types";
 import MovieTitle from "@/components/typography/movieTitle";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";

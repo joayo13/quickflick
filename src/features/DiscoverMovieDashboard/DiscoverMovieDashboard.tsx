@@ -11,7 +11,7 @@ import z from "zod";
 import { discoverMovies } from "./api/discoverMovies";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFormStore, useMovieStore } from "@/store/useStore";
-import { mapFormToDiscoverParams } from "./utils";
+import { mapFormToDiscoverParams } from "./utils/utils";
 
 export default function DiscoverMovieSection() {
     const { movieData, setMovieData } = useMovieStore();

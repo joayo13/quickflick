@@ -1,4 +1,4 @@
-import { TMDBMovie } from "@/app/types";
+import { TMDBMovie } from "@/types/types";
 import MovieTitle from "@/components/typography/movieTitle";
 import { addMovieToWatchlist } from "@/features/DiscoverMovieDashboard/api/addMovieToWatchlist";
 import { useMovieStore } from "@/store/useStore";

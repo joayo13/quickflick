@@ -1,6 +1,6 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
-import type { TMDBMovie } from "@/app/types";
+import type { TMDBMovie } from "@/types/types";
 
 export async function addMovieToWatchlist(movie: TMDBMovie) {
     const movieRow = {

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { TMDBDiscoverResponse, WatchlistData } from "@/app/types";
+import { TMDBDiscoverResponse, WatchlistData } from "@/types/types";
 
 interface MovieStore {
     movieData: TMDBDiscoverResponse | null;
