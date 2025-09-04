@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
     images: {
         remotePatterns: [new URL("https://image.tmdb.org/t/p/**")],
     },
+    experimental: {
+        viewTransition: true,
+    },
 };
 
 export default nextConfig;

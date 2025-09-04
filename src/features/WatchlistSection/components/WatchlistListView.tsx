@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWatchlistStore } from "@/store/useStore";
 import { Minimize2Icon } from "lucide-react";
-import React, { useState } from "react";
+import React, { startTransition, useState, unstable_ViewTransition as ViewTransition } from "react";
 
 export default function WatchlistListView() {
     const { watchlistData } = useWatchlistStore();
@@ -34,30 +34,33 @@ export default function WatchlistListView() {
 
     function displayListData() {
         return (
-            <div
-                style={selectedListItem ? { visibility: "hidden" } : { visibility: "visible" }}
-                className="grid h-full w-full grid-cols-[repeat(auto-fill,minmax(145px,145px))] justify-center gap-4 overflow-y-scroll p-2"
-            >
+            <div className="mt-16 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,100px))] justify-center gap-1 p-1">
                 {!watchlistData
                     ? skeletons.map((_, index) => (
-                          <div className="grid h-[200px] w-[150px] place-items-center" key={index}>
+                          <div className="grid h-[150px] w-[100px] place-items-center" key={index}>
                               <Skeleton className="h-full w-full rounded-lg bg-[#313244]" />
                           </div>
                       ))
                     : watchlistData.map((data) => (
-                          <div className="h-[200px] w-[150px] cursor-pointer" key={data.id}>
-                              <div
-                                  onClick={() => {
-                                      setSelectedListItem(data);
-                                  }}
-                                  style={{
-                                      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(https://image.tmdb.org/t/p/original${data.movies.poster_path})`,
-                                  }}
-                                  className="z-20 col-start-1 row-start-1 flex h-full w-full rounded-lg bg-[#313244] bg-cover bg-center p-2"
-                              >
-                                  <p className="mt-auto">{data.movies.title}</p>
+                          <ViewTransition name={`movie-${data.movie_id.toString()}`} key={data.id}>
+                              <div className="h-[150px] w-[100px] cursor-pointer">
+                                  <div
+                                      onClick={() => {
+                                          startTransition(() => {
+                                              setSelectedListItem(data);
+                                          });
+                                      }}
+                                      style={{
+                                          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(https://image.tmdb.org/t/p/original${data.movies.poster_path})`,
+                                      }}
+                                      className="z-20 col-start-1 row-start-1 flex h-full w-full rounded-lg bg-[#313244] bg-cover bg-center p-2"
+                                  >
+                                      <p className="mt-auto text-xs font-bold">
+                                          {data.movies.title}
+                                      </p>
+                                  </div>
                               </div>
-                          </div>
+                          </ViewTransition>
                       ))}
             </div>
         );
@@ -66,34 +69,42 @@ export default function WatchlistListView() {
     function displayListItemData() {
         if (selectedListItem) {
             return (
-                <div
-                    style={{
-                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(https://image.tmdb.org/t/p/original${selectedListItem.movies?.poster_path})`,
-                    }}
-                    className="absolute z-20 col-start-1 row-start-1 flex h-full w-full rounded-xl bg-[#313244] bg-cover bg-center"
-                >
-                    <Button
-                        onClick={() => setSelectedListItem(null)}
-                        className="absolute top-2 right-2 h-8 w-8 rounded-full"
-                        variant={"outline"}
+                <ViewTransition name={`movie-${selectedListItem.movie_id.toString()}`}>
+                    <div
+                        style={{
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(https://image.tmdb.org/t/p/original${selectedListItem.movies?.poster_path})`,
+                        }}
+                        className="absolute z-20 col-start-1 row-start-1 flex h-full w-full rounded-xl bg-[#313244] bg-cover bg-center"
                     >
-                        <Minimize2Icon />
-                    </Button>
-                    <div className="mt-auto p-4">
-                        <MovieTitle title={selectedListItem.movies?.original_title} />
-                        <span className="flex items-center gap-4">
-                            <p>{new Date(selectedListItem.movies.release_date).getFullYear()}</p>
-                            <p>⭐{selectedListItem.movies.vote_average.toFixed(1)}</p>
-                            {selectedListItem.movies.genre_ids?.slice(0, 3).map((id) => (
-                                <p key={id}>
-                                    {genresMap[parseInt(id) as keyof typeof genresMap] ??
-                                        "Unknown Genre"}
+                        <Button
+                            onClick={() =>
+                                startTransition(() => {
+                                    setSelectedListItem(null);
+                                })
+                            }
+                            className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                            variant={"outline"}
+                        >
+                            <Minimize2Icon />
+                        </Button>
+                        <div className="mt-auto p-4">
+                            <MovieTitle title={selectedListItem.movies?.original_title} />
+                            <span className="flex items-center gap-4">
+                                <p>
+                                    {new Date(selectedListItem.movies.release_date).getFullYear()}
                                 </p>
-                            ))}
-                        </span>
-                        <p className="mt-4">{selectedListItem.movies?.overview}</p>
+                                <p>⭐{selectedListItem.movies.vote_average.toFixed(1)}</p>
+                                {selectedListItem.movies.genre_ids?.slice(0, 3).map((id) => (
+                                    <p key={id}>
+                                        {genresMap[parseInt(id) as keyof typeof genresMap] ??
+                                            "Unknown Genre"}
+                                    </p>
+                                ))}
+                            </span>
+                            <p className="mt-4">{selectedListItem.movies?.overview}</p>
+                        </div>
                     </div>
-                </div>
+                </ViewTransition>
             );
         }
     }
@@ -101,10 +112,5 @@ export default function WatchlistListView() {
     // Show 6 skeletons while loading
     const skeletons = Array.from({ length: 9 });
 
-    return (
-        <>
-            {displayListItemData()}
-            {displayListData()}
-        </>
-    );
+    return <>{selectedListItem ? displayListItemData() : displayListData()}</>;
 }

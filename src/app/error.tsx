@@ -24,7 +24,7 @@ export default function Error({
                     An error occurred while loading this section. Please try again.
                 </AlertDescription>
             </Alert>
-            <Button onClick={() => reset()} className="mt-4" variant="outline">
+            <Button onClick={() => reset()} className="mx-auto mt-4" variant="outline">
                 Try again
             </Button>
         </div>
