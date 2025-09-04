@@ -36,7 +36,7 @@ export default function WatchlistListView() {
         return (
             <div
                 style={selectedListItem ? { opacity: 0 } : { opacity: 1 }}
-                className="mt-16 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,100px))] justify-center gap-1 p-1"
+                className="mt-16 grid w-full grid-cols-[repeat(auto-fill,minmax(100px,100px))] justify-center gap-2 p-1"
             >
                 {!watchlistData
                     ? skeletons.map((_, index) => (
