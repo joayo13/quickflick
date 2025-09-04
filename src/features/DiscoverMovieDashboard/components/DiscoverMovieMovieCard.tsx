@@ -8,11 +8,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { getGenreLabel } from "@/utils/tmdbUtils";
 
-interface DiscoverMovieMovieCardProps {
-    movieData: TMDBMovie;
-}
-
-export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovieCardProps) {
+export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBMovie }) {
     const { setMovieData } = useMovieStore();
 
     const [isExiting, setIsExiting] = useState(false);

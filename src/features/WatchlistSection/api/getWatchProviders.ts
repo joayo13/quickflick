@@ -1,9 +1,6 @@
 "use server";
 
-import { DiscoverMoviesParams } from "@/types/types";
-import { buildDiscoverURL } from "../utils/discoverUtils";
-
-export async function discoverMovies(params: DiscoverMoviesParams) {
+export default async function getWatchProviders(movie_id: number) {
     const options = {
         method: "GET",
         headers: {
@@ -11,9 +8,11 @@ export async function discoverMovies(params: DiscoverMoviesParams) {
             Authorization: `Bearer ${process.env.TMDB_READ_ACCESS_TOKEN}`,
         },
     };
-
     try {
-        const res = await fetch(buildDiscoverURL(params), options);
+        const res = await fetch(
+            `https://api.themoviedb.org/3/movie/${movie_id}/watch/providers`,
+            options
+        );
 
         const data = await res.json();
 

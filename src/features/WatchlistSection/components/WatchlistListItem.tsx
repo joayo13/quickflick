@@ -1,16 +1,45 @@
 import { Button } from "@/components/ui/button";
-import { startTransition, unstable_ViewTransition as ViewTransition } from "react";
-import { WatchlistProps } from "../types/watchlistTypes";
+import {
+    startTransition,
+    useCallback,
+    useEffect,
+    useState,
+    unstable_ViewTransition as ViewTransition,
+} from "react";
+import { WatchlistProps, WatchProvidersFlatrate } from "../types/watchlistTypes";
 import { Minimize2Icon } from "lucide-react";
 import MovieTitle from "@/components/typography/movieTitle";
 import { getGenreLabel } from "@/utils/tmdbUtils";
+import getWatchProviders from "../api/getWatchProviders";
+import Image from "next/image";
+import { filterWatchProviders } from "../utils/watchlistUtils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WatchlistListItem({
     selectedListItem,
     setSelectedListItem,
 }: WatchlistProps) {
-    // todo: fetch justwatch streaming provider data and match to tmdbUtils object, display streaming providers
+    const [watchProvidersData, setWatchProvidersData] = useState<WatchProvidersFlatrate[] | null>(
+        null
+    );
 
+    const fetchWatchProviders = useCallback(async () => {
+        try {
+            if (selectedListItem) {
+                const res = await getWatchProviders(selectedListItem?.movie_id);
+                console.log(res.results.CA.flatrate);
+                setWatchProvidersData(res.results.CA.flatrate);
+            }
+        } catch (err) {
+            console.error(err as Error);
+        }
+    }, [selectedListItem]);
+
+    useEffect(() => {
+        fetchWatchProviders();
+    }, [fetchWatchProviders]);
+
+    const skeletonLogos = Array.from({ length: 3 });
     return (
         selectedListItem && (
             <div className="fixed inset-0 z-20 flex items-center justify-center">
@@ -42,6 +71,31 @@ export default function WatchlistListItem({
                                 {selectedListItem.movies.genre_ids?.slice(0, 3).map((id) => (
                                     <p key={id}>{getGenreLabel(id)}</p>
                                 ))}
+                            </span>
+                            <span className="mt-2 flex items-center gap-4">
+                                {watchProvidersData
+                                    ? filterWatchProviders(watchProvidersData)?.map(
+                                          (watchProvider) => {
+                                              return (
+                                                  <Image
+                                                      height={40}
+                                                      width={40}
+                                                      className="rounded-full"
+                                                      key={watchProvider.provider_id}
+                                                      alt={watchProvider.provider_name}
+                                                      src={`https://image.tmdb.org/t/p/original${watchProvider.logo_path}`}
+                                                  ></Image>
+                                              );
+                                          }
+                                      )
+                                    : skeletonLogos.map((_, index) => {
+                                          return (
+                                              <Skeleton
+                                                  key={index}
+                                                  className="h-10 w-10 rounded-full bg-[#313244]"
+                                              />
+                                          );
+                                      })}
                             </span>
                             <p className="mt-4">{selectedListItem.movies?.overview}</p>
                         </div>

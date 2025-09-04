@@ -18,7 +18,7 @@ export const genresList = [
     { id: "53", label: "Thriller" },
     { id: "10752", label: "War" },
     { id: "37", label: "Western" },
-] as const;
+];
 
 export const watchProvidersList = [
     { id: "8", label: "Netflix" },
@@ -30,7 +30,7 @@ export const watchProvidersList = [
     { id: "350", label: "Apple TV+" },
     { id: "15", label: "Hulu" },
     { id: "99", label: "Shudder" },
-] as const;
+];
 
 export function getGenreLabel(id: string | number) {
     const genre = genresList.find((genre) => genre.id === id.toString());

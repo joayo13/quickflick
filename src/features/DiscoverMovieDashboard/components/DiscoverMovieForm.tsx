@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormStore } from "@/store/useStore";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
-import { deepEqual } from "@/features/DiscoverMovieDashboard/utils/utils";
+import { deepEqual } from "@/features/DiscoverMovieDashboard/utils/discoverUtils";
 import { genresList, watchProvidersList } from "@/utils/tmdbUtils";
 
 export function DiscoverMovieForm() {
