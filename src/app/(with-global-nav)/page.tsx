@@ -8,5 +8,9 @@ export default async function Home() {
     if (error || !data?.user) {
         redirect("/login");
     }
-    return <DiscoverMovieSection />;
+    return (
+        <div>
+            <DiscoverMovieSection />
+        </div>
+    );
 }

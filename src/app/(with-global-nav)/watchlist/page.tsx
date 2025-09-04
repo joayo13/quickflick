@@ -9,8 +9,8 @@ export default async function Watchlist() {
         redirect("/login");
     }
     return (
-        <>
+        <div className="mt-16 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,100px))] justify-center gap-1 p-1">
             <WatchlistSection />
-        </>
+        </div>
     );
 }

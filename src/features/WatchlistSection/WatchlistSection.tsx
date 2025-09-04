@@ -60,9 +60,5 @@ export default function WatchlistSection() {
         }
     }
 
-    return (
-        <div className="grid h-[100dvh] w-[100vw] place-items-start md:h-[750px] md:w-[500px]">
-            {displayFetchWatchlistResults()}
-        </div>
-    );
+    return <>{displayFetchWatchlistResults()}</>;
 }
