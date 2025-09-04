@@ -5,32 +5,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useWatchlistStore } from "@/store/useStore";
 import { Minimize2Icon } from "lucide-react";
 import React, { startTransition, useState, unstable_ViewTransition as ViewTransition } from "react";
+import { getGenreLabel } from "@/utils/tmdbUtils";
 
 export default function WatchlistListView() {
     const { watchlistData } = useWatchlistStore();
     const [selectedListItem, setSelectedListItem] = useState<WatchlistData | null>(null);
 
-    const genresMap = {
-        28: "Action",
-        12: "Adventure",
-        16: "Animation",
-        35: "Comedy",
-        80: "Crime",
-        99: "Documentary",
-        18: "Drama",
-        10751: "Family",
-        14: "Fantasy",
-        36: "History",
-        27: "Horror",
-        10402: "Music",
-        9648: "Mystery",
-        10749: "Romance",
-        878: "Sci-fi",
-        10770: "TV Movie",
-        53: "Thriller",
-        10752: "War",
-        37: "Western",
-    };
+    // Show 9 skeletons while loading
+    const skeletons = Array.from({ length: 9 });
 
     function displayListData() {
         return (
@@ -111,10 +93,7 @@ export default function WatchlistListView() {
                                     </p>
                                     <p>⭐{selectedListItem.movies.vote_average.toFixed(1)}</p>
                                     {selectedListItem.movies.genre_ids?.slice(0, 3).map((id) => (
-                                        <p key={id}>
-                                            {genresMap[parseInt(id) as keyof typeof genresMap] ??
-                                                "Unknown Genre"}
-                                        </p>
+                                        <p key={id}>{getGenreLabel(id)}</p>
                                     ))}
                                 </span>
                                 <p className="mt-4">{selectedListItem.movies?.overview}</p>
@@ -125,9 +104,6 @@ export default function WatchlistListView() {
             );
         }
     }
-
-    // Show 6 skeletons while loading
-    const skeletons = Array.from({ length: 9 });
 
     return (
         <>

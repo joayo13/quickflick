@@ -6,6 +6,7 @@ import { motion, useMotionValue, useTransform } from "framer-motion";
 import { CircleXIcon, HeartIcon, ListCheckIcon, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { getGenreLabel } from "@/utils/tmdbUtils";
 
 interface DiscoverMovieMovieCardProps {
     movieData: TMDBMovie;
@@ -24,28 +25,6 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
     const xIconScale = useTransform(x, [-40, 0, 40], [0, 0, 10]);
 
     const movieYear = new Date(movieData.release_date).getFullYear();
-
-    const genres = {
-        28: "Action",
-        12: "Adventure",
-        16: "Animation",
-        35: "Comedy",
-        80: "Crime",
-        99: "Documentary",
-        18: "Drama",
-        10751: "Family",
-        14: "Fantasy",
-        36: "History",
-        27: "Horror",
-        10402: "Music",
-        9648: "Mystery",
-        10749: "Romance",
-        878: "Sci-fi",
-        10770: "TV Movie",
-        53: "Thriller",
-        10752: "War",
-        37: "Western",
-    };
 
     const handleDragEnd = async () => {
         exitX.current = x.get();
@@ -116,9 +95,7 @@ export default function DiscoverMovieMovieCard({ movieData }: DiscoverMovieMovie
                     <p>{movieYear}</p>
                     <p>⭐{movieData.vote_average.toFixed(1)}</p>
                     {movieData.genre_ids?.slice(0, 3).map((id) => (
-                        <p key={id}>
-                            {genres[parseInt(id) as keyof typeof genres] ?? "Unknown Genre"}
-                        </p>
+                        <p key={id}>{getGenreLabel(id)}</p>
                     ))}
                 </span>
                 <p className="mt-4">{movieData?.overview}</p>

@@ -24,40 +24,7 @@ import { useFormStore } from "@/store/useStore";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { deepEqual } from "@/features/DiscoverMovieDashboard/utils/utils";
-
-const watchProviders = [
-    { id: "8", label: "Netflix" },
-    { id: "119", label: "Prime Video" },
-    { id: "337", label: "Disney+" },
-    { id: "230", label: "Crave" },
-    { id: "531", label: "Paramount Plus" },
-    { id: "314", label: "CBC Gem" },
-    { id: "350", label: "Apple TV+" },
-    { id: "15", label: "Hulu" },
-    { id: "99", label: "Shudder" },
-] as const;
-
-const genres = [
-    { id: "28", label: "Action" },
-    { id: "12", label: "Adventure" },
-    { id: "16", label: "Animation" },
-    { id: "35", label: "Comedy" },
-    { id: "80", label: "Crime" },
-    { id: "99", label: "Documentary" },
-    { id: "18", label: "Drama" },
-    { id: "10751", label: "Family" },
-    { id: "14", label: "Fantasy" },
-    { id: "36", label: "History" },
-    { id: "27", label: "Horror" },
-    { id: "10402", label: "Music" },
-    { id: "9648", label: "Mystery" },
-    { id: "10749", label: "Romance" },
-    { id: "878", label: "Science Fiction" },
-    { id: "10770", label: "TV Movie" },
-    { id: "53", label: "Thriller" },
-    { id: "10752", label: "War" },
-    { id: "37", label: "Western" },
-] as const;
+import { genresList, watchProvidersList } from "@/utils/tmdbUtils";
 
 export function DiscoverMovieForm() {
     const { values, setValues, resetValues } = useFormStore();
@@ -117,7 +84,7 @@ export function DiscoverMovieForm() {
                                                 </FormLabel>
                                             </div>
                                             <div className="flex flex-wrap gap-4">
-                                                {watchProviders.map((item) => (
+                                                {watchProvidersList.map((item) => (
                                                     <FormField
                                                         key={item.id}
                                                         control={form.control}
@@ -186,7 +153,7 @@ export function DiscoverMovieForm() {
                                                 </FormLabel>
                                             </div>
                                             <div className="flex flex-wrap gap-4">
-                                                {genres.map((item) => (
+                                                {genresList.map((item) => (
                                                     <FormField
                                                         key={item.id}
                                                         control={form.control}
@@ -248,7 +215,7 @@ export function DiscoverMovieForm() {
                                                 </FormLabel>
                                             </div>
                                             <div className="flex flex-wrap gap-4">
-                                                {genres.map((item) => (
+                                                {genresList.map((item) => (
                                                     <FormField
                                                         key={item.id}
                                                         control={form.control}

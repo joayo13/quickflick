@@ -6,7 +6,6 @@ import DiscoverMovieErrorCard from "./components/DiscoverMovieErrorCard";
 import DiscoverMovieNoResultsCard from "./components/DiscoverMovieNoResultsCard";
 import DiscoverMovieEndOfResultsCard from "./components/DiscoverMovieEndOfResultsCard";
 import { FormSchema } from "./schemas/FormSchema";
-
 import z from "zod";
 import { discoverMovies } from "./api/discoverMovies";
 import { Skeleton } from "@/components/ui/skeleton";

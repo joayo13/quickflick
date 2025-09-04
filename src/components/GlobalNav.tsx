@@ -28,7 +28,7 @@ export function GlobalNav() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button className="fixed top-2 left-2 z-30 h-8 w-8" variant="outline">
+                <Button className="fixed top-2 left-2 z-30 h-8 w-8" variant="default">
                     <MenuIcon />
                 </Button>
             </DropdownMenuTrigger>
