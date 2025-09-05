@@ -23,6 +23,7 @@ export function GlobalNav() {
     const links = [
         { href: "/", label: "Dashboard" },
         { href: "/watchlist", label: "My Watchlist" },
+        { href: "/about", label: "About" },
     ];
 
     return (

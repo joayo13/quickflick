@@ -106,12 +106,7 @@ export default function WatchlistListItem({
                             <p className="mt-4">{selectedListItem.movies?.overview}</p>
                             <p className="mt-2 text-sm opacity-75">
                                 Watch provider data from{" "}
-                                <a
-                                    className="underline"
-                                    href="https://www.justwatch.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
+                                <a className="underline" href="https://www.justwatch.com/">
                                     JustWatch
                                 </a>
                             </p>
