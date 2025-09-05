@@ -73,7 +73,7 @@ export function DiscoverMovieForm() {
                             <PopoverTrigger asChild>
                                 <Button variant="outline">Streams</Button>
                             </PopoverTrigger>
-                            <PopoverContent className="max-w-screen p-4 lg:max-w-3xl">
+                            <PopoverContent className="w-full max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
                                     control={form.control}
                                     name="watchProviders"
@@ -142,7 +142,7 @@ export function DiscoverMovieForm() {
                             <PopoverTrigger asChild>
                                 <Button variant="outline">Genres</Button>
                             </PopoverTrigger>
-                            <PopoverContent className="max-w-screen p-4 lg:max-w-3xl">
+                            <PopoverContent className="w-full max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
                                     control={form.control}
                                     name="includeGenres"
@@ -273,7 +273,7 @@ export function DiscoverMovieForm() {
                             <PopoverTrigger asChild>
                                 <Button variant="outline">Year</Button>
                             </PopoverTrigger>
-                            <PopoverContent className="max-w-screen p-4 lg:max-w-3xl">
+                            <PopoverContent className="w-full max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
                                     control={form.control}
                                     name="releaseYear"
@@ -308,7 +308,7 @@ export function DiscoverMovieForm() {
                             <PopoverTrigger asChild>
                                 <Button variant="outline">Rating</Button>
                             </PopoverTrigger>
-                            <PopoverContent className="max-w-screen p-4 lg:max-w-3xl">
+                            <PopoverContent className="w-full max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
                                     control={form.control}
                                     name="rating"
