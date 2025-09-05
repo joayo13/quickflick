@@ -25,6 +25,7 @@ import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { deepEqual } from "@/features/DiscoverMovieDashboard/utils/discoverUtils";
 import { genresList, watchProvidersList } from "@/utils/tmdbUtils";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function DiscoverMovieForm() {
     const { values, setValues, resetValues } = useFormStore();
@@ -58,21 +59,21 @@ export function DiscoverMovieForm() {
     return (
         <Form {...form}>
             <form>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                <Popover>
+                    <PopoverTrigger asChild>
                         <Button
                             className="absolute top-2 right-2 z-30 h-8 w-8 rounded-full"
                             variant="outline"
                         >
                             <SlidersHorizontalIcon />
                         </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-fit p-2">
+                        <Popover>
+                            <PopoverTrigger asChild>
                                 <Button variant="outline">Streams</Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
+                            </PopoverTrigger>
+                            <PopoverContent className="max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
                                     control={form.control}
                                     name="watchProviders"
@@ -135,13 +136,13 @@ export function DiscoverMovieForm() {
                                         </FormItem>
                                     )}
                                 />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                            </PopoverContent>
+                        </Popover>
+                        <Popover>
+                            <PopoverTrigger asChild>
                                 <Button variant="outline">Genres</Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
+                            </PopoverTrigger>
+                            <PopoverContent className="max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
                                     control={form.control}
                                     name="includeGenres"
@@ -266,13 +267,13 @@ export function DiscoverMovieForm() {
                                         </FormItem>
                                     )}
                                 />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                            </PopoverContent>
+                        </Popover>
+                        <Popover>
+                            <PopoverTrigger asChild>
                                 <Button variant="outline">Year</Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
+                            </PopoverTrigger>
+                            <PopoverContent className="max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
                                     control={form.control}
                                     name="releaseYear"
@@ -301,13 +302,13 @@ export function DiscoverMovieForm() {
                                         </FormItem>
                                     )}
                                 />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                            </PopoverContent>
+                        </Popover>
+                        <Popover>
+                            <PopoverTrigger asChild>
                                 <Button variant="outline">Rating</Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="max-w-screen p-4 lg:max-w-3xl">
+                            </PopoverTrigger>
+                            <PopoverContent className="max-w-screen p-4 lg:max-w-3xl">
                                 <FormField
                                     control={form.control}
                                     name="rating"
@@ -336,8 +337,8 @@ export function DiscoverMovieForm() {
                                         </FormItem>
                                     )}
                                 />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                            </PopoverContent>
+                        </Popover>
                         <div className="block w-full">
                             <Button
                                 className="w-1/2"
@@ -356,8 +357,8 @@ export function DiscoverMovieForm() {
                                 Reset Filters
                             </Button>
                         </div>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                    </PopoverContent>
+                </Popover>
             </form>
         </Form>
     );
