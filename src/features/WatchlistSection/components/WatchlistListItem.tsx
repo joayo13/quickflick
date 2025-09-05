@@ -39,7 +39,35 @@ export default function WatchlistListItem({
         fetchWatchProviders();
     }, [fetchWatchProviders]);
 
-    const skeletonLogos = Array.from({ length: 3 });
+    const skeletonLogos = Array.from({ length: 4 });
+
+    function displayWatchProvidersData() {
+        return (
+            <>
+                {watchProvidersData
+                    ? filterWatchProviders(watchProvidersData)?.map((watchProvider) => {
+                          return (
+                              <Image
+                                  height={40}
+                                  width={40}
+                                  className="rounded-full"
+                                  key={watchProvider.provider_id}
+                                  alt={watchProvider.provider_name}
+                                  src={`https://image.tmdb.org/t/p/original${watchProvider.logo_path}`}
+                              ></Image>
+                          );
+                      })
+                    : skeletonLogos.map((_, index) => {
+                          return (
+                              <Skeleton
+                                  key={index}
+                                  className="h-10 w-10 rounded-full bg-[#313244]"
+                              />
+                          );
+                      })}
+            </>
+        );
+    }
     return (
         selectedListItem && (
             <div className="fixed inset-0 z-20 flex items-center justify-center">
@@ -73,31 +101,20 @@ export default function WatchlistListItem({
                                 ))}
                             </span>
                             <span className="mt-2 flex items-center gap-4">
-                                {watchProvidersData
-                                    ? filterWatchProviders(watchProvidersData)?.map(
-                                          (watchProvider) => {
-                                              return (
-                                                  <Image
-                                                      height={40}
-                                                      width={40}
-                                                      className="rounded-full"
-                                                      key={watchProvider.provider_id}
-                                                      alt={watchProvider.provider_name}
-                                                      src={`https://image.tmdb.org/t/p/original${watchProvider.logo_path}`}
-                                                  ></Image>
-                                              );
-                                          }
-                                      )
-                                    : skeletonLogos.map((_, index) => {
-                                          return (
-                                              <Skeleton
-                                                  key={index}
-                                                  className="h-10 w-10 rounded-full bg-[#313244]"
-                                              />
-                                          );
-                                      })}
+                                {displayWatchProvidersData()}
                             </span>
                             <p className="mt-4">{selectedListItem.movies?.overview}</p>
+                            <p className="mt-2 text-sm opacity-75">
+                                Watch provider data from{" "}
+                                <a
+                                    className="underline"
+                                    href="https://www.justwatch.com/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    JustWatch
+                                </a>
+                            </p>
                         </div>
                     </div>
                 </ViewTransition>
