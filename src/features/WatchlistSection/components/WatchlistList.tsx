@@ -28,7 +28,9 @@ export default function WatchlistListView({
                           const isSelected = selectedListItem?.movie_id === data.movie_id;
 
                           const cardContent = (
-                              <div
+                              <button
+                                  aria-hidden={selectedListItem ? "true" : "false"}
+                                  tabIndex={selectedListItem ? -1 : 0}
                                   onClick={() => {
                                       startTransition(() => {
                                           setSelectedListItem(data);
@@ -39,8 +41,10 @@ export default function WatchlistListView({
                                   }}
                                   className="z-20 col-start-1 row-start-1 flex h-full w-full rounded-lg bg-[#313244] bg-cover bg-center p-2"
                               >
-                                  <p className="mt-auto text-xs font-bold">{data.movies.title}</p>
-                              </div>
+                                  <p className="mt-auto text-left text-xs font-bold">
+                                      {data.movies.title}
+                                  </p>
+                              </button>
                           );
 
                           return (
