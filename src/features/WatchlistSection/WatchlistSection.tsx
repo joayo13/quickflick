@@ -10,18 +10,13 @@ import WatchlistListItem from "./components/WatchlistItem";
 import WatchedWatchlistList from "./components/WatchedWatchlistList";
 
 export default function WatchlistSection() {
-    const { setWatchlistData } = useWatchlistStore();
+    const { watchlistData, setWatchlistData } = useWatchlistStore();
     const [error, setError] = useState<string | null>(null);
-    const [alert, setAlert] = useState<string | null>(null);
     const [selectedListItem, setSelectedListItem] = useState<WatchlistData | null>(null);
 
     const fetchWatchlistCallback = useCallback(async () => {
         try {
             const res = await fetchWatchlist();
-
-            if (res && !res.length) {
-                setAlert("No movies found in watchlist.");
-            }
             setWatchlistData(res);
         } catch (err) {
             if (err instanceof Error) {
@@ -47,7 +42,7 @@ export default function WatchlistSection() {
                     </div>
                 </Alert>
             );
-        } else if (alert) {
+        } else if (watchlistData && watchlistData.length === 0) {
             return (
                 <Alert
                     className="flex h-full w-full flex-col items-center justify-center"
@@ -55,13 +50,13 @@ export default function WatchlistSection() {
                 >
                     <div className="flex gap-2">
                         <SearchXIcon />
-                        <AlertTitle>{alert}</AlertTitle>
+                        <AlertTitle>{"No movies found in watchlist."}</AlertTitle>
                     </div>
                 </Alert>
             );
-        } else {
+        } else if (watchlistData && watchlistData.length) {
             return (
-                <>
+                <section className="md:max-w-3xl">
                     <UnwatchedWatchlistList
                         setSelectedListItem={setSelectedListItem}
                         selectedListItem={selectedListItem}
@@ -70,7 +65,7 @@ export default function WatchlistSection() {
                         setSelectedListItem={setSelectedListItem}
                         selectedListItem={selectedListItem}
                     />
-                </>
+                </section>
             );
         }
     }
