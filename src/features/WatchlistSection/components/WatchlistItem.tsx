@@ -14,6 +14,7 @@ import getWatchProviders from "../api/getWatchProviders";
 import Image from "next/image";
 import { filterWatchProviders } from "../utils/watchlistUtils";
 import { Skeleton } from "@/components/ui/skeleton";
+import UpdateItemWatchedStatusButton from "./UpdateItemWatchedStatusButton";
 
 export default function WatchlistListItem({
     selectedListItem,
@@ -89,6 +90,7 @@ export default function WatchlistListItem({
                         >
                             <Minimize2Icon />
                         </Button>
+                        <UpdateItemWatchedStatusButton selectedListItem={selectedListItem} />
                         <div className="mt-auto p-4">
                             <MovieTitle title={selectedListItem.movies?.original_title} />
                             <span className="flex items-center gap-4">

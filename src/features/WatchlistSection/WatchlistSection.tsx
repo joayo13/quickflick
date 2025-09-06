@@ -6,7 +6,7 @@ import WatchlistListView from "./components/WatchlistList";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, SearchXIcon } from "lucide-react";
 import { WatchlistData } from "@/types/types";
-import WatchlistListItem from "./components/WatchlistListItem";
+import WatchlistListItem from "./components/WatchlistItem";
 
 export default function WatchlistSection() {
     const { setWatchlistData } = useWatchlistStore();
