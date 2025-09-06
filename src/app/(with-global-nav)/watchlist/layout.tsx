@@ -6,7 +6,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div className="grid h-[100dvh] w-[100vw] place-items-start md:h-[750px] md:max-w-2xl">
+        <div className="h-[100dvh] w-[100vw] md:h-[750px] md:max-w-2xl">
             <ViewTransition>{children}</ViewTransition>
         </div>
     );

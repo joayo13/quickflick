@@ -2,11 +2,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import fetchWatchlist from "./api/fetchWatchlist";
 import { useWatchlistStore } from "@/store/useStore";
-import WatchlistListView from "./components/WatchlistList";
+import UnwatchedWatchlistList from "./components/UnwatchedWatchlistList";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, SearchXIcon } from "lucide-react";
 import { WatchlistData } from "@/types/types";
 import WatchlistListItem from "./components/WatchlistItem";
+import WatchedWatchlistList from "./components/WatchedWatchlistList";
 
 export default function WatchlistSection() {
     const { setWatchlistData } = useWatchlistStore();
@@ -60,10 +61,16 @@ export default function WatchlistSection() {
             );
         } else {
             return (
-                <WatchlistListView
-                    setSelectedListItem={setSelectedListItem}
-                    selectedListItem={selectedListItem}
-                />
+                <>
+                    <UnwatchedWatchlistList
+                        setSelectedListItem={setSelectedListItem}
+                        selectedListItem={selectedListItem}
+                    />
+                    <WatchedWatchlistList
+                        setSelectedListItem={setSelectedListItem}
+                        selectedListItem={selectedListItem}
+                    />
+                </>
             );
         }
     }

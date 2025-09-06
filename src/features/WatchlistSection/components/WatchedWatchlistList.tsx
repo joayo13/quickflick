@@ -3,11 +3,13 @@ import { useWatchlistStore } from "@/store/useStore";
 import React, { startTransition, unstable_ViewTransition as ViewTransition } from "react";
 import { WatchlistProps } from "../types/watchlistTypes";
 
-export default function WatchlistListView({
+export default function WatchedWatchlistList({
     selectedListItem,
     setSelectedListItem,
 }: WatchlistProps) {
     const { watchlistData } = useWatchlistStore();
+
+    const watchedWatchlistData = watchlistData?.filter((item) => item.watched === true);
 
     // Show 9 skeletons while loading
     const skeletons = Array.from({ length: 9 });
@@ -16,15 +18,18 @@ export default function WatchlistListView({
         return (
             <div
                 style={selectedListItem ? { opacity: 0 } : { opacity: 1 }}
-                className="mt-16 grid w-full grid-cols-[repeat(auto-fill,minmax(100px,100px))] justify-center gap-2 p-1"
+                className="grid w-full grid-cols-[repeat(auto-fill,minmax(100px,100px))] justify-center gap-2 p-1"
             >
-                {!watchlistData
+                <h2 className="col-span-full py-2">
+                    Previously Watched ({watchedWatchlistData?.length})
+                </h2>
+                {!watchedWatchlistData
                     ? skeletons.map((_, index) => (
                           <div className="grid h-[150px] w-[100px] place-items-center" key={index}>
                               <Skeleton className="h-full w-full rounded-lg bg-[#313244]" />
                           </div>
                       ))
-                    : watchlistData.map((data) => {
+                    : watchedWatchlistData.map((data) => {
                           const isSelected = selectedListItem?.movie_id === data.movie_id;
 
                           const cardContent = (
