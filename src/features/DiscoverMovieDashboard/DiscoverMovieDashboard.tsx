@@ -19,6 +19,14 @@ export default function DiscoverMovieSection() {
 
     const { values, formHydrated } = useFormStore();
 
+    useEffect(() => {
+        document.body.classList.add("no-scroll");
+
+        return () => {
+            document.body.classList.remove("no-scroll");
+        };
+    }, []);
+
     const fetchMovies = useCallback(
         async (data: z.infer<typeof FormSchema>) => {
             try {
