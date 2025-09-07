@@ -107,3 +107,32 @@ export const useWatchlistStore = create(
         }
     )
 );
+
+interface DiscardedMovieStore {
+    discardedMovieData: number[];
+    storeHydrated: boolean;
+    setDiscardedMovieData: (updater: number[] | ((prev: number[]) => number[])) => void;
+}
+
+const defaultDiscardedMovies: number[] = [];
+
+export const useDiscardedMovieStore = create(
+    persist<DiscardedMovieStore>(
+        (set) => ({
+            discardedMovieData: defaultDiscardedMovies,
+            storeHydrated: false,
+
+            setDiscardedMovieData: (updater) =>
+                set((state) => ({
+                    discardedMovieData:
+                        typeof updater === "function" ? updater(state.discardedMovieData) : updater,
+                })),
+        }),
+        {
+            name: "discarded-movie-storage", // key in localStorage
+            onRehydrateStorage: () => (state) => {
+                if (state) state.storeHydrated = true;
+            },
+        }
+    )
+);

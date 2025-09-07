@@ -1,7 +1,7 @@
 import { TMDBMovie } from "@/types/types";
 import MovieTitle from "@/components/typography/movieTitle";
 import { addMovieToWatchlist } from "@/features/DiscoverMovieDashboard/api/addMovieToWatchlist";
-import { useMovieStore } from "@/store/useStore";
+import { useDiscardedMovieStore, useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { CircleXIcon, HeartIcon, ListCheckIcon, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
@@ -10,6 +10,7 @@ import { getGenreLabel } from "@/utils/tmdbUtils";
 
 export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBMovie }) {
     const { setMovieData } = useMovieStore();
+    const { setDiscardedMovieData } = useDiscardedMovieStore();
 
     const [isExiting, setIsExiting] = useState(false);
 
@@ -28,6 +29,9 @@ export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBM
         // discard
         if (x.get() > 40) {
             setIsExiting(true);
+            setDiscardedMovieData((prev) =>
+                !prev.includes(movieData.id) ? prev.concat(movieData.id) : prev
+            );
         } else if (x.get() < -40) {
             // save
             setIsExiting(true);
