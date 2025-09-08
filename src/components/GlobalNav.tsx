@@ -10,9 +10,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { MenuIcon } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
 
 export function GlobalNav() {
     const pathname = usePathname();
+
+    const [mounted, setMounted] = useState(false);
+
+    // fixes dropdown menu hydration warning, by ensuring it'll be only rendered after hydration
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
 
     async function handleLogout() {
         const supabase = await createClient();
