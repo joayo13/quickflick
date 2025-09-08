@@ -17,6 +17,7 @@ import { mapFormToDiscoverParams } from "./utils/discoverUtils";
 import { TMDBDiscoverResponse, TMDBMovie } from "@/types/types";
 import z from "zod";
 import { FormSchema } from "./schemas/FormSchema";
+import DiscoverMovieWelcomeCard from "./components/DiscoverMovieWelcomeCard";
 
 export default function DiscoverMovieSection() {
     const { movieData, setMovieData, movieStoreHydrated } = useMovieStore();
@@ -67,14 +68,6 @@ export default function DiscoverMovieSection() {
         [setError, setMovieData, filterOutWatchlistMovies, separateDiscardedMovies]
     );
 
-    //this gets called in the case of no movies in the store, aka first time using the application, or local storage is empty
-    // this is getting called twice needs fix
-    useEffect(() => {
-        if (movieStoreHydrated && movieData === null) {
-            fetchAvaliableMovies(values);
-        }
-    }, [fetchAvaliableMovies, movieData, movieStoreHydrated, values]);
-
     // this gets called from discover movie form if we ever change form values.
     function fetchWithUpdatedFormValues(data: z.infer<typeof FormSchema>) {
         pageNumberRef.current = 1;
@@ -97,6 +90,9 @@ export default function DiscoverMovieSection() {
     function displayDiscoverMovieResults() {
         if (error) {
             return <DiscoverMovieErrorCard error={error} />;
+        }
+        if (movieStoreHydrated && movieData === null) {
+            return <DiscoverMovieWelcomeCard />;
         }
         if (movieData?.total_results === 0) {
             return <DiscoverMovieNoResultsCard />;
