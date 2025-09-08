@@ -5,20 +5,19 @@ import DiscoverMovieMovieCard from "./components/DiscoverMovieMovieCard";
 import DiscoverMovieErrorCard from "./components/DiscoverMovieErrorCard";
 import DiscoverMovieNoResultsCard from "./components/DiscoverMovieNoResultsCard";
 import DiscoverMovieEndOfResultsCard from "./components/DiscoverMovieEndOfResultsCard";
-import { FormSchema } from "./schemas/FormSchema";
-import z from "zod";
 import { discoverMovies } from "./api/discoverMovies";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFormStore, useMovieStore } from "@/store/useStore";
 import { mapFormToDiscoverParams } from "./utils/discoverUtils";
 
 export default function DiscoverMovieSection() {
-    const { movieData, setMovieData } = useMovieStore();
+    const { movieData, setMovieData, movieStoreHydrated } = useMovieStore();
     const [error, setError] = useState<Error | null>(null);
     const pageNumberRef = useRef(1);
 
     const { values, formHydrated } = useFormStore();
 
+    // adding no-scroll to prevent scrollbars flickering in during movie card dismiss/save animations on desktop
     useEffect(() => {
         document.body.classList.add("no-scroll");
 
@@ -27,39 +26,44 @@ export default function DiscoverMovieSection() {
         };
     }, []);
 
-    const fetchMovies = useCallback(
-        async (data: z.infer<typeof FormSchema>) => {
-            try {
-                const params = mapFormToDiscoverParams(data, pageNumberRef.current);
-                const res = await discoverMovies(params);
-                // filterOutListItems
-                setError(null);
-                setMovieData(res);
-            } catch (err) {
-                setError(err as Error);
-            }
-        },
-        [setError, setMovieData]
-    );
-    // this useeffect handles the initial fetching, as well as fetching if any values get updated
-    useEffect(() => {
-        if (formHydrated) {
-            pageNumberRef.current = 1;
-            fetchMovies(values as z.infer<typeof FormSchema>);
+    const fetchMovies = useCallback(async () => {
+        try {
+            const params = mapFormToDiscoverParams(values, pageNumberRef.current);
+            const res = await discoverMovies(params);
+            // filterOutListItems
+            setError(null);
+            setMovieData(res);
+        } catch (err) {
+            setError(err as Error);
         }
-    }, [fetchMovies, values, formHydrated]);
+    }, [setError, setMovieData, values]);
 
+    //this gets called in the case of no movies in the store, aka first time using the application, or local storage is empty
+    // this is getting called twice needs fix
+    useEffect(() => {
+        if (movieStoreHydrated && movieData === null) {
+            fetchMovies();
+        }
+    }, [fetchMovies, movieData, movieStoreHydrated]);
+
+    // this gets called from discover movie form if we ever change form values.
+    function fetchWithUpdatedFormValues() {
+        pageNumberRef.current = 1;
+        fetchMovies();
+    }
+
+    //
     useEffect(() => {
         function fetchNextPageIfAvailable() {
             if (movieData?.results.length === 0) {
                 if (movieData.page < movieData.total_pages) {
-                    pageNumberRef.current += 1;
-                    fetchMovies(values as z.infer<typeof FormSchema>);
+                    pageNumberRef.current = movieData.page + 1;
+                    fetchMovies();
                 }
             }
         }
         fetchNextPageIfAvailable();
-    }, [movieData, values, fetchMovies]);
+    }, [movieData, fetchMovies]);
 
     function displayDiscoverMovieResults() {
         if (error) {
@@ -87,7 +91,9 @@ export default function DiscoverMovieSection() {
 
     return (
         <>
-            {formHydrated ? <DiscoverMovieForm /> : null}
+            {formHydrated ? (
+                <DiscoverMovieForm fetchWithUpdatedFormValues={fetchWithUpdatedFormValues} />
+            ) : null}
 
             <div className="grid h-[100dvh] w-[100vw] place-items-center md:h-[750px] md:w-[500px]">
                 <Skeleton className="z-10 col-start-1 row-start-1 h-full w-full rounded-xl bg-[#313244]" />

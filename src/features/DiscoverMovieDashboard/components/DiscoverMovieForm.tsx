@@ -27,7 +27,11 @@ import { deepEqual } from "@/features/DiscoverMovieDashboard/utils/discoverUtils
 import { genresList, watchProvidersList } from "@/utils/tmdbUtils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-export function DiscoverMovieForm() {
+export function DiscoverMovieForm({
+    fetchWithUpdatedFormValues,
+}: {
+    fetchWithUpdatedFormValues: () => void;
+}) {
     const { values, setValues, resetValues } = useFormStore();
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -43,6 +47,7 @@ export function DiscoverMovieForm() {
         }
         setValues(data);
         toast("Filters updated successfully.", { icon: <CircleCheckIcon /> });
+        fetchWithUpdatedFormValues();
     };
 
     const onSubmitError = (errors: FieldErrors) => {

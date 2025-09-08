@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { TMDBDiscoverResponse, WatchlistData } from "@/types/types";
 
-interface MovieStore {
+export interface MovieStore {
     movieData: TMDBDiscoverResponse | null;
     setMovieData: (
         updater:
@@ -11,16 +11,28 @@ interface MovieStore {
             | ((prev: TMDBDiscoverResponse | null) => TMDBDiscoverResponse | null)
     ) => void;
     clearMovieData: () => void;
+    movieStoreHydrated: boolean;
 }
 
-export const useMovieStore = create<MovieStore>((set) => ({
-    movieData: null,
-    setMovieData: (updater) =>
-        set((state) => ({
-            movieData: typeof updater === "function" ? updater(state.movieData) : updater,
-        })),
-    clearMovieData: () => set({ movieData: null }),
-}));
+export const useMovieStore = create<MovieStore>()(
+    persist(
+        (set) => ({
+            movieData: null,
+            movieStoreHydrated: false,
+            setMovieData: (updater) =>
+                set((state) => ({
+                    movieData: typeof updater === "function" ? updater(state.movieData) : updater,
+                })),
+            clearMovieData: () => set({ movieData: null }),
+        }),
+        {
+            name: "movie-storage", // key in localStorage
+            onRehydrateStorage: () => (state) => {
+                if (state) state.movieStoreHydrated = true;
+            },
+        }
+    )
+);
 
 interface FormState {
     values: {
