@@ -11,11 +11,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { CircleAlertIcon, CircleCheckIcon, SlidersHorizontalIcon } from "lucide-react";
 import z from "zod";
 import { FormSchema } from "../schemas/FormSchema";
@@ -30,7 +25,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 export function DiscoverMovieForm({
     fetchWithUpdatedFormValues,
 }: {
-    fetchWithUpdatedFormValues: () => void;
+    fetchWithUpdatedFormValues: (data: z.infer<typeof FormSchema>) => void;
 }) {
     const { values, setValues, resetValues } = useFormStore();
 
@@ -47,7 +42,7 @@ export function DiscoverMovieForm({
         }
         setValues(data);
         toast("Filters updated successfully.", { icon: <CircleCheckIcon /> });
-        fetchWithUpdatedFormValues();
+        fetchWithUpdatedFormValues(data);
     };
 
     const onSubmitError = (errors: FieldErrors) => {

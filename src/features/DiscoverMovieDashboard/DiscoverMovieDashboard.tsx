@@ -7,12 +7,22 @@ import DiscoverMovieNoResultsCard from "./components/DiscoverMovieNoResultsCard"
 import DiscoverMovieEndOfResultsCard from "./components/DiscoverMovieEndOfResultsCard";
 import { discoverMovies } from "./api/discoverMovies";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useFormStore, useMovieStore } from "@/store/useStore";
+import {
+    useDiscardedMovieStore,
+    useFormStore,
+    useMovieStore,
+    useWatchlistStore,
+} from "@/store/useStore";
 import { mapFormToDiscoverParams } from "./utils/discoverUtils";
+import { TMDBDiscoverResponse, TMDBMovie } from "@/types/types";
+import z from "zod";
+import { FormSchema } from "./schemas/FormSchema";
 
 export default function DiscoverMovieSection() {
     const { movieData, setMovieData, movieStoreHydrated } = useMovieStore();
     const [error, setError] = useState<Error | null>(null);
+    const { watchlistData } = useWatchlistStore();
+    const { discardedMovieData } = useDiscardedMovieStore();
     const pageNumberRef = useRef(1);
 
     const { values, formHydrated } = useFormStore();
@@ -26,30 +36,49 @@ export default function DiscoverMovieSection() {
         };
     }, []);
 
-    const fetchMovies = useCallback(async () => {
-        try {
-            const params = mapFormToDiscoverParams(values, pageNumberRef.current);
-            const res = await discoverMovies(params);
-            // filterOutListItems
-            setError(null);
-            setMovieData(res);
-        } catch (err) {
-            setError(err as Error);
-        }
-    }, [setError, setMovieData, values]);
+    const filterOutWatchlistMovies = useCallback(
+        (results: TMDBMovie[]) => {
+            const watchlistIds = watchlistData?.map((data) => data.movie_id);
+            return results.filter((result) => !watchlistIds?.includes(result.id));
+        },
+        [watchlistData]
+    );
+
+    const separateDiscardedMovies = useCallback(
+        (results: TMDBMovie[]) => {
+            return results.filter((result) => !discardedMovieData.includes(result.id));
+        },
+        [discardedMovieData]
+    );
+
+    const fetchAvaliableMovies = useCallback(
+        async (data: z.infer<typeof FormSchema>) => {
+            try {
+                const params = mapFormToDiscoverParams(data, pageNumberRef.current);
+                const res: TMDBDiscoverResponse = await discoverMovies(params);
+                res.results = filterOutWatchlistMovies(res.results);
+                res.results = separateDiscardedMovies(res.results);
+                setError(null);
+                setMovieData(res);
+            } catch (err) {
+                setError(err as Error);
+            }
+        },
+        [setError, setMovieData, filterOutWatchlistMovies, separateDiscardedMovies]
+    );
 
     //this gets called in the case of no movies in the store, aka first time using the application, or local storage is empty
     // this is getting called twice needs fix
     useEffect(() => {
         if (movieStoreHydrated && movieData === null) {
-            fetchMovies();
+            fetchAvaliableMovies(values);
         }
-    }, [fetchMovies, movieData, movieStoreHydrated]);
+    }, [fetchAvaliableMovies, movieData, movieStoreHydrated, values]);
 
     // this gets called from discover movie form if we ever change form values.
-    function fetchWithUpdatedFormValues() {
+    function fetchWithUpdatedFormValues(data: z.infer<typeof FormSchema>) {
         pageNumberRef.current = 1;
-        fetchMovies();
+        fetchAvaliableMovies(data);
     }
 
     //
@@ -58,12 +87,12 @@ export default function DiscoverMovieSection() {
             if (movieData?.results.length === 0) {
                 if (movieData.page < movieData.total_pages) {
                     pageNumberRef.current = movieData.page + 1;
-                    fetchMovies();
+                    fetchAvaliableMovies(values);
                 }
             }
         }
         fetchNextPageIfAvailable();
-    }, [movieData, fetchMovies]);
+    }, [movieData, fetchAvaliableMovies, values]);
 
     function displayDiscoverMovieResults() {
         if (error) {
