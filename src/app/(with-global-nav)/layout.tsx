@@ -12,17 +12,18 @@ export default function RootLayout({
 }>) {
     const { discardedMovieData, setDiscardedMovieData } = useDiscardedMovieStore();
     const lastLengthRef = useRef(0);
+    const supabaseSyncedRef = useRef(false);
 
     useEffect(() => {
         const interval = setInterval(async () => {
             const currentLength = discardedMovieData.length;
 
-            if (currentLength > lastLengthRef.current) {
+            if (currentLength > lastLengthRef.current && supabaseSyncedRef.current) {
                 const stored = localStorage.getItem("discarded-movie-storage");
                 if (stored) await updateDiscardedMovies(stored); // your update function
                 lastLengthRef.current = currentLength;
             }
-        }, 30000);
+        }, 10000);
 
         return () => clearInterval(interval);
     }, [discardedMovieData]);
@@ -30,8 +31,10 @@ export default function RootLayout({
     useEffect(() => {
         async function syncSupabaseToLocalStorage() {
             const discardedMovies = await getDiscardedMovies();
-            setDiscardedMovieData(discardedMovies);
+            setDiscardedMovieData((prev) => prev.concat(discardedMovies));
+            supabaseSyncedRef.current = true;
         }
+
         syncSupabaseToLocalStorage();
     }, [setDiscardedMovieData]);
 
