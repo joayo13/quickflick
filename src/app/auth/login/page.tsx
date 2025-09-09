@@ -30,6 +30,7 @@ const formSchema = loginFormSchema;
 
 export default function LoginPreview() {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isGuestSubmitting, setIsGuestSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -41,6 +42,8 @@ export default function LoginPreview() {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        // we clear localstorage so that if a new user signs in on same device, they won't be getting previous users moviedata or any other local storage data
+        localStorage.clear();
         setIsSubmitting(true);
         setError(null);
 
@@ -60,6 +63,28 @@ export default function LoginPreview() {
         }
 
         setIsSubmitting(false);
+    }
+    // separate flow for guest login
+    async function loginAsGuest() {
+        // we clear localstorage so that if a new user signs in on same device, they won't be getting previous users moviedata or any other local storage data
+        localStorage.clear();
+        setIsGuestSubmitting(true);
+        setError(null);
+        const formData = new FormData();
+        formData.append("email", "guest@quickflick.com");
+        formData.append("password", "quickflick");
+
+        const result = await login(formData);
+        if (result.success) {
+            toast(result.message, {
+                icon: <UserRoundCheckIcon />,
+            });
+            setTimeout(() => redirect("/"), 2000);
+        } else {
+            setError(result.message); // display the user-friendly message
+        }
+
+        setIsGuestSubmitting(false);
     }
     function displayErrors() {
         if (error) {
@@ -140,6 +165,14 @@ export default function LoginPreview() {
                                 />
                                 <Button type="submit" className="w-full">
                                     {isSubmitting ? <Spinner /> : "Login"}
+                                </Button>
+                                <Button
+                                    type="button"
+                                    onClick={() => loginAsGuest()}
+                                    variant={"secondary"}
+                                    className="w-full"
+                                >
+                                    {isGuestSubmitting ? <Spinner /> : "Continue as guest"}
                                 </Button>
                                 {/* maybe later <Button variant="outline" className="w-full">
                                     Login with Google

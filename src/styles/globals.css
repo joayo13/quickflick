@@ -6,6 +6,9 @@
 .no-scroll {
     overflow: hidden;
 }
+button {
+    @apply cursor-pointer;
+}
 
 :root {
     --background: oklch(0.9578 0.0058 264.5321);

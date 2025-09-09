@@ -25,7 +25,7 @@ export function GlobalNav() {
     async function handleLogout() {
         const supabase = await createClient();
         await supabase.auth.signOut();
-        redirect("/auth/login");
+        window.location.href = "/auth/login";
     }
 
     const links = [
