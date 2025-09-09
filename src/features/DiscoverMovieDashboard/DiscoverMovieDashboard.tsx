@@ -20,7 +20,13 @@ import { FormSchema } from "./schemas/FormSchema";
 import DiscoverMovieWelcomeCard from "./components/DiscoverMovieWelcomeCard";
 
 export default function DiscoverMovieSection() {
-    const { movieData, setMovieData, movieStoreHydrated } = useMovieStore();
+    const {
+        movieData,
+        endOfListMovieData,
+        setMovieData,
+        setEndOfListMovieData,
+        movieStoreHydrated,
+    } = useMovieStore();
     const [error, setError] = useState<Error | null>(null);
     const { watchlistData } = useWatchlistStore();
     const { discardedMovieData } = useDiscardedMovieStore();
@@ -47,9 +53,12 @@ export default function DiscoverMovieSection() {
 
     const separateDiscardedMovies = useCallback(
         (results: TMDBMovie[]) => {
+            setEndOfListMovieData((prev) =>
+                prev?.concat(results.filter((result) => discardedMovieData.includes(result.id)))
+            );
             return results.filter((result) => !discardedMovieData.includes(result.id));
         },
-        [discardedMovieData]
+        [discardedMovieData, setEndOfListMovieData]
     );
 
     const fetchAvaliableMovies = useCallback(
@@ -70,6 +79,7 @@ export default function DiscoverMovieSection() {
 
     // this gets called from discover movie form if we ever change form values.
     function fetchWithUpdatedFormValues(data: z.infer<typeof FormSchema>) {
+        setEndOfListMovieData([]);
         pageNumberRef.current = 1;
         fetchAvaliableMovies(data);
     }
@@ -98,9 +108,30 @@ export default function DiscoverMovieSection() {
             return <DiscoverMovieNoResultsCard />;
         }
         if (movieData?.results.length === 0 && movieData.page === movieData.total_pages) {
-            return <DiscoverMovieEndOfResultsCard />;
-        }
-        if (movieData?.results) {
+            if (endOfListMovieData && endOfListMovieData.length) {
+                setMovieData((data) =>
+                    data
+                        ? {
+                              ...data,
+                              results: endOfListMovieData,
+                          }
+                        : data
+                );
+                setEndOfListMovieData([]);
+                return (
+                    <>
+                        {movieData.results.slice(-2).map((movieData) => (
+                            <DiscoverMovieMovieCard
+                                key={movieData.id}
+                                movieData={movieData}
+                            ></DiscoverMovieMovieCard>
+                        ))}
+                    </>
+                );
+            } else {
+                return <DiscoverMovieEndOfResultsCard />;
+            }
+        } else if (movieData?.results) {
             return (
                 <>
                     {movieData.results.slice(-2).map((movieData) => (

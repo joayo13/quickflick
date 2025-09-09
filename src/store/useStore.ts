@@ -1,14 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { TMDBDiscoverResponse, WatchlistData } from "@/types/types";
+import { TMDBDiscoverResponse, TMDBMovie, WatchlistData } from "@/types/types";
 
 export interface MovieStore {
     movieData: TMDBDiscoverResponse | null;
+    endOfListMovieData: TMDBMovie[] | undefined;
     setMovieData: (
         updater:
             | TMDBDiscoverResponse
-            | null
+            | undefined
             | ((prev: TMDBDiscoverResponse | null) => TMDBDiscoverResponse | null)
+    ) => void;
+    setEndOfListMovieData: (
+        updater:
+            | TMDBMovie[]
+            | undefined
+            | ((prev: TMDBMovie[] | undefined) => TMDBMovie[] | undefined)
     ) => void;
     clearMovieData: () => void;
     movieStoreHydrated: boolean;
@@ -18,10 +25,16 @@ export const useMovieStore = create<MovieStore>()(
     persist(
         (set) => ({
             movieData: null,
+            endOfListMovieData: undefined,
             movieStoreHydrated: false,
             setMovieData: (updater) =>
                 set((state) => ({
                     movieData: typeof updater === "function" ? updater(state.movieData) : updater,
+                })),
+            setEndOfListMovieData: (updater) =>
+                set((state) => ({
+                    endOfListMovieData:
+                        typeof updater === "function" ? updater(state.endOfListMovieData) : updater,
                 })),
             clearMovieData: () => set({ movieData: null }),
         }),
@@ -61,11 +74,11 @@ export const useFormStore = create(
     persist<FormState>(
         (set) => ({
             values: {
-                watchProviders: ["8"],
-                includeGenres: ["28"],
+                watchProviders: [],
+                includeGenres: [],
                 excludeGenres: [],
                 releaseYear: [1950, 2025],
-                rating: [6.5, 10],
+                rating: [1, 10],
             },
             formHydrated: false,
             setValues: (updater) =>
