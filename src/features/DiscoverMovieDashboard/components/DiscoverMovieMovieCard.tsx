@@ -9,15 +9,9 @@ import { toast } from "sonner";
 import { getGenreLabel } from "@/utils/tmdbUtils";
 import { Badge } from "@/components/ui/badge";
 
-export default function DiscoverMovieMovieCard({
-    movieData,
-    previouslyDiscarded,
-}: {
-    movieData: TMDBMovie;
-    previouslyDiscarded: boolean;
-}) {
+export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBMovie }) {
     const { setMovieData } = useMovieStore();
-    const { setDiscardedMovieData } = useDiscardedMovieStore();
+    const { discardedMovieData, setDiscardedMovieData } = useDiscardedMovieStore();
 
     const [isExiting, setIsExiting] = useState(false);
 
@@ -105,7 +99,7 @@ export default function DiscoverMovieMovieCard({
                         <p key={id}>{getGenreLabel(id)}</p>
                     ))}
                 </span>
-                {previouslyDiscarded ? (
+                {discardedMovieData.includes(movieData.id) ? (
                     <Badge variant={"secondary"} className="mt-4">
                         Previously Discarded
                     </Badge>
