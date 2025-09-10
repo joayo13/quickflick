@@ -26,7 +26,7 @@ export default function WatchedWatchlistList({
                 {!watchedWatchlistData
                     ? skeletons.map((_, index) => (
                           <div className="grid h-[150px] w-[100px] place-items-center" key={index}>
-                              <Skeleton className="h-full w-full rounded-lg bg-[#313244]" />
+                              <Skeleton className="h-full w-full rounded-lg bg-[var(--border)]" />
                           </div>
                       ))
                     : watchedWatchlistData.map((data) => {
@@ -44,7 +44,7 @@ export default function WatchedWatchlistList({
                                   style={{
                                       backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(https://image.tmdb.org/t/p/original${data.movies.poster_path})`,
                                   }}
-                                  className="z-20 col-start-1 row-start-1 flex h-full w-full rounded-lg bg-[#313244] bg-cover bg-center p-2"
+                                  className="z-20 col-start-1 row-start-1 flex h-full w-full rounded-lg bg-[var(--border)] bg-cover bg-center p-2"
                               >
                                   <p className="mt-auto text-left text-xs font-bold">
                                       {data.movies.title}

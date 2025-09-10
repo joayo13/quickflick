@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
-import DiscoverMovieMovieCard from "./components/DiscoverMovieMovieCard";
+import DiscoverMovieMovieCard from "./components/DiscoverMovieResultCard";
 import DiscoverMovieErrorCard from "./components/DiscoverMovieErrorCard";
 import DiscoverMovieNoResultsCard from "./components/DiscoverMovieNoResultsCard";
 import DiscoverMovieEndOfResultsCard from "./components/DiscoverMovieEndOfResultsCard";
@@ -143,7 +143,7 @@ export default function DiscoverMovieSection() {
             ) : null}
 
             <div className="grid h-[100dvh] w-[100vw] place-items-center md:h-[750px] md:w-[500px]">
-                <Skeleton className="z-10 col-start-1 row-start-1 h-full w-full rounded-xl bg-[#313244]" />
+                <Skeleton className="z-10 col-start-1 row-start-1 h-full w-full rounded-xl bg-[var(--border)]" />
                 {displayDiscoverMovieResults()}
             </div>
         </>

@@ -73,7 +73,7 @@ export default function WatchlistListItem({
                           return (
                               <Skeleton
                                   key={index}
-                                  className="h-10 w-10 rounded-full bg-[#313244]"
+                                  className="h-10 w-10 rounded-full bg-[var(--border)]"
                               />
                           );
                       })}
@@ -88,7 +88,7 @@ export default function WatchlistListItem({
                         style={{
                             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(https://image.tmdb.org/t/p/original${selectedListItem.movies?.poster_path})`,
                         }}
-                        className="relative z-20 flex h-[100dvh] w-[100vw] rounded-xl bg-[#313244] bg-cover bg-center md:h-[750px] md:w-[500px]"
+                        className="relative z-20 flex h-[100dvh] w-[100vw] rounded-xl bg-[var(--border)] bg-cover bg-center md:h-[750px] md:w-[500px]"
                     >
                         <Button
                             onClick={() =>

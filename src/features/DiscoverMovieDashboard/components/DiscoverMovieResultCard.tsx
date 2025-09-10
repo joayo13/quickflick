@@ -50,6 +50,30 @@ export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBM
         }
     };
 
+    async function handleButtonDiscard() {
+        exitX.current = 50;
+        setIsExiting(true);
+        setDiscardedMovieData((prev) =>
+            !prev.includes(movieData.id) ? prev.concat(movieData.id) : prev
+        );
+    }
+
+    async function handleButtonSave() {
+        exitX.current = -50;
+        setIsExiting(true);
+        try {
+            await addMovieToWatchlist(movieData);
+            toast(`${movieData.title} added to watchlist.`, { icon: <ListCheckIcon /> });
+        } catch (error) {
+            // error feedback
+            if (error instanceof Error) {
+                toast(`Failed to add ${movieData.title} to watchlist.`, {
+                    icon: <CircleXIcon />,
+                });
+            }
+        }
+    }
+
     return (
         <motion.div
             drag="x"
@@ -76,7 +100,7 @@ export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBM
                 x,
                 rotate,
             }}
-            className="relative z-20 col-start-1 row-start-1 flex h-full w-full rounded-xl bg-[#313244] bg-cover bg-center hover:cursor-grab active:cursor-grabbing"
+            className="relative z-20 col-start-1 row-start-1 flex h-full w-full rounded-xl bg-[var(--border)] bg-cover bg-center hover:cursor-grab active:cursor-grabbing"
         >
             <motion.div
                 style={{ scale: heartIconScale }}
