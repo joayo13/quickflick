@@ -23,7 +23,7 @@ export default function About() {
             </p>
             <h2 className="mb-2 text-2xl font-bold tracking-tight">Watch Provider Data</h2>
             <p>
-                QuickFlick sources Watch Provider Data from JustWatch{" "}
+                QuickFlick sources Watch Provider Data from{" "}
                 <a className="underline" href="https://www.justwatch.com/">
                     JustWatch
                 </a>

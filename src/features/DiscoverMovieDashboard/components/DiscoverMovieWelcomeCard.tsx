@@ -15,7 +15,7 @@ export default function DiscoverMovieWelcomeCard() {
                 </div>
                 <AlertDescription className="text-center">
                     Adjust your search parameters in the top right, and apply filters to start
-                    searching.
+                    searching. Swipe right to dismiss, swipe left to save to your watchlist.
                 </AlertDescription>
             </Alert>
         </div>

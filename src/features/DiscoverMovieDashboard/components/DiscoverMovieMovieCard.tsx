@@ -7,8 +7,15 @@ import { CircleXIcon, HeartIcon, ListCheckIcon, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { getGenreLabel } from "@/utils/tmdbUtils";
+import { Badge } from "@/components/ui/badge";
 
-export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBMovie }) {
+export default function DiscoverMovieMovieCard({
+    movieData,
+    previouslyDiscarded,
+}: {
+    movieData: TMDBMovie;
+    previouslyDiscarded: boolean;
+}) {
     const { setMovieData } = useMovieStore();
     const { setDiscardedMovieData } = useDiscardedMovieStore();
 
@@ -98,6 +105,11 @@ export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBM
                         <p key={id}>{getGenreLabel(id)}</p>
                     ))}
                 </span>
+                {previouslyDiscarded ? (
+                    <Badge variant={"secondary"} className="mt-4">
+                        Previously Discarded
+                    </Badge>
+                ) : null}
                 <p className="mt-4">{movieData?.overview}</p>
             </div>
         </motion.div>

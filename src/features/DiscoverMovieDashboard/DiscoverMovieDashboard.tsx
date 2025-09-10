@@ -32,6 +32,7 @@ export default function DiscoverMovieSection() {
     const { discardedMovieData } = useDiscardedMovieStore();
     const { watchRegion } = useFormStore();
     const pageNumberRef = useRef(1);
+    const previouslyDiscardedRef = useRef(false);
 
     const { values, formHydrated } = useFormStore();
 
@@ -82,6 +83,7 @@ export default function DiscoverMovieSection() {
     function fetchWithUpdatedFormValues(data: z.infer<typeof FormSchema>) {
         setEndOfListMovieData([]);
         pageNumberRef.current = 1;
+        previouslyDiscardedRef.current = false;
         fetchAvaliableMovies(data);
     }
 
@@ -118,25 +120,18 @@ export default function DiscoverMovieSection() {
                           }
                         : data
                 );
+                previouslyDiscardedRef.current = true;
                 setEndOfListMovieData([]);
-                return (
-                    <>
-                        {movieData.results.slice(-2).map((movieData) => (
-                            <DiscoverMovieMovieCard
-                                key={movieData.id}
-                                movieData={movieData}
-                            ></DiscoverMovieMovieCard>
-                        ))}
-                    </>
-                );
             } else {
                 return <DiscoverMovieEndOfResultsCard />;
             }
-        } else if (movieData?.results) {
+        }
+        if (movieData?.results) {
             return (
                 <>
                     {movieData.results.slice(-2).map((movieData) => (
                         <DiscoverMovieMovieCard
+                            previouslyDiscarded={previouslyDiscardedRef.current}
                             key={movieData.id}
                             movieData={movieData}
                         ></DiscoverMovieMovieCard>
