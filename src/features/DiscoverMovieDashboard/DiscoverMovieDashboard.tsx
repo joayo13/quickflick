@@ -125,7 +125,7 @@ export default function DiscoverMovieSection() {
         if (movieData?.total_results === 0) {
             return <DiscoverMovieNoResultsCard />;
         }
-        if (movieData?.results.length === 0 && !endOfListMovieData?.length) {
+        if (movieData?.results.length === 0 && movieData.page === movieData.total_pages) {
             return <DiscoverMovieEndOfResultsCard />;
         }
         if (movieData?.results) {

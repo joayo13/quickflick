@@ -21,7 +21,7 @@ export default function DiscoverMovieResultList() {
 
     async function handleButtonDiscard() {
         if (!currentMovieData) return;
-        exitX.current = 50;
+        exitX.current = 25;
         setExitingMovie({
             id: currentMovieData.id,
             type: "discard",
@@ -33,7 +33,7 @@ export default function DiscoverMovieResultList() {
 
     async function handleButtonSave() {
         if (!currentMovieData) return;
-        exitX.current = -50;
+        exitX.current = -25;
         setExitingMovie({
             id: currentMovieData.id,
             type: "save",
