@@ -4,18 +4,34 @@ import { addMovieToWatchlist } from "@/features/DiscoverMovieDashboard/api/addMo
 import { useDiscardedMovieStore, useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { CircleXIcon, HeartIcon, ListCheckIcon, XIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import React, { SetStateAction, useRef, useState } from "react";
 import { toast } from "sonner";
 import { getGenreLabel } from "@/utils/tmdbUtils";
 import { Badge } from "@/components/ui/badge";
 
-export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBMovie }) {
+interface ResultCardProps {
+    movieData: TMDBMovie;
+    exitingMovie: {
+        id: number;
+        type: "save" | "discard";
+    } | null;
+    setExitingMovie: React.Dispatch<
+        SetStateAction<{
+            id: number;
+            type: "save" | "discard";
+        } | null>
+    >;
+    exitX: React.RefObject<number>;
+}
+
+export default function DiscoverMovieResultCard({
+    movieData,
+    exitingMovie,
+    setExitingMovie,
+    exitX,
+}: ResultCardProps) {
     const { setMovieData } = useMovieStore();
     const { discardedMovieData, setDiscardedMovieData } = useDiscardedMovieStore();
-
-    const [isExiting, setIsExiting] = useState(false);
-
-    const exitX = useRef(0);
 
     const x = useMotionValue(0);
     const rotate = useTransform(x, [-600, 600], [-20, 20]);
@@ -29,13 +45,13 @@ export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBM
         console.log(exitX.current);
         // discard
         if (x.get() > 40) {
-            setIsExiting(true);
+            setExitingMovie({ id: movieData.id, type: "discard" });
             setDiscardedMovieData((prev) =>
                 !prev.includes(movieData.id) ? prev.concat(movieData.id) : prev
             );
         } else if (x.get() < -40) {
             // save
-            setIsExiting(true);
+            setExitingMovie({ id: movieData.id, type: "save" });
             try {
                 await addMovieToWatchlist(movieData);
                 toast(`${movieData.title} added to watchlist.`, { icon: <ListCheckIcon /> });
@@ -50,37 +66,15 @@ export default function DiscoverMovieMovieCard({ movieData }: { movieData: TMDBM
         }
     };
 
-    async function handleButtonDiscard() {
-        exitX.current = 50;
-        setIsExiting(true);
-        setDiscardedMovieData((prev) =>
-            !prev.includes(movieData.id) ? prev.concat(movieData.id) : prev
-        );
-    }
-
-    async function handleButtonSave() {
-        exitX.current = -50;
-        setIsExiting(true);
-        try {
-            await addMovieToWatchlist(movieData);
-            toast(`${movieData.title} added to watchlist.`, { icon: <ListCheckIcon /> });
-        } catch (error) {
-            // error feedback
-            if (error instanceof Error) {
-                toast(`Failed to add ${movieData.title} to watchlist.`, {
-                    icon: <CircleXIcon />,
-                });
-            }
-        }
-    }
-
     return (
         <motion.div
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
-            animate={isExiting ? { opacity: 0, x: exitX.current * 4 } : undefined}
+            animate={
+                exitingMovie?.id === movieData.id ? { opacity: 0, x: exitX.current * 4 } : undefined
+            }
             onAnimationComplete={() => {
-                if (isExiting) {
+                if (exitingMovie?.id === movieData.id) {
                     setMovieData((data) =>
                         data
                             ? {

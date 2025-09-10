@@ -1,7 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
-import DiscoverMovieMovieCard from "./components/DiscoverMovieResultCard";
 import DiscoverMovieErrorCard from "./components/DiscoverMovieErrorCard";
 import DiscoverMovieNoResultsCard from "./components/DiscoverMovieNoResultsCard";
 import DiscoverMovieEndOfResultsCard from "./components/DiscoverMovieEndOfResultsCard";
@@ -18,6 +17,7 @@ import { TMDBDiscoverResponse, TMDBMovie } from "@/types/types";
 import z from "zod";
 import { FormSchema } from "./schemas/FormSchema";
 import DiscoverMovieWelcomeCard from "./components/DiscoverMovieWelcomeCard";
+import DiscoverMovieResultList from "./components/DiscoverMovieResultList";
 
 export default function DiscoverMovieSection() {
     const {
@@ -92,11 +92,28 @@ export default function DiscoverMovieSection() {
                 if (movieData.page < movieData.total_pages) {
                     pageNumberRef.current = movieData.page + 1;
                     fetchAvaliableMovies(values);
+                } else if (endOfListMovieData && endOfListMovieData.length) {
+                    setMovieData((data) =>
+                        data
+                            ? {
+                                  ...data,
+                                  results: endOfListMovieData,
+                              }
+                            : data
+                    );
+                    setEndOfListMovieData([]);
                 }
             }
         }
         fetchNextPageIfAvailable();
-    }, [movieData, fetchAvaliableMovies, values]);
+    }, [
+        movieData,
+        fetchAvaliableMovies,
+        values,
+        endOfListMovieData,
+        setEndOfListMovieData,
+        setMovieData,
+    ]);
 
     function displayDiscoverMovieResults() {
         if (error) {
@@ -108,31 +125,11 @@ export default function DiscoverMovieSection() {
         if (movieData?.total_results === 0) {
             return <DiscoverMovieNoResultsCard />;
         }
-        if (movieData?.results.length === 0 && movieData.page === movieData.total_pages) {
-            if (endOfListMovieData && endOfListMovieData.length) {
-                setMovieData((data) =>
-                    data
-                        ? {
-                              ...data,
-                              results: endOfListMovieData,
-                          }
-                        : data
-                );
-                setEndOfListMovieData([]);
-            } else {
-                return <DiscoverMovieEndOfResultsCard />;
-            }
-        } else if (movieData?.results) {
-            return (
-                <>
-                    {movieData.results.slice(-2).map((movieData) => (
-                        <DiscoverMovieMovieCard
-                            key={movieData.id}
-                            movieData={movieData}
-                        ></DiscoverMovieMovieCard>
-                    ))}
-                </>
-            );
+        if (movieData?.results.length === 0 && !endOfListMovieData?.length) {
+            return <DiscoverMovieEndOfResultsCard />;
+        }
+        if (movieData?.results) {
+            return <DiscoverMovieResultList />;
         }
     }
 
