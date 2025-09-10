@@ -43,7 +43,6 @@ export default function LoginPreview() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         // we clear localstorage so that if a new user signs in on same device, they won't be getting previous users moviedata or any other local storage data
-        localStorage.clear();
         setIsSubmitting(true);
         setError(null);
 
@@ -67,7 +66,6 @@ export default function LoginPreview() {
     // separate flow for guest login
     async function loginAsGuest() {
         // we clear localstorage so that if a new user signs in on same device, they won't be getting previous users moviedata or any other local storage data
-        localStorage.clear();
         setIsGuestSubmitting(true);
         setError(null);
         const formData = new FormData();

@@ -37,5 +37,6 @@ interface DiscoverMoviesParams {
     voteAverageGte?: number;
     voteAverageLte?: number;
     page: number;
+    watchRegion: string;
 }
 export type { TMDBDiscoverResponse, TMDBMovie, DiscoverMoviesParams, WatchlistData };

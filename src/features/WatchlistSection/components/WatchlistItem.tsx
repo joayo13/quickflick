@@ -16,6 +16,7 @@ import { filterWatchProviders } from "../utils/watchlistUtils";
 import { Skeleton } from "@/components/ui/skeleton";
 import UpdateItemWatchedStatusButton from "./UpdateItemWatchedStatusButton";
 import DeleteWatchlistItemButton from "./DeleteWatchlistItemButton";
+import { useFormStore } from "@/store/useStore";
 
 export default function WatchlistListItem({
     selectedListItem,
@@ -25,17 +26,26 @@ export default function WatchlistListItem({
         null
     );
 
+    const { watchRegion } = useFormStore();
+
     const fetchWatchProviders = useCallback(async () => {
         try {
             if (selectedListItem) {
-                const res = await getWatchProviders(selectedListItem?.movie_id);
-                console.log(res.results.CA.flatrate);
-                setWatchProvidersData(res.results.CA.flatrate);
+                const res = await getWatchProviders(selectedListItem.movie_id);
+
+                // Dynamically use the region from the store
+                const regionData = res.results?.[watchRegion];
+
+                if (regionData?.flatrate) {
+                    setWatchProvidersData(regionData.flatrate);
+                } else {
+                    setWatchProvidersData([]); // fallback if no flatrate providers
+                }
             }
         } catch (err) {
             console.error(err as Error);
         }
-    }, [selectedListItem]);
+    }, [selectedListItem, watchRegion]);
 
     useEffect(() => {
         fetchWatchProviders();

@@ -32,6 +32,7 @@ export function GlobalNav() {
         { href: "/", label: "Dashboard" },
         { href: "/watchlist", label: "My Watchlist" },
         { href: "/about", label: "About" },
+        { href: "/settings", label: "Settings" },
     ];
 
     return (

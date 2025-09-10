@@ -17,14 +17,14 @@ export default function Error({
     }, [error]);
 
     return (
-        <div>
+        <div className="text-center">
             <Alert variant="destructive" className="max-w-md text-center">
                 <AlertTitle>Something went wrong!</AlertTitle>
                 <AlertDescription>
                     An error occurred while loading this section. Please try again.
                 </AlertDescription>
             </Alert>
-            <Button onClick={() => reset()} className="mx-auto mt-4" variant="outline">
+            <Button onClick={() => reset()} className="mt-4 w-fit" variant="outline">
                 Try again
             </Button>
         </div>

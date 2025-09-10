@@ -30,6 +30,7 @@ export default function DiscoverMovieSection() {
     const [error, setError] = useState<Error | null>(null);
     const { watchlistData } = useWatchlistStore();
     const { discardedMovieData } = useDiscardedMovieStore();
+    const { watchRegion } = useFormStore();
     const pageNumberRef = useRef(1);
 
     const { values, formHydrated } = useFormStore();
@@ -64,7 +65,7 @@ export default function DiscoverMovieSection() {
     const fetchAvaliableMovies = useCallback(
         async (data: z.infer<typeof FormSchema>) => {
             try {
-                const params = mapFormToDiscoverParams(data, pageNumberRef.current);
+                const params = mapFormToDiscoverParams(data, pageNumberRef.current, watchRegion);
                 const res: TMDBDiscoverResponse = await discoverMovies(params);
                 res.results = filterOutWatchlistMovies(res.results);
                 res.results = separateDiscardedMovies(res.results);
@@ -74,7 +75,7 @@ export default function DiscoverMovieSection() {
                 setError(err as Error);
             }
         },
-        [setError, setMovieData, filterOutWatchlistMovies, separateDiscardedMovies]
+        [setError, setMovieData, filterOutWatchlistMovies, separateDiscardedMovies, watchRegion]
     );
 
     // this gets called from discover movie form if we ever change form values.

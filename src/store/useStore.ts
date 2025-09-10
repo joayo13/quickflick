@@ -55,10 +55,12 @@ interface FormState {
         releaseYear: [number, number];
         rating: [number, number];
     };
+    watchRegion: string;
     formHydrated: boolean;
     setValues: (
         updater: FormState["values"] | ((prev: FormState["values"]) => FormState["values"])
     ) => void;
+    setWatchRegion: (updater: string | ((prev: string) => string)) => void;
     resetValues: () => FormState["values"];
 }
 
@@ -80,10 +82,16 @@ export const useFormStore = create(
                 releaseYear: [1950, 2025],
                 rating: [1, 10],
             },
+            watchRegion: "CA",
             formHydrated: false,
             setValues: (updater) =>
                 set((state) => ({
                     values: typeof updater === "function" ? updater(state.values) : updater,
+                })),
+            setWatchRegion: (updater) =>
+                set((state) => ({
+                    watchRegion:
+                        typeof updater === "function" ? updater(state.watchRegion) : updater,
                 })),
             resetValues: () => {
                 set({ values: defaultValues });
