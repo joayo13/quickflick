@@ -17,38 +17,31 @@ export default function DiscoverMovieResultList() {
     } | null>(null);
     const exitX = useRef(0);
 
+    // select the topmost card data
     const currentMovieData = movieData?.results[movieData.results.length - 1] as TMDBMovie;
 
-    async function handleButtonDiscard() {
-        if (!currentMovieData) return;
-        exitX.current = 25;
-        setExitingMovie({
-            id: currentMovieData.id,
-            type: "discard",
-        });
-        setDiscardedMovieData((prev) =>
-            !prev.includes(currentMovieData.id) ? prev.concat(currentMovieData.id) : prev
-        );
-    }
-
-    async function handleButtonSave() {
-        if (!currentMovieData) return;
-        exitX.current = -25;
-        setExitingMovie({
-            id: currentMovieData.id,
-            type: "save",
-        });
-        try {
-            await addMovieToWatchlist(currentMovieData);
-            toast(`${currentMovieData.title} added to watchlist.`, {
-                icon: <ListCheckIcon />,
-            });
-        } catch (error) {
-            // error feedback
-            if (error instanceof Error) {
-                toast(`Failed to add ${currentMovieData.title} to watchlist.`, {
-                    icon: <CircleXIcon />,
-                });
+    async function handleMovieCardAction(x: number, movieData: TMDBMovie) {
+        // this handles both swipe actions and button save/dismiss actions
+        exitX.current = x;
+        if (x >= 40) {
+            // discard
+            setExitingMovie({ id: movieData.id, type: "discard" });
+            setDiscardedMovieData((prev) =>
+                !prev.includes(movieData.id) ? prev.concat(movieData.id) : prev
+            );
+        } else if (x <= -40) {
+            // save
+            setExitingMovie({ id: movieData.id, type: "save" });
+            try {
+                await addMovieToWatchlist(movieData);
+                toast(`${movieData.title} added to watchlist.`, { icon: <ListCheckIcon /> });
+            } catch (error) {
+                // error feedback
+                if (error instanceof Error) {
+                    toast(`Failed to add ${movieData.title} to watchlist.`, {
+                        icon: <CircleXIcon />,
+                    });
+                }
             }
         }
     }
@@ -57,6 +50,7 @@ export default function DiscoverMovieResultList() {
         <>
             {movieData?.results.slice(-2).map((movieData) => (
                 <DiscoverMovieResultCard
+                    handleMovieCardAction={handleMovieCardAction}
                     exitX={exitX}
                     exitingMovie={exitingMovie}
                     setExitingMovie={setExitingMovie}
@@ -65,13 +59,15 @@ export default function DiscoverMovieResultList() {
                 ></DiscoverMovieResultCard>
             ))}
             <Button
-                onClick={() => handleButtonSave()}
+                aria-label="save movie"
+                onClick={() => handleMovieCardAction(-40, currentMovieData)}
                 className="absolute top-1/2 -left-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
             >
                 <HeartIcon className="size-16 text-green-500" fill="currentColor" />
             </Button>
             <Button
-                onClick={handleButtonDiscard}
+                aria-label="discard movie"
+                onClick={() => handleMovieCardAction(40, currentMovieData)}
                 className="absolute top-1/2 -right-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
             >
                 <XIcon className="size-16 text-red-500" fill="currentColor" />

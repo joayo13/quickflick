@@ -1,13 +1,10 @@
 import { TMDBMovie } from "@/types/types";
 import MovieTitle from "@/components/typography/movieTitle";
-import { addMovieToWatchlist } from "@/features/DiscoverMovieDashboard/api/addMovieToWatchlist";
-import { useDiscardedMovieStore, useMovieStore } from "@/store/useStore";
+import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { CircleXIcon, HeartIcon, ListCheckIcon, XIcon } from "lucide-react";
-import React, { SetStateAction, useRef, useState } from "react";
-import { toast } from "sonner";
+import { HeartIcon, XIcon } from "lucide-react";
+import React, { SetStateAction } from "react";
 import { getGenreLabel } from "@/utils/tmdbUtils";
-import { Badge } from "@/components/ui/badge";
 
 interface ResultCardProps {
     movieData: TMDBMovie;
@@ -22,16 +19,16 @@ interface ResultCardProps {
         } | null>
     >;
     exitX: React.RefObject<number>;
+    handleMovieCardAction: (x: number, movieData: TMDBMovie) => Promise<void>;
 }
 
 export default function DiscoverMovieResultCard({
     movieData,
     exitingMovie,
-    setExitingMovie,
     exitX,
+    handleMovieCardAction,
 }: ResultCardProps) {
     const { setMovieData } = useMovieStore();
-    const { setDiscardedMovieData } = useDiscardedMovieStore();
 
     const x = useMotionValue(0);
     const rotate = useTransform(x, [-600, 600], [-20, 20]);
@@ -41,29 +38,7 @@ export default function DiscoverMovieResultCard({
     const movieYear = new Date(movieData.release_date).getFullYear();
 
     const handleDragEnd = async () => {
-        exitX.current = x.get();
-        console.log(exitX.current);
-        // discard
-        if (x.get() > 40) {
-            setExitingMovie({ id: movieData.id, type: "discard" });
-            setDiscardedMovieData((prev) =>
-                !prev.includes(movieData.id) ? prev.concat(movieData.id) : prev
-            );
-        } else if (x.get() < -40) {
-            // save
-            setExitingMovie({ id: movieData.id, type: "save" });
-            try {
-                await addMovieToWatchlist(movieData);
-                toast(`${movieData.title} added to watchlist.`, { icon: <ListCheckIcon /> });
-            } catch (error) {
-                // error feedback
-                if (error instanceof Error) {
-                    toast(`Failed to add ${movieData.title} to watchlist.`, {
-                        icon: <CircleXIcon />,
-                    });
-                }
-            }
-        }
+        handleMovieCardAction(x.get(), movieData);
     };
 
     return (
