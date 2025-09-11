@@ -109,7 +109,7 @@ export const useFormStore = create(
 
 interface WatchlistStore {
     watchlistData: WatchlistData[] | null;
-    storeHydrated: boolean;
+    watchlistStoreHydrated: boolean;
     setWatchlistData: (
         updater: WatchlistData[] | null | ((prev: WatchlistData[] | null) => WatchlistData[] | null)
     ) => void;
@@ -121,7 +121,7 @@ export const useWatchlistStore = create(
     persist<WatchlistStore>(
         (set) => ({
             watchlistData: defaultWatchlistData,
-            storeHydrated: false,
+            watchlistStoreHydrated: false,
             setWatchlistData: (updater) =>
                 set((state) => ({
                     watchlistData:
@@ -135,7 +135,7 @@ export const useWatchlistStore = create(
         {
             name: "watchlist-storage", // key in localStorage
             onRehydrateStorage: () => (state) => {
-                if (state) state.storeHydrated = true;
+                if (state) state.watchlistStoreHydrated = true;
             },
         }
     )

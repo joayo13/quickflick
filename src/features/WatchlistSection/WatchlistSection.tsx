@@ -8,19 +8,26 @@ import { AlertCircleIcon, SearchXIcon } from "lucide-react";
 import { WatchlistData } from "@/types/types";
 import WatchlistListItem from "./components/WatchlistItem";
 import WatchedWatchlistList from "./components/WatchedWatchlistList";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WatchlistSection() {
     const { watchlistData, setWatchlistData } = useWatchlistStore();
     const [error, setError] = useState<string | null>(null);
+    const [fetchingWatchlist, setFetchingWatchlist] = useState(false);
     const [selectedListItem, setSelectedListItem] = useState<WatchlistData | null>(null);
 
+    const skeletons = Array.from({ length: 5 });
+
     const fetchWatchlistCallback = useCallback(async () => {
+        setFetchingWatchlist(true);
         try {
             const res = await fetchWatchlist();
             setWatchlistData(res);
+            setFetchingWatchlist(false);
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
+                setFetchingWatchlist(false);
             }
         }
     }, [setError, setWatchlistData]);
@@ -30,6 +37,18 @@ export default function WatchlistSection() {
     }, [fetchWatchlistCallback]);
 
     function displayFetchWatchlistResults() {
+        if (fetchingWatchlist) {
+            return (
+                <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(100px,100px))] justify-center gap-2 p-1">
+                    <h1 className="col-span-full py-2 text-xl">My Watchlist (?)</h1>
+                    {skeletons.map((_, index) => (
+                        <div className="grid h-[150px] w-[100px] place-items-center" key={index}>
+                            <Skeleton className="h-full w-full rounded-lg bg-[var(--border)]" />
+                        </div>
+                    ))}
+                </div>
+            );
+        }
         if (error) {
             return (
                 <Alert
