@@ -29,7 +29,7 @@ export default function DiscoverMovieSection() {
     } = useMovieStore();
     const [error, setError] = useState<Error | null>(null);
     const { watchlistData } = useWatchlistStore();
-    const { discardedMovieData } = useDiscardedMovieStore();
+    const { discardedMovieSet } = useDiscardedMovieStore();
     const { watchRegion } = useFormStore();
     const pageNumberRef = useRef(1);
 
@@ -55,11 +55,11 @@ export default function DiscoverMovieSection() {
     const separateDiscardedMovies = useCallback(
         (results: TMDBMovie[]) => {
             setEndOfListMovieData((prev) =>
-                prev?.concat(results.filter((result) => discardedMovieData.includes(result.id)))
+                prev?.concat(results.filter((result) => discardedMovieSet.has(result.id)))
             );
-            return results.filter((result) => !discardedMovieData.includes(result.id));
+            return results.filter((result) => !discardedMovieSet.has(result.id));
         },
-        [discardedMovieData, setEndOfListMovieData]
+        [discardedMovieSet, setEndOfListMovieData]
     );
 
     const fetchAvaliableMovies = useCallback(

@@ -143,28 +143,35 @@ export const useWatchlistStore = create(
 
 interface DiscardedMovieStore {
     discardedMovieData: number[];
+    discardedMovieSet: Set<number>;
     storeHydrated: boolean;
     setDiscardedMovieData: (updater: number[] | ((prev: number[]) => number[])) => void;
 }
 
-const defaultDiscardedMovies: number[] = [];
-
 export const useDiscardedMovieStore = create(
     persist<DiscardedMovieStore>(
         (set) => ({
-            discardedMovieData: defaultDiscardedMovies,
+            discardedMovieData: [],
+            discardedMovieSet: new Set(),
             storeHydrated: false,
 
             setDiscardedMovieData: (updater) =>
-                set((state) => ({
-                    discardedMovieData:
-                        typeof updater === "function" ? updater(state.discardedMovieData) : updater,
-                })),
+                set((state) => {
+                    const newArray =
+                        typeof updater === "function" ? updater(state.discardedMovieData) : updater;
+                    return {
+                        discardedMovieData: newArray,
+                        discardedMovieSet: new Set(newArray),
+                    };
+                }),
         }),
         {
-            name: "discarded-movie-storage", // key in localStorage
+            name: "discarded-movie-storage",
             onRehydrateStorage: () => (state) => {
-                if (state) state.storeHydrated = true;
+                if (state) {
+                    state.storeHydrated = true;
+                    state.discardedMovieSet = new Set(state.discardedMovieData);
+                }
             },
         }
     )

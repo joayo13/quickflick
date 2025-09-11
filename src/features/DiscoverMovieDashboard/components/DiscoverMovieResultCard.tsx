@@ -31,7 +31,7 @@ export default function DiscoverMovieResultCard({
     exitX,
 }: ResultCardProps) {
     const { setMovieData } = useMovieStore();
-    const { discardedMovieData, setDiscardedMovieData } = useDiscardedMovieStore();
+    const { setDiscardedMovieData } = useDiscardedMovieStore();
 
     const x = useMotionValue(0);
     const rotate = useTransform(x, [-600, 600], [-20, 20]);
@@ -117,11 +117,6 @@ export default function DiscoverMovieResultCard({
                         <p key={id}>{getGenreLabel(id)}</p>
                     ))}
                 </span>
-                {discardedMovieData.includes(movieData.id) ? (
-                    <Badge variant={"secondary"} className="mt-4">
-                        Previously Discarded
-                    </Badge>
-                ) : null}
                 <p className="mt-4">{movieData?.overview}</p>
             </div>
         </motion.div>
