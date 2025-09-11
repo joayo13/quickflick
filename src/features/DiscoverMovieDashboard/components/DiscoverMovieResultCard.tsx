@@ -20,6 +20,7 @@ interface ResultCardProps {
     >;
     exitX: React.RefObject<number>;
     handleMovieCardAction: (x: number, movieData: TMDBMovie) => Promise<void>;
+    ariaHidden: boolean;
 }
 
 export default function DiscoverMovieResultCard({
@@ -27,6 +28,7 @@ export default function DiscoverMovieResultCard({
     exitingMovie,
     exitX,
     handleMovieCardAction,
+    ariaHidden,
 }: ResultCardProps) {
     const { setMovieData } = useMovieStore();
 
@@ -43,6 +45,7 @@ export default function DiscoverMovieResultCard({
 
     return (
         <motion.div
+            aria-hidden={ariaHidden}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             animate={

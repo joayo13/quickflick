@@ -46,6 +46,7 @@ export default function DeleteWatchlistItemButton({
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <Button
+                    aria-label={`delete ${selectedListItem?.movies.title} from watchlist`}
                     className="absolute top-22 right-2 h-8 w-8 rounded-full"
                     variant={"outline"}
                 >

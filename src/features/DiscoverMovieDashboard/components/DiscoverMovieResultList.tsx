@@ -48,8 +48,9 @@ export default function DiscoverMovieResultList() {
 
     return (
         <>
-            {movieData?.results.slice(-2).map((movieData) => (
+            {movieData?.results.slice(-2).map((movieData, index) => (
                 <DiscoverMovieResultCard
+                    ariaHidden={index === 0}
                     handleMovieCardAction={handleMovieCardAction}
                     exitX={exitX}
                     exitingMovie={exitingMovie}
@@ -60,6 +61,7 @@ export default function DiscoverMovieResultList() {
             ))}
             <Button
                 aria-label="save movie"
+                // this onclick manually applies the values of a swipe left
                 onClick={() => handleMovieCardAction(-40, currentMovieData)}
                 className="absolute top-1/2 -left-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
             >

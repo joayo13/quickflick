@@ -62,6 +62,7 @@ export function DiscoverMovieForm({
                 <Popover>
                     <PopoverTrigger asChild>
                         <Button
+                            aria-label="open search filters"
                             className="absolute top-2 right-2 z-30 h-8 w-8 rounded-full"
                             variant="outline"
                         >

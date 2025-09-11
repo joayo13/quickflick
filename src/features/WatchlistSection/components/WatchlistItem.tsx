@@ -91,6 +91,7 @@ export default function WatchlistListItem({
                         className="relative z-20 flex h-[100dvh] w-[100vw] rounded-xl bg-[var(--border)] bg-cover bg-center md:h-[750px] md:w-[500px]"
                     >
                         <Button
+                            aria-label={`exit ${selectedListItem.movies.title}`}
                             onClick={() =>
                                 startTransition(() => {
                                     setSelectedListItem(null);

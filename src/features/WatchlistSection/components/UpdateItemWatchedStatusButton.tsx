@@ -46,6 +46,7 @@ export default function UpdateItemWatchedStatusButton({
     }
     return (
         <Button
+            aria-label={`toggle ${selectedListItem.movies.title} watch status`}
             onClick={() => handleUpdateWatchlistItemWatchedStatus()}
             className="absolute top-12 right-2 h-8 w-8 rounded-full"
             variant={selectedListItem.watched ? "default" : "outline"}
