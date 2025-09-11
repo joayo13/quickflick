@@ -90,7 +90,7 @@ export default function WatchlistSection() {
     }
 
     return (
-        <>
+        <div className="mt-12">
             {displayFetchWatchlistResults()}
             {selectedListItem && (
                 <WatchlistListItem
@@ -98,6 +98,6 @@ export default function WatchlistSection() {
                     setSelectedListItem={setSelectedListItem}
                 />
             )}
-        </>
+        </div>
     );
 }

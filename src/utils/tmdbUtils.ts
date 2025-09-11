@@ -13,7 +13,7 @@ export const genresList = [
     { id: "10402", label: "Music" },
     { id: "9648", label: "Mystery" },
     { id: "10749", label: "Romance" },
-    { id: "878", label: "Science Fiction" },
+    { id: "878", label: "Sci-Fi" },
     { id: "10770", label: "TV Movie" },
     { id: "53", label: "Thriller" },
     { id: "10752", label: "War" },
