@@ -8,6 +8,9 @@ export async function getDiscardedMovies() {
     const { data: authData, error: authError } = await supabase.auth.getUser();
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
+    if (authData.user.email === "guest@quickflick.com") {
+        return "guest";
+    }
 
     const { data, error } = await supabase
         .from("discarded_movies")

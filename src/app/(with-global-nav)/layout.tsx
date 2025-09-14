@@ -30,8 +30,11 @@ export default function RootLayout({
 
     useEffect(() => {
         async function syncSupabaseToLocalStorage() {
-            const discardedMovies = await getDiscardedMovies();
-            setDiscardedMovieData(discardedMovies);
+            const res = await getDiscardedMovies();
+            if (res === "guest") {
+                return;
+            }
+            setDiscardedMovieData(res);
             supabaseSyncedRef.current = true;
         }
 

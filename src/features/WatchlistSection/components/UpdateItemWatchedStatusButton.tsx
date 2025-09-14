@@ -40,7 +40,9 @@ export default function UpdateItemWatchedStatusButton({
                     `Marked ${selectedListItem.movies.title} as ${selectedListItem.watched ? "watched" : "unwatched"}.`
                 );
             } catch (err) {
-                console.log(err);
+                if (err instanceof Error) {
+                    toast(err.message);
+                }
             }
         }
     }

@@ -1,5 +1,5 @@
 "use client";
-import { useDiscardedMovieStore, useMovieStore } from "@/store/useStore";
+import { useDiscardedMovieStore, useMovieStore, useWatchlistStore } from "@/store/useStore";
 import React, { useRef, useState } from "react";
 import DiscoverMovieResultCard from "./DiscoverMovieResultCard";
 import { CircleXIcon, HeartIcon, ListCheckIcon, XIcon } from "lucide-react";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 export default function DiscoverMovieResultList() {
     const { movieData } = useMovieStore();
     const { setDiscardedMovieData } = useDiscardedMovieStore();
+    const { watchlistData, setWatchlistData } = useWatchlistStore();
     const [exitingMovie, setExitingMovie] = useState<{
         id: number;
         type: "save" | "discard";
@@ -33,8 +34,24 @@ export default function DiscoverMovieResultList() {
             // save
             setExitingMovie({ id: movieData.id, type: "save" });
             try {
-                await addMovieToWatchlist(movieData);
+                const { type } = await addMovieToWatchlist(movieData);
+                if (type === "guest") {
+                    setWatchlistData((prev) =>
+                        prev
+                            ? prev.concat({
+                                  id: movieData.id,
+                                  movie_id: movieData.id,
+                                  movies: movieData,
+                                  user_id: "guest",
+                                  watched: false,
+                              })
+                            : prev
+                    );
+                }
                 toast(`${movieData.title} added to watchlist.`, { icon: <ListCheckIcon /> });
+                setTimeout(() => {
+                    console.log(watchlistData);
+                }, 500);
             } catch (error) {
                 // error feedback
                 if (error instanceof Error) {

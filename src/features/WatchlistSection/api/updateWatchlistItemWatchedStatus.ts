@@ -8,6 +8,9 @@ export async function updateWatchlistItemWatchedStatus(watchlistItemId: number, 
     const { data: authData, error: authError } = await supabase.auth.getUser();
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
+    if (authData.user.email === "guest@quickflick.com") {
+        return "guest";
+    }
 
     // Update the watchlist entry
     const { data, error } = await supabase

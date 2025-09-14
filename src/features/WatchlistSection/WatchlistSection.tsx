@@ -11,7 +11,7 @@ import WatchedWatchlistList from "./components/WatchedWatchlistList";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WatchlistSection() {
-    const { watchlistData, setWatchlistData } = useWatchlistStore();
+    const { watchlistData, watchlistStoreHydrated, setWatchlistData } = useWatchlistStore();
     const [error, setError] = useState<string | null>(null);
     const [fetchingWatchlist, setFetchingWatchlist] = useState(false);
     const [selectedListItem, setSelectedListItem] = useState<WatchlistData | null>(null);
@@ -22,8 +22,11 @@ export default function WatchlistSection() {
         setFetchingWatchlist(true);
         try {
             const res = await fetchWatchlist();
+            if (res === "guest") {
+                setFetchingWatchlist(false);
+                return;
+            }
             setWatchlistData(res);
-            setFetchingWatchlist(false);
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);

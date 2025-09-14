@@ -23,7 +23,9 @@ export async function addMovieToWatchlist(movie: TMDBMovie) {
     const { data: authData, error: authError } = await supabase.auth.getUser();
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
-
+    if (authData.user.email === "guest@quickflick.com") {
+        return { success: true, type: "guest" };
+    }
     const userId = authData.user.id;
 
     // 2. Ensure movie exists in movies table
@@ -56,5 +58,5 @@ export async function addMovieToWatchlist(movie: TMDBMovie) {
 
     if (watchlistError) throw watchlistError;
 
-    return { success: true };
+    return { success: true, type: "user" };
 }

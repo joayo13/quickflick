@@ -7,6 +7,9 @@ export default async function fetchWatchlist() {
     const { data: authData, error: authError } = await supabase.auth.getUser();
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
+    if (authData.user.email === "guest@quickflick.com") {
+        return "guest";
+    }
 
     const userId = authData.user.id;
 
