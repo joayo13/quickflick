@@ -9,7 +9,7 @@ export async function getDiscardedMovies() {
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
     if (authData.user.email === "guest@quickflick.com") {
-        return "guest";
+        return { movies: [], userIsGuest: true };
     }
 
     const { data, error } = await supabase
@@ -23,5 +23,5 @@ export async function getDiscardedMovies() {
     // normalize to numbers just in case
     const movies: number[] = (data?.movies ?? []).map((id: string) => Number(id));
 
-    return movies;
+    return { movies: movies, userIsGuest: false };
 }

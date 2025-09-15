@@ -24,7 +24,7 @@ export async function addMovieToWatchlist(movie: TMDBMovie) {
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
     if (authData.user.email === "guest@quickflick.com") {
-        return { success: true, type: "guest" };
+        return { success: true, userIsGuest: true };
     }
     const userId = authData.user.id;
 
@@ -58,5 +58,5 @@ export async function addMovieToWatchlist(movie: TMDBMovie) {
 
     if (watchlistError) throw watchlistError;
 
-    return { success: true, type: "user" };
+    return { success: true, userIsGuest: false };
 }

@@ -20,7 +20,7 @@ export async function updateDiscardedMovies(stored: string) {
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
     if (authData.user.email === "guest@quickflick.com") {
-        return "guest";
+        return { success: true, userIsGuest: true };
     }
 
     const { data: updateData, error: updateError } = await supabase
@@ -29,8 +29,8 @@ export async function updateDiscardedMovies(stored: string) {
         .eq("id", authData.user.id);
 
     if (updateError) {
-        console.error("Error updating movies:", updateError);
+        throw updateError;
     } else {
-        console.log("Movies updated successfully:", updateData);
+        return updateData;
     }
 }

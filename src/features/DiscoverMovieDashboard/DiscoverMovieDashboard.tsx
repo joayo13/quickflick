@@ -22,12 +22,13 @@ import DiscoverMovieResultList from "./components/DiscoverMovieResultList";
 export default function DiscoverMovieSection() {
     const {
         movieData,
+        error,
+        setError,
         endOfListMovieData,
         setMovieData,
         setEndOfListMovieData,
         movieStoreHydrated,
     } = useMovieStore();
-    const [error, setError] = useState<Error | null>(null);
     const { watchlistData } = useWatchlistStore();
     const { discardedMovieSet } = useDiscardedMovieStore();
     const { watchRegion } = useFormStore();
@@ -128,6 +129,7 @@ export default function DiscoverMovieSection() {
         if (movieData?.results.length === 0 && movieData.page === movieData.total_pages) {
             return <DiscoverMovieEndOfResultsCard />;
         }
+
         if (movieData?.results) {
             return <DiscoverMovieResultList />;
         }

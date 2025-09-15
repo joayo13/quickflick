@@ -34,8 +34,9 @@ export default function DiscoverMovieResultList() {
             // save
             setExitingMovie({ id: movieData.id, type: "save" });
             try {
-                const { type } = await addMovieToWatchlist(movieData);
-                if (type === "guest") {
+                const { userIsGuest } = await addMovieToWatchlist(movieData);
+                if (userIsGuest === true) {
+                    // if it's a guest directly return early from addMovieToWatchlist and set watchlist data locally instead
                     setWatchlistData((prev) =>
                         prev
                             ? prev.concat({

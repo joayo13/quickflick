@@ -5,10 +5,11 @@ import { TMDBDiscoverResponse, TMDBMovie, WatchlistData } from "@/types/types";
 export interface MovieStore {
     movieData: TMDBDiscoverResponse | null;
     endOfListMovieData: TMDBMovie[] | undefined;
+    error: Error | null;
     setMovieData: (
         updater:
             | TMDBDiscoverResponse
-            | undefined
+            | null
             | ((prev: TMDBDiscoverResponse | null) => TMDBDiscoverResponse | null)
     ) => void;
     setEndOfListMovieData: (
@@ -17,6 +18,7 @@ export interface MovieStore {
             | undefined
             | ((prev: TMDBMovie[] | undefined) => TMDBMovie[] | undefined)
     ) => void;
+    setError: (error: Error | null) => void;
     clearMovieData: () => void;
     movieStoreHydrated: boolean;
 }
@@ -26,6 +28,7 @@ export const useMovieStore = create<MovieStore>()(
         (set) => ({
             movieData: null,
             endOfListMovieData: undefined,
+            error: null,
             movieStoreHydrated: false,
             setMovieData: (updater) =>
                 set((state) => ({
@@ -36,10 +39,11 @@ export const useMovieStore = create<MovieStore>()(
                     endOfListMovieData:
                         typeof updater === "function" ? updater(state.endOfListMovieData) : updater,
                 })),
-            clearMovieData: () => set({ movieData: null }),
+            setError: (error) => set({ error }),
+            clearMovieData: () => set({ movieData: null, error: null }),
         }),
         {
-            name: "movie-storage", // key in localStorage
+            name: "movie-storage",
             onRehydrateStorage: () => (state) => {
                 if (state) state.movieStoreHydrated = true;
             },
@@ -99,7 +103,7 @@ export const useFormStore = create(
             },
         }),
         {
-            name: "form-storage", // key in localStorage
+            name: "form-storage",
             onRehydrateStorage: () => (state) => {
                 if (state) state.formHydrated = true;
             },

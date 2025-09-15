@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import DiscoverMovieDashboard from "../src/features/DiscoverMovieDashboard/DiscoverMovieDashboard";
-import * as api from "../src/features/DiscoverMovieDashboard/api/discoverMovies";
+import DiscoverMovieDashboard from "./DiscoverMovieDashboard";
+import { useMovieStore } from "@/store/useStore";
 
 const baseURL = "https://api.themoviedb.org/3/discover/movie";
 
@@ -43,7 +42,7 @@ describe("Discover movies API", () => {
 // intergration tests
 
 describe("DiscoverMovieDashboard UI", () => {
-    beforeAll(() => {
+    beforeAll(async () => {
         Object.defineProperty(window, "matchMedia", {
             writable: true,
             value: (query: string) => ({
@@ -62,27 +61,52 @@ describe("DiscoverMovieDashboard UI", () => {
         vi.restoreAllMocks();
     });
     it("renders a movie card from the API", async () => {
+        useMovieStore.getState().setMovieData(await fetchMovies(`${baseURL}?page=1`));
         render(<DiscoverMovieDashboard />);
         const movieTitle = await screen.findByText("Original Title");
         expect(movieTitle.textContent).toBe("Original Title");
     });
     it("renders an error text from error card when out of page range", async () => {
-        vi.spyOn(api, "discoverMovies").mockRejectedValue(
-            new Error("Invalid page: Pages start at 1 and max at 500.")
-        );
+        // directly set error in Zustand store
+        useMovieStore
+            .getState()
+            .setError(new Error("Invalid page: Pages start at 1 and max at 500."));
+
+        // render the dashboard
         render(<DiscoverMovieDashboard />);
+
+        // assert the error card shows up
         const errorText = await screen.findByText("Error");
         expect(errorText.textContent).toBe("Error");
     });
     it("renders no results found card when results returned are empty", async () => {
-        vi.spyOn(api, "discoverMovies").mockResolvedValue({
+        // directly set movieData in Zustand store
+        useMovieStore.getState().setMovieData({
             page: 1,
             total_results: 0,
             total_pages: 0,
             results: [],
         });
+
         render(<DiscoverMovieDashboard />);
-        const errorText = await screen.findByText("No results found.");
-        expect(errorText.textContent).toBe("No results found.");
+
+        // wait for the card to appear
+        const noResultsText = await screen.findByText("No results found.");
+        expect(noResultsText).toBeInTheDocument();
+    });
+    it("renders welcome card when no movie data is set", async () => {
+        // set movieData and mark store as hydrated
+        useMovieStore.setState({
+            movieData: null,
+            movieStoreHydrated: true,
+            endOfListMovieData: undefined,
+            error: null, // if you added error to the store
+        });
+
+        render(<DiscoverMovieDashboard />);
+
+        // wait for the welcome card to appear
+        const letsGetStarted = await screen.findByText("Let's get started.");
+        expect(letsGetStarted).toBeInTheDocument();
     });
 });

@@ -21,6 +21,7 @@ export default function RootLayout({
             if (currentLength > lastLengthRef.current && supabaseSyncedRef.current) {
                 const stored = localStorage.getItem("discarded-movie-storage");
                 if (stored) await updateDiscardedMovies(stored); // your update function
+
                 lastLengthRef.current = currentLength;
             }
         }, 10000);
@@ -30,11 +31,12 @@ export default function RootLayout({
 
     useEffect(() => {
         async function syncSupabaseToLocalStorage() {
-            const res = await getDiscardedMovies();
-            if (res === "guest") {
+            const { movies, userIsGuest } = await getDiscardedMovies();
+            if (userIsGuest === true) {
+                // we return early out of the getDiscardedMovies function and just return if it's a guest, since they already will have local data set
                 return;
             }
-            setDiscardedMovieData(res);
+            setDiscardedMovieData(movies);
             supabaseSyncedRef.current = true;
         }
 

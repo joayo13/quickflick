@@ -9,7 +9,7 @@ export async function deleteWatchlistItem(id: number) {
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
     if (authData.user.email === "guest@quickflick.com") {
-        return "guest";
+        return { data: null, userIsGuest: true };
     }
 
     const { data, error } = await supabase.from("watchlist").delete().eq("id", id);
@@ -19,5 +19,5 @@ export async function deleteWatchlistItem(id: number) {
         throw error;
     }
 
-    return data; // returns the deleted row(s)
+    return { data: data, userIsGuest: false }; // returns the deleted row(s)
 }
