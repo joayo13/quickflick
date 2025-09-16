@@ -6,12 +6,12 @@ import UnwatchedWatchlistList from "./components/UnwatchedWatchlistList";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, SearchXIcon } from "lucide-react";
 import { WatchlistData } from "@/types/types";
-import WatchlistListItem from "./components/WatchlistItem";
+import WatchlistItem from "./components/WatchlistItem";
 import WatchedWatchlistList from "./components/WatchedWatchlistList";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WatchlistSection() {
-    const { watchlistData, watchlistStoreHydrated, setWatchlistData } = useWatchlistStore();
+    const { watchlistData, setWatchlistData } = useWatchlistStore();
     const [error, setError] = useState<string | null>(null);
     const [fetchingWatchlist, setFetchingWatchlist] = useState(false);
     const [selectedListItem, setSelectedListItem] = useState<WatchlistData | null>(null);
@@ -21,13 +21,14 @@ export default function WatchlistSection() {
     const fetchWatchlistCallback = useCallback(async () => {
         setFetchingWatchlist(true);
         try {
-            const res = await fetchWatchlist();
-            if (res === "guest") {
+            const { watchlist, userIsGuest } = await fetchWatchlist();
+            if (userIsGuest === true) {
+                // return early out of fetch since we'll just be using local data
                 setFetchingWatchlist(false);
                 return;
             }
 
-            setWatchlistData(res);
+            setWatchlistData(watchlist);
             setFetchingWatchlist(false);
         } catch (err) {
             if (err instanceof Error) {
@@ -98,7 +99,7 @@ export default function WatchlistSection() {
         <div className="mt-12">
             {displayFetchWatchlistResults()}
             {selectedListItem && (
-                <WatchlistListItem
+                <WatchlistItem
                     selectedListItem={selectedListItem}
                     setSelectedListItem={setSelectedListItem}
                 />

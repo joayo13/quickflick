@@ -8,7 +8,7 @@ export default async function fetchWatchlist() {
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
     if (authData.user.email === "guest@quickflick.com") {
-        return "guest";
+        return { watchlist: [], userIsGuest: true };
     }
 
     const userId = authData.user.id;
@@ -19,5 +19,5 @@ export default async function fetchWatchlist() {
         .eq("user_id", userId);
 
     if (watchlistError) throw watchlistError;
-    return watchlist;
+    return { watchlist: watchlist, userIsGuest: false };
 }

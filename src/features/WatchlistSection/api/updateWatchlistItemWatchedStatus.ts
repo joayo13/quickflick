@@ -9,7 +9,7 @@ export async function updateWatchlistItemWatchedStatus(watchlistItemId: number, 
     if (authError) throw authError;
     if (!authData.user) throw new Error("Not logged in");
     if (authData.user.email === "guest@quickflick.com") {
-        return "guest";
+        return { data: null, userIsGuest: true };
     }
 
     // Update the watchlist entry
@@ -21,5 +21,5 @@ export async function updateWatchlistItemWatchedStatus(watchlistItemId: number, 
         .single();
 
     if (error) throw error;
-    return data;
+    return { data: data, userIsGuest: true };
 }

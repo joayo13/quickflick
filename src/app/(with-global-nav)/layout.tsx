@@ -18,6 +18,7 @@ export default function RootLayout({
         const interval = setInterval(async () => {
             const currentLength = discardedMovieData.length;
 
+            // we only update discarded movies in supabase if the intial supabase sync was successful
             if (currentLength > lastLengthRef.current && supabaseSyncedRef.current) {
                 const stored = localStorage.getItem("discarded-movie-storage");
                 if (stored) await updateDiscardedMovies(stored); // your update function

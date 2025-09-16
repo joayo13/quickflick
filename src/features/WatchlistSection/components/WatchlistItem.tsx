@@ -18,10 +18,7 @@ import UpdateItemWatchedStatusButton from "./UpdateItemWatchedStatusButton";
 import DeleteWatchlistItemButton from "./DeleteWatchlistItemButton";
 import { useFormStore } from "@/store/useStore";
 
-export default function WatchlistListItem({
-    selectedListItem,
-    setSelectedListItem,
-}: WatchlistProps) {
+export default function WatchlistItem({ selectedListItem, setSelectedListItem }: WatchlistProps) {
     const [watchProvidersData, setWatchProvidersData] = useState<WatchProvidersFlatrate[] | null>(
         null
     );
