@@ -64,7 +64,7 @@ describe("DiscoverMovieDashboard UI", () => {
         useMovieStore.getState().setMovieData(await fetchMovies(`${baseURL}?page=1`));
         render(<DiscoverMovieDashboard />);
         const movieTitle = await screen.findByText("Original Title");
-        expect(movieTitle.textContent).toBe("Original Title");
+        expect(movieTitle).toBeInTheDocument();
     });
     it("renders an error text from error card when out of page range", async () => {
         // directly set error in Zustand store
@@ -77,7 +77,7 @@ describe("DiscoverMovieDashboard UI", () => {
 
         // assert the error card shows up
         const errorText = await screen.findByText("Error");
-        expect(errorText.textContent).toBe("Error");
+        expect(errorText).toBeInTheDocument();
     });
     it("renders no results found card when results returned are empty", async () => {
         // directly set movieData in Zustand store

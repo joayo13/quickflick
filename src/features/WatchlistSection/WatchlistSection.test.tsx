@@ -68,7 +68,7 @@ describe("Watchlist Section UI", () => {
 
         render(<WatchlistSection />);
         const movieTitle = await screen.findByText("Shrek");
-        expect(movieTitle.textContent).toBe("Shrek");
+        expect(movieTitle).toBeInTheDocument();
     });
     it("renders no watchlist items card when no watchlist are fetched", async () => {
         vi.mocked(fetchWatchlist).mockResolvedValueOnce({
@@ -78,6 +78,14 @@ describe("Watchlist Section UI", () => {
 
         render(<WatchlistSection />);
         const movieTitle = await screen.findByText("No movies found in watchlist.");
-        expect(movieTitle.textContent).toBe("No movies found in watchlist.");
+        expect(movieTitle).toBeInTheDocument();
+    });
+    it("renders error message when fetch fails", async () => {
+        vi.mocked(fetchWatchlist).mockRejectedValueOnce(new Error("Something went wrong"));
+
+        render(<WatchlistSection />);
+
+        const errorTitle = await screen.findByText("Something went wrong");
+        expect(errorTitle).toBeInTheDocument();
     });
 });
