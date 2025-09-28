@@ -33,6 +33,7 @@ export default function DiscoverMovieResultCard({
     const { setMovieData } = useMovieStore();
 
     const x = useMotionValue(0);
+    const y = useMotionValue(0);
     const rotate = useTransform(x, [-600, 600], [-20, 20]);
     const heartIconScale = useTransform(x, [-40, 0, 40], [10, 0, 0]);
     const xIconScale = useTransform(x, [-40, 0, 40], [0, 0, 10]);
@@ -40,14 +41,18 @@ export default function DiscoverMovieResultCard({
     const movieYear = new Date(movieData.release_date).getFullYear();
 
     const handleDragEnd = async () => {
+        console.log(y.get());
         handleMovieCardAction(x.get(), movieData);
     };
 
     return (
         <motion.div
             aria-hidden={ariaHidden}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
+            drag={true}
+            dragDirectionLock
+            dragSnapToOrigin
+            dragElastic={0.5}
+            dragMomentum={false}
             animate={
                 exitingMovie?.id === movieData.id ? { opacity: 0, x: exitX.current * 4 } : undefined
             }
@@ -69,8 +74,9 @@ export default function DiscoverMovieResultCard({
             onDragEnd={handleDragEnd}
             style={{
                 backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(https://image.tmdb.org/t/p/original${movieData?.poster_path})`,
-                x,
-                rotate,
+                x: x,
+                y: y,
+                rotate: rotate,
             }}
             className="relative z-20 col-start-1 row-start-1 flex h-full w-full rounded-xl bg-[var(--border)] bg-cover bg-center hover:cursor-grab active:cursor-grabbing"
         >
