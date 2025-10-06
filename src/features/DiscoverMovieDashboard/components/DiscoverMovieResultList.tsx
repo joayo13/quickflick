@@ -115,7 +115,7 @@ export default function DiscoverMovieResultList() {
             </Button>
             <Button
                 aria-label="go back to previous movie"
-                className="absolute top-2 left-2 z-30 h-8 w-8 rounded-full"
+                className="absolute top-12 right-2 z-30 h-8 w-8 rounded-full"
                 variant="outline"
                 onClick={pushPrevMovieIntoMovieData}
             >
