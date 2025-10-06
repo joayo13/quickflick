@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 export default function DiscoverMovieResultList() {
     const { movieData, setMovieData } = useMovieStore();
     const { setDiscardedMovieData } = useDiscardedMovieStore();
-    const { setWatchlistData } = useWatchlistStore();
+    const { watchlistData, setWatchlistData } = useWatchlistStore();
     const [exitingMovie, setExitingMovie] = useState<{
         id: number;
         type: "save" | "discard";
@@ -60,6 +60,13 @@ export default function DiscoverMovieResultList() {
                 const { userIsGuest } = await addMovieToWatchlist(movieData);
                 if (userIsGuest === true) {
                     // if it's a guest directly return early from addMovieToWatchlist and set watchlist data locally instead
+                    if (watchlistData.some((data) => data.id === movieData.id)) {
+                        toast(`${movieData.title} already in watchlist.`, {
+                            icon: <CircleXIcon />,
+                        });
+                        addMovieToPrevMovies(movieData);
+                        return;
+                    }
                     setWatchlistData((prev) =>
                         prev
                             ? prev.concat({
