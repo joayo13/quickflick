@@ -11,7 +11,7 @@ export default function UpdateItemWatchedStatusButton({
 }: {
     selectedListItem: WatchlistData;
 }) {
-    const { setWatchlistData } = useWatchlistStore();
+    const setWatchlistData = useWatchlistStore((state) => state.setWatchlistData);
 
     async function handleUpdateWatchlistItemWatchedStatus() {
         if (selectedListItem) {

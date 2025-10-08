@@ -27,7 +27,9 @@ export function DiscoverMovieForm({
 }: {
     fetchWithUpdatedFormValues: (data: z.infer<typeof FormSchema>) => void;
 }) {
-    const { values, setValues, resetValues } = useFormStore();
+    const values = useFormStore((state) => state.values);
+    const setValues = useFormStore((state) => state.setValues);
+    const resetValues = useFormStore((state) => state.resetValues);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),

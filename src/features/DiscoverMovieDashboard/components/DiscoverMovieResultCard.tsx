@@ -30,8 +30,7 @@ export default function DiscoverMovieResultCard({
     handleMovieCardAction,
     ariaHidden,
 }: ResultCardProps) {
-    const { setMovieData } = useMovieStore();
-
+    const setMovieData = useMovieStore((state) => state.setMovieData);
     const x = useMotionValue(0);
     const rotate = useTransform(x, [-600, 600], [-20, 20]);
     const heartIconScale = useTransform(x, [-40, 0, 40], [10, 0, 0]);

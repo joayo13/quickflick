@@ -6,7 +6,7 @@ export default function WatchedWatchlistList({
     selectedListItem,
     setSelectedListItem,
 }: WatchlistProps) {
-    const { watchlistData } = useWatchlistStore();
+    const watchlistData = useWatchlistStore((state) => state.watchlistData);
 
     const watchedWatchlistData = watchlistData?.filter((item) => item.watched === true);
 

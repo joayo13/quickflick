@@ -9,9 +9,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 export default function DiscoverMovieResultList() {
-    const { movieData, setMovieData } = useMovieStore();
-    const { setDiscardedMovieData } = useDiscardedMovieStore();
-    const { watchlistData, setWatchlistData } = useWatchlistStore();
+    const movieData = useMovieStore((state) => state.movieData);
+    const setMovieData = useMovieStore((state) => state.setMovieData);
+
+    const setDiscardedMovieData = useDiscardedMovieStore((state) => state.setDiscardedMovieData);
+
+    const watchlistData = useWatchlistStore((state) => state.watchlistData);
+    const setWatchlistData = useWatchlistStore((state) => state.setWatchlistData);
+
     const [exitingMovie, setExitingMovie] = useState<{
         id: number;
         type: "save" | "discard";

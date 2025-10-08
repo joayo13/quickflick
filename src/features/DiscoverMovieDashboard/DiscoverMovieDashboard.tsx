@@ -29,12 +29,13 @@ export default function DiscoverMovieSection() {
         setEndOfListMovieData,
         movieStoreHydrated,
     } = useMovieStore();
-    const { watchlistData } = useWatchlistStore();
-    const { discardedMovieSet } = useDiscardedMovieStore();
-    const { watchRegion } = useFormStore();
-    const pageNumberRef = useRef(1);
 
-    const { values, formHydrated } = useFormStore();
+    const watchlistData = useWatchlistStore((state) => state.watchlistData);
+    const discardedMovieSet = useDiscardedMovieStore((state) => state.discardedMovieSet);
+    const watchRegion = useFormStore((state) => state.watchRegion);
+    const values = useFormStore((state) => state.values);
+    const formHydrated = useFormStore((state) => state.formHydrated);
+    const pageNumberRef = useRef(1);
 
     // adding no-scroll to prevent scrollbars flickering in during movie card dismiss/save animations on desktop
     useEffect(() => {

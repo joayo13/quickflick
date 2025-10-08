@@ -23,7 +23,7 @@ export default function WatchlistItem({ selectedListItem, setSelectedListItem }:
         null
     );
 
-    const { watchRegion } = useFormStore();
+    const watchRegion = useFormStore((state) => state.watchRegion);
 
     const fetchWatchProviders = useCallback(async () => {
         try {
