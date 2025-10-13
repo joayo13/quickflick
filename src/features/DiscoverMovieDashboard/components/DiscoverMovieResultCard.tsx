@@ -3,8 +3,9 @@ import MovieTitle from "@/components/typography/movieTitle";
 import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { HeartIcon, XIcon } from "lucide-react";
-import React, { SetStateAction } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import { getGenreLabel } from "@/utils/tmdbUtils";
+import { getMovieVideos } from "../api/getMovieVideos";
 
 interface ResultCardProps {
     movieData: TMDBMovie;
@@ -23,6 +24,11 @@ interface ResultCardProps {
     ariaHidden: boolean;
 }
 
+interface MovieVideoResponse {
+    key: string;
+    id: string;
+}
+
 export default function DiscoverMovieResultCard({
     movieData,
     exitingMovie,
@@ -32,11 +38,34 @@ export default function DiscoverMovieResultCard({
 }: ResultCardProps) {
     const setMovieData = useMovieStore((state) => state.setMovieData);
     const x = useMotionValue(0);
+    const y = useMotionValue(0);
     const rotate = useTransform(x, [-600, 600], [-20, 20]);
     const heartIconScale = useTransform(x, [-40, 0, 40], [10, 0, 0]);
     const xIconScale = useTransform(x, [-40, 0, 40], [0, 0, 10]);
 
+    const [trailerShowing, setTrailerShowing] = useState(false);
+
+    const [trailerLink, setTrailerLink] = useState<MovieVideoResponse | undefined>(undefined);
+
     const movieYear = new Date(movieData.release_date).getFullYear();
+
+    useEffect(() => {
+        async function getTrailerVideos() {
+            setTrailerLink(await getMovieVideos(movieData.id));
+        }
+        getTrailerVideos();
+    }, [movieData.id]);
+
+    const handleTrailerDragEnd = async () => {
+        if (y.get() < -15) {
+            setTrailerShowing(true);
+            if (trailerLink === undefined) {
+                setTrailerLink(await getMovieVideos(movieData.id));
+            }
+        } else if (y.get() > 15) {
+            setTrailerShowing(false);
+        }
+    };
 
     const handleDragEnd = async () => {
         handleMovieCardAction(x.get(), movieData);
@@ -46,6 +75,7 @@ export default function DiscoverMovieResultCard({
         <motion.div
             aria-hidden={ariaHidden}
             drag="x"
+            dragDirectionLock={true}
             dragConstraints={{ left: 0, right: 0 }}
             animate={
                 exitingMovie?.id === movieData.id ? { opacity: 0, x: exitX.current * 4 } : undefined
@@ -71,8 +101,30 @@ export default function DiscoverMovieResultCard({
                 x,
                 rotate,
             }}
-            className="relative z-20 col-start-1 row-start-1 flex h-full w-full rounded-xl bg-[var(--border)] bg-cover bg-center hover:cursor-grab active:cursor-grabbing"
+            className="relative z-20 col-start-1 row-start-1 flex h-full w-full overflow-y-hidden rounded-xl bg-[var(--border)] bg-cover bg-center hover:cursor-grab active:cursor-grabbing"
         >
+            {/* trailer div */}
+            <motion.div
+                style={{ y }}
+                drag="y"
+                dragMomentum={false}
+                dragElastic={trailerShowing ? { top: 0, bottom: 0.2 } : { top: 0.2, bottom: 0 }}
+                animate={trailerShowing ? { top: "-100%", bottom: "-100%" } : { top: 0, bottom: 0 }}
+                dragConstraints={{ top: 0, bottom: 0 }}
+                onDragEnd={handleTrailerDragEnd}
+                dragDirectionLock={true}
+                className="absolute h-[200%] w-full overflow-hidden"
+            >
+                <iframe
+                    className="pointer-events-none absolute bottom-0 h-1/2 w-full"
+                    height="750"
+                    src={`https://www.youtube.com/embed/${trailerLink?.key}?si=${trailerLink?.id}&autoplay=${trailerShowing ? 1 : 0}&loop=1&controls=0&color=white&modestbranding=0&rel=0&playsinline=1&enablejsapi=1&playlist=${trailerLink?.key}`}
+                    title="YouTube video player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                ></iframe>
+            </motion.div>
             <motion.div
                 style={{ scale: heartIconScale }}
                 className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
