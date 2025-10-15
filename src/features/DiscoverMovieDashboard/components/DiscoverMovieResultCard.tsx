@@ -111,16 +111,21 @@ export default function DiscoverMovieResultCard({
                 onDragEnd={handleTrailerDragEnd}
                 className="absolute h-[200%] w-full overflow-hidden"
             >
-                <iframe
-                    tabIndex={-1}
-                    className="pointer-events-none absolute bottom-0 h-1/2 w-full"
-                    height="750"
-                    src={`https://www.youtube.com/embed/${movieTrailerData.trailerLink?.key}?si=${movieTrailerData.trailerLink?.id}&autoplay=${movieTrailerData.trailerShowing ? 1 : 0}&loop=1&controls=0&color=white&modestbranding=0&rel=0&playsinline=1&enablejsapi=1&playlist=${movieTrailerData.trailerLink?.key}`}
-                    title="YouTube video player"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                ></iframe>
+                {" "}
+                {movieTrailerData.id === movieData.id ? (
+                    <iframe
+                        tabIndex={-1}
+                        className="pointer-events-none absolute bottom-0 h-1/2 w-full"
+                        height="750"
+                        src={`https://www.youtube.com/embed/${movieTrailerData.trailerLink?.key}?si=${movieTrailerData.trailerLink?.id}&autoplay=${movieTrailerData.trailerShowing ? 1 : 0}&loop=1&controls=0&color=white&modestbranding=0&rel=0&playsinline=1&enablejsapi=1&playlist=${movieTrailerData.trailerLink?.key}`}
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                    ></iframe>
+                ) : (
+                    <div className="absolute bottom-0 h-1/2 w-full bg-[var(--input)]"></div>
+                )}
             </motion.div>
             <motion.div
                 style={{ scale: heartIconScale }}
