@@ -54,8 +54,8 @@ export default function DiscoverMovieResultList() {
         setPrevMovies((prev) => prev.concat(movieData));
     }
 
-    async function handleTrailerSwipe(y: number, movieData: TMDBMovie) {
-        if (y <= -40) {
+    async function handleTrailerToggle(movieData: TMDBMovie) {
+        if (!movieTrailerData.trailerShowing) {
             if (!movieTrailerData.trailerLink.id) {
                 const data = await getMovieVideos(movieData.id);
                 setMovieTrailerData((prev) =>
@@ -76,7 +76,7 @@ export default function DiscoverMovieResultList() {
                       }
                     : prev
             );
-        } else if (y >= 40) {
+        } else {
             setMovieTrailerData((prev) => (prev ? { ...prev, trailerShowing: false } : prev));
         }
     }
@@ -141,7 +141,6 @@ export default function DiscoverMovieResultList() {
                 <DiscoverMovieResultCard
                     ariaHidden={index === 0}
                     handleMovieCardAction={handleMovieCardAction}
-                    handleTrailerSwipe={handleTrailerSwipe}
                     exitX={exitX}
                     exitingMovie={exitingMovie}
                     setExitingMovie={setExitingMovie}
@@ -177,9 +176,7 @@ export default function DiscoverMovieResultList() {
                 aria-label="watch movie trailer"
                 className="absolute top-22 right-2 z-30 h-8 w-8 rounded-full"
                 variant={movieTrailerData.trailerShowing ? "default" : "outline"}
-                onClick={() =>
-                    handleTrailerSwipe(movieTrailerData.trailerShowing ? 40 : -40, currentMovieData)
-                }
+                onClick={() => handleTrailerToggle(currentMovieData)}
             >
                 <FilmIcon />
             </Button>
