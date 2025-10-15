@@ -7,8 +7,8 @@ export default function About() {
             <p className="mb-8">
                 QuickFlick is meant to get straight to the point, see the poster, synopsis, and
                 either swipe left to save it to your watchlist or swipe right to discard it. Add
-                filters to find the type of movie you&apos;re looking for, and that&apos;s pretty
-                much it!
+                filters to find the type of movie you&apos;re looking for, watch the trailer if
+                interested, and that&apos;s pretty much it!
             </p>
             <h2 className="mb-2 text-2xl font-bold tracking-tight">Film Data</h2>
             <p className="mb-8">
