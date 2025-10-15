@@ -22,10 +22,9 @@ export async function getMovieVideos(movie_id: number) {
             throw new Error(data.status_message || "Unknown TMDB error");
         }
 
-        console.log(data);
-
         if (data.results.length) {
-            return data.results.find((res: VideoResponse) => res.type === "Trailer");
+            const firstTrailer = data.results.find((res: VideoResponse) => res.type === "Trailer");
+            return firstTrailer;
         } else {
             return undefined;
         }

@@ -1,11 +1,10 @@
-import { TMDBMovie } from "@/types/types";
+import { TMDBMovie, TrailerLink } from "@/types/types";
 import MovieTitle from "@/components/typography/movieTitle";
 import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { HeartIcon, XIcon } from "lucide-react";
-import React, { SetStateAction, useEffect, useState } from "react";
+import React, { SetStateAction } from "react";
 import { getGenreLabel } from "@/utils/tmdbUtils";
-import { getMovieVideos } from "../api/getMovieVideos";
 
 interface ResultCardProps {
     movieData: TMDBMovie;
@@ -13,6 +12,13 @@ interface ResultCardProps {
         id: number;
         type: "save" | "discard";
     } | null;
+
+    movieTrailerData: {
+        id: number;
+        trailerShowing: boolean;
+        trailerLink: TrailerLink;
+    };
+
     setExitingMovie: React.Dispatch<
         SetStateAction<{
             id: number;
@@ -21,19 +27,17 @@ interface ResultCardProps {
     >;
     exitX: React.RefObject<number>;
     handleMovieCardAction: (x: number, movieData: TMDBMovie) => Promise<void>;
+    handleTrailerSwipe: (y: number, movieData: TMDBMovie) => Promise<void>;
     ariaHidden: boolean;
-}
-
-interface MovieVideoResponse {
-    key: string;
-    id: string;
 }
 
 export default function DiscoverMovieResultCard({
     movieData,
     exitingMovie,
+    movieTrailerData,
     exitX,
     handleMovieCardAction,
+    handleTrailerSwipe,
     ariaHidden,
 }: ResultCardProps) {
     const setMovieData = useMovieStore((state) => state.setMovieData);
@@ -43,27 +47,13 @@ export default function DiscoverMovieResultCard({
     const heartIconScale = useTransform(x, [-40, 0, 40], [10, 0, 0]);
     const xIconScale = useTransform(x, [-40, 0, 40], [0, 0, 10]);
 
-    const [trailerShowing, setTrailerShowing] = useState(false);
-
-    const [trailerLink, setTrailerLink] = useState<MovieVideoResponse | undefined>(undefined);
-
     const movieYear = new Date(movieData.release_date).getFullYear();
 
-    useEffect(() => {
-        async function getTrailerVideos() {
-            setTrailerLink(await getMovieVideos(movieData.id));
-        }
-        getTrailerVideos();
-    }, [movieData.id]);
-
     const handleTrailerDragEnd = async () => {
-        if (y.get() < -15) {
-            setTrailerShowing(true);
-            if (trailerLink === undefined) {
-                setTrailerLink(await getMovieVideos(movieData.id));
-            }
-        } else if (y.get() > 15) {
-            setTrailerShowing(false);
+        if (y.get() < -40) {
+            handleTrailerSwipe(y.get(), movieData);
+        } else if (y.get() > 40) {
+            handleTrailerSwipe(y.get(), movieData);
         }
     };
 
@@ -107,18 +97,25 @@ export default function DiscoverMovieResultCard({
             <motion.div
                 style={{ y }}
                 drag="y"
-                dragMomentum={false}
-                dragElastic={trailerShowing ? { top: 0, bottom: 0.2 } : { top: 0.2, bottom: 0 }}
-                animate={trailerShowing ? { top: "-100%", bottom: "-100%" } : { top: 0, bottom: 0 }}
+                dragElastic={
+                    movieTrailerData.trailerShowing
+                        ? { top: 0, bottom: 0.2 }
+                        : { top: 0.2, bottom: 0 }
+                }
+                animate={
+                    movieTrailerData.trailerShowing && movieTrailerData.id === movieData.id
+                        ? { top: "-100%", bottom: "-100%" }
+                        : { top: 0, bottom: 0 }
+                }
                 dragConstraints={{ top: 0, bottom: 0 }}
                 onDragEnd={handleTrailerDragEnd}
-                dragDirectionLock={true}
                 className="absolute h-[200%] w-full overflow-hidden"
             >
                 <iframe
+                    tabIndex={-1}
                     className="pointer-events-none absolute bottom-0 h-1/2 w-full"
                     height="750"
-                    src={`https://www.youtube.com/embed/${trailerLink?.key}?si=${trailerLink?.id}&autoplay=${trailerShowing ? 1 : 0}&loop=1&controls=0&color=white&modestbranding=0&rel=0&playsinline=1&enablejsapi=1&playlist=${trailerLink?.key}`}
+                    src={`https://www.youtube.com/embed/${movieTrailerData.trailerLink?.key}?si=${movieTrailerData.trailerLink?.id}&autoplay=${movieTrailerData.trailerShowing ? 1 : 0}&loop=1&controls=0&color=white&modestbranding=0&rel=0&playsinline=1&enablejsapi=1&playlist=${movieTrailerData.trailerLink?.key}`}
                     title="YouTube video player"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"

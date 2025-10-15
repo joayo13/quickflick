@@ -5,6 +5,11 @@ interface TMDBDiscoverResponse {
     total_results: number;
 }
 
+interface TrailerLink {
+    key: string;
+    id: string;
+}
+
 interface TMDBMovie {
     id: number;
     title: string;
@@ -39,4 +44,4 @@ interface DiscoverMoviesParams {
     page: number;
     watchRegion: string;
 }
-export type { TMDBDiscoverResponse, TMDBMovie, DiscoverMoviesParams, WatchlistData };
+export type { TMDBDiscoverResponse, TMDBMovie, DiscoverMoviesParams, WatchlistData, TrailerLink };

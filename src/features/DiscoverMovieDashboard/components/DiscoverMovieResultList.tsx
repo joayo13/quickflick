@@ -2,11 +2,12 @@
 import { useDiscardedMovieStore, useMovieStore, useWatchlistStore } from "@/store/useStore";
 import React, { useRef, useState } from "react";
 import DiscoverMovieResultCard from "./DiscoverMovieResultCard";
-import { CircleXIcon, HeartIcon, HistoryIcon, ListCheckIcon, XIcon } from "lucide-react";
+import { CircleXIcon, FilmIcon, HeartIcon, HistoryIcon, ListCheckIcon, XIcon } from "lucide-react";
 import { addMovieToWatchlist } from "../api/addMovieToWatchlist";
-import { TMDBMovie } from "@/types/types";
+import { TMDBMovie, TrailerLink } from "@/types/types";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { getMovieVideos } from "../api/getMovieVideos";
 
 export default function DiscoverMovieResultList() {
     const movieData = useMovieStore((state) => state.movieData);
@@ -21,6 +22,13 @@ export default function DiscoverMovieResultList() {
         id: number;
         type: "save" | "discard";
     } | null>(null);
+
+    const [movieTrailerData, setMovieTrailerData] = useState<{
+        id: number;
+        trailerShowing: boolean;
+        trailerLink: TrailerLink;
+    }>({ id: 0, trailerShowing: false, trailerLink: { key: "", id: "" } });
+
     const exitX = useRef(0);
 
     const [prevMovies, setPrevMovies] = useState<TMDBMovie[]>([]);
@@ -34,6 +42,7 @@ export default function DiscoverMovieResultList() {
                     : prev
             );
             setPrevMovies((prev) => prev.slice(0, -1));
+            setMovieTrailerData({ id: 0, trailerShowing: false, trailerLink: { key: "", id: "" } });
         } else {
             toast("Can't go back any further.", {
                 icon: <CircleXIcon />,
@@ -45,6 +54,33 @@ export default function DiscoverMovieResultList() {
         setPrevMovies((prev) => prev.concat(movieData));
     }
 
+    async function handleTrailerSwipe(y: number, movieData: TMDBMovie) {
+        if (y <= -40) {
+            if (!movieTrailerData.trailerLink.id) {
+                const data = await getMovieVideos(movieData.id);
+                setMovieTrailerData((prev) =>
+                    prev
+                        ? {
+                              ...prev,
+                              trailerLink: { key: data.key, id: data.id },
+                          }
+                        : prev
+                );
+            }
+            setMovieTrailerData((prev) =>
+                prev
+                    ? {
+                          ...prev,
+                          id: movieData.id,
+                          trailerShowing: true,
+                      }
+                    : prev
+            );
+        } else if (y >= 40) {
+            setMovieTrailerData((prev) => (prev ? { ...prev, trailerShowing: false } : prev));
+        }
+    }
+
     // select the topmost card data
     const currentMovieData = movieData?.results[movieData.results.length - 1] as TMDBMovie;
 
@@ -53,6 +89,7 @@ export default function DiscoverMovieResultList() {
         exitX.current = x;
         if (x >= 30) {
             // discard
+            setMovieTrailerData({ id: 0, trailerShowing: false, trailerLink: { key: "", id: "" } });
             setExitingMovie({ id: movieData.id, type: "discard" });
             setDiscardedMovieData((prev) =>
                 !prev.includes(movieData.id) ? prev.concat(movieData.id) : prev
@@ -60,6 +97,7 @@ export default function DiscoverMovieResultList() {
             addMovieToPrevMovies(movieData);
         } else if (x <= -30) {
             // save
+            setMovieTrailerData({ id: 0, trailerShowing: false, trailerLink: { key: "", id: "" } });
             setExitingMovie({ id: movieData.id, type: "save" });
             try {
                 const { userIsGuest } = await addMovieToWatchlist(movieData);
@@ -103,9 +141,11 @@ export default function DiscoverMovieResultList() {
                 <DiscoverMovieResultCard
                     ariaHidden={index === 0}
                     handleMovieCardAction={handleMovieCardAction}
+                    handleTrailerSwipe={handleTrailerSwipe}
                     exitX={exitX}
                     exitingMovie={exitingMovie}
                     setExitingMovie={setExitingMovie}
+                    movieTrailerData={movieTrailerData}
                     key={movieData.id}
                     movieData={movieData}
                 ></DiscoverMovieResultCard>
@@ -132,6 +172,16 @@ export default function DiscoverMovieResultList() {
                 onClick={pushPrevMovieIntoMovieData}
             >
                 <HistoryIcon />
+            </Button>
+            <Button
+                aria-label="watch movie trailer"
+                className="absolute top-22 right-2 z-30 h-8 w-8 rounded-full"
+                variant={movieTrailerData.trailerShowing ? "default" : "outline"}
+                onClick={() =>
+                    handleTrailerSwipe(movieTrailerData.trailerShowing ? 40 : -40, currentMovieData)
+                }
+            >
+                <FilmIcon />
             </Button>
         </>
     );
