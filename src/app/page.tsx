@@ -1,10 +1,10 @@
 "use client";
 import { useCallback, useEffect, useRef } from "react";
-import { DiscoverMovieForm } from "./components/DiscoverMovieForm";
-import DiscoverMovieErrorCard from "./components/DiscoverMovieErrorCard";
-import DiscoverMovieNoResultsCard from "./components/DiscoverMovieNoResultsCard";
-import DiscoverMovieEndOfResultsCard from "./components/DiscoverMovieEndOfResultsCard";
-import { discoverMovies } from "./api/discoverMovies";
+import { DiscoverMovieForm } from "./_components/DiscoverMovieForm";
+import DiscoverMovieErrorCard from "./_components/DiscoverMovieErrorCard";
+import DiscoverMovieNoResultsCard from "./_components/DiscoverMovieNoResultsCard";
+import DiscoverMovieEndOfResultsCard from "./_components/DiscoverMovieEndOfResultsCard";
+import { discoverMovies } from "./_api/discoverMovies";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     useDiscardedMovieStore,
@@ -12,14 +12,52 @@ import {
     useMovieStore,
     useWatchlistStore,
 } from "@/store/useStore";
-import { mapFormToDiscoverParams } from "./utils/discoverUtils";
+import { mapFormToDiscoverParams } from "./_utils/discoverUtils";
 import { TMDBDiscoverResponse, TMDBMovie } from "@/types/types";
 import z from "zod";
-import { FormSchema } from "./schemas/FormSchema";
-import DiscoverMovieWelcomeCard from "./components/DiscoverMovieWelcomeCard";
-import DiscoverMovieResultList from "./components/DiscoverMovieResultList";
+import { FormSchema } from "./_schemas/FormSchema";
+import DiscoverMovieWelcomeCard from "./_components/DiscoverMovieWelcomeCard";
+import DiscoverMovieResultList from "./_components/DiscoverMovieResultList";
+import { updateDiscardedMovies } from "./_api/updateDiscardedMovies";
+import { getDiscardedMovies } from "./_api/getDiscardedMovies";
 
 export default function DiscoverMovieSection() {
+    // discarded movie fetching supabase logic
+    const { discardedMovieData, setDiscardedMovieData } = useDiscardedMovieStore();
+    const lastLengthRef = useRef(0);
+    const supabaseSyncedRef = useRef(false);
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            const currentLength = discardedMovieData.length;
+
+            // we only update discarded movies in supabase if the intial supabase sync was successful
+            if (currentLength > lastLengthRef.current && supabaseSyncedRef.current) {
+                const stored = localStorage.getItem("discarded-movie-storage");
+                if (stored) await updateDiscardedMovies(stored); // your update function
+
+                lastLengthRef.current = currentLength;
+            }
+        }, 10000);
+
+        return () => clearInterval(interval);
+    }, [discardedMovieData]);
+
+    useEffect(() => {
+        async function syncSupabaseToLocalStorage() {
+            const { movies, userIsGuest } = await getDiscardedMovies();
+            if (userIsGuest === true) {
+                // we return early out of the getDiscardedMovies function and just return if it's a guest, since they already will have local data set
+                return;
+            }
+            setDiscardedMovieData(movies);
+            supabaseSyncedRef.current = true;
+        }
+
+        syncSupabaseToLocalStorage();
+    }, [setDiscardedMovieData]);
+
+    // movie finder logic
     const {
         movieData,
         error,

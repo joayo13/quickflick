@@ -1,7 +1,7 @@
 "use server";
 
 import { DiscoverMoviesParams } from "@/types/types";
-import { buildDiscoverURL } from "../utils/discoverUtils";
+import { buildDiscoverURL } from "../_utils/discoverUtils";
 
 export async function discoverMovies(params: DiscoverMoviesParams) {
     const options = {

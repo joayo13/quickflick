@@ -1,6 +1,6 @@
 "use client";
 
-import { sendResetPasswordEmail } from "./actions"; // <-- You'll define this to send the reset email
+import { sendResetPasswordEmail } from "./actions";
 import Link from "next/link";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

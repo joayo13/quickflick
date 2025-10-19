@@ -3,11 +3,11 @@ import { useDiscardedMovieStore, useMovieStore, useWatchlistStore } from "@/stor
 import React, { useRef, useState } from "react";
 import DiscoverMovieResultCard from "./DiscoverMovieResultCard";
 import { CircleXIcon, FilmIcon, HeartIcon, HistoryIcon, ListCheckIcon, XIcon } from "lucide-react";
-import { addMovieToWatchlist } from "../api/addMovieToWatchlist";
+import { addMovieToWatchlist } from "../_api/addMovieToWatchlist";
 import { TMDBMovie, TrailerLink } from "@/types/types";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { getMovieVideos } from "../api/getMovieVideos";
+import { getMovieVideos } from "../_api/getMovieVideos";
 
 export default function DiscoverMovieResultList() {
     const movieData = useMovieStore((state) => state.movieData);

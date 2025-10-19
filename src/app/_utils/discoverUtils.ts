@@ -1,5 +1,5 @@
 import { DiscoverMoviesParams } from "@/types/types";
-import { FormSchema } from "../schemas/FormSchema";
+import { FormSchema } from "../_schemas/FormSchema";
 import z from "zod";
 
 export const deepEqual = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);

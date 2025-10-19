@@ -1,13 +1,13 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import fetchWatchlist from "./api/fetchWatchlist";
+import fetchWatchlist from "./_api/fetchWatchlist";
 import { useWatchlistStore } from "@/store/useStore";
-import UnwatchedWatchlistList from "./components/UnwatchedWatchlistList";
+import UnwatchedWatchlistList from "./_components/UnwatchedWatchlistList";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, SearchXIcon } from "lucide-react";
 import { WatchlistData } from "@/types/types";
-import WatchlistItem from "./components/WatchlistItem";
-import WatchedWatchlistList from "./components/WatchedWatchlistList";
+import WatchlistItem from "./_components/WatchlistItem";
+import WatchedWatchlistList from "./_components/WatchedWatchlistList";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WatchlistSection() {

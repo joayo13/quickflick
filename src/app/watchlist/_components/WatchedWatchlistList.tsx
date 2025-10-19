@@ -1,6 +1,6 @@
 import { useWatchlistStore } from "@/store/useStore";
 import React, { startTransition, unstable_ViewTransition as ViewTransition } from "react";
-import { WatchlistProps } from "../types/watchlistTypes";
+import { WatchlistProps } from "../_types/watchlistTypes";
 
 export default function WatchedWatchlistList({
     selectedListItem,

@@ -14,8 +14,8 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { deleteWatchlistItem } from "../api/deleteWatchlistItem";
-import { WatchlistProps } from "../types/watchlistTypes";
+import { deleteWatchlistItem } from "../_api/deleteWatchlistItem";
+import { WatchlistProps } from "../_types/watchlistTypes";
 
 export default function DeleteWatchlistItemButton({
     selectedListItem,

@@ -6,13 +6,13 @@ import {
     useState,
     unstable_ViewTransition as ViewTransition,
 } from "react";
-import { WatchlistProps, WatchProvidersFlatrate } from "../types/watchlistTypes";
+import { WatchlistProps, WatchProvidersFlatrate } from "../_types/watchlistTypes";
 import { Minimize2Icon } from "lucide-react";
 import MovieTitle from "@/components/typography/movieTitle";
-import { getGenreLabel } from "@/utils/tmdbUtils";
-import getWatchProviders from "../api/getWatchProviders";
+import { getGenreLabel } from "@/utils/tmdbData";
+import getWatchProviders from "../_api/getWatchProviders";
 import Image from "next/image";
-import { filterWatchProviders } from "../utils/watchlistUtils";
+import { filterWatchProviders } from "../_utils/watchlistUtils";
 import { Skeleton } from "@/components/ui/skeleton";
 import UpdateItemWatchedStatusButton from "./UpdateItemWatchedStatusButton";
 import DeleteWatchlistItemButton from "./DeleteWatchlistItemButton";

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 
 export function GlobalNav() {
     const pathname = usePathname();
+
+    const isAuthPath = pathname.split("/").includes("auth");
 
     const [mounted, setMounted] = useState(false);
 
@@ -36,27 +38,31 @@ export function GlobalNav() {
     ];
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button className="fixed top-2 left-2 z-30 h-8 w-8" variant={"default"}>
-                    <MenuIcon />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                {links.map(({ href, label }) => {
-                    const isActive = pathname === href;
-                    return (
-                        <DropdownMenuItem
-                            key={href}
-                            disabled={isActive} // prevent clicking
-                            asChild={!isActive} // only wrap with Link if not active
-                        >
-                            <Link href={href}>{label}</Link>
-                        </DropdownMenuItem>
-                    );
-                })}
-                <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+            {!isAuthPath ? (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button className="fixed top-2 left-2 z-30 h-8 w-8" variant={"default"}>
+                            <MenuIcon />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent id="globalNav" align="end">
+                        {links.map(({ href, label }) => {
+                            const isActive = pathname === href;
+                            return (
+                                <DropdownMenuItem
+                                    key={href}
+                                    disabled={isActive} // prevent clicking
+                                    asChild={!isActive} // only wrap with Link if not active
+                                >
+                                    <Link href={href}>{label}</Link>
+                                </DropdownMenuItem>
+                            );
+                        })}
+                        <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ) : null}
+        </>
     );
 }

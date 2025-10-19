@@ -13,13 +13,13 @@ import {
 } from "@/components/ui/form";
 import { CircleAlertIcon, CircleCheckIcon, SlidersHorizontalIcon } from "lucide-react";
 import z from "zod";
-import { FormSchema } from "../schemas/FormSchema";
+import { FormSchema } from "../_schemas/FormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormStore } from "@/store/useStore";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
-import { deepEqual } from "@/features/DiscoverMovieDashboard/utils/discoverUtils";
-import { genresList, watchProvidersList } from "@/utils/tmdbUtils";
+import { deepEqual } from "../_utils/discoverUtils";
+import { genresList, watchProvidersList } from "@/utils/tmdbData";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function DiscoverMovieForm({

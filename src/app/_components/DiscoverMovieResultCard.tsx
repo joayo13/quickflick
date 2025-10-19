@@ -4,7 +4,7 @@ import { useMovieStore } from "@/store/useStore";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { HeartIcon, XIcon } from "lucide-react";
 import React, { SetStateAction } from "react";
-import { getGenreLabel } from "@/utils/tmdbUtils";
+import { getGenreLabel } from "@/utils/tmdbData";
 
 interface ResultCardProps {
     movieData: TMDBMovie;

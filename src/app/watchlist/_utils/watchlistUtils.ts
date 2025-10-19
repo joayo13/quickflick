@@ -1,5 +1,5 @@
-import { watchProvidersList } from "@/utils/tmdbUtils";
-import { WatchProvidersFlatrate } from "../types/watchlistTypes";
+import { watchProvidersList } from "@/utils/tmdbData";
+import { WatchProvidersFlatrate } from "../_types/watchlistTypes";
 
 export function filterWatchProviders(
     watchProvidersData: WatchProvidersFlatrate[]

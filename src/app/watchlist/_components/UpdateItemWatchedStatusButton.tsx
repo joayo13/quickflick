@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { WatchlistData } from "@/types/types";
 import { CheckIcon } from "lucide-react";
 import React from "react";
-import { updateWatchlistItemWatchedStatus } from "../api/updateWatchlistItemWatchedStatus";
+import { updateWatchlistItemWatchedStatus } from "../_api/updateWatchlistItemWatchedStatus";
 import { useWatchlistStore } from "@/store/useStore";
 import { toast } from "sonner";
 
