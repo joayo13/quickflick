@@ -1,9 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef } from "react";
 import { DiscoverMovieForm } from "./_components/DiscoverMovieForm";
-import DiscoverMovieErrorCard from "./_components/DiscoverMovieErrorCard";
-import DiscoverMovieNoResultsCard from "./_components/DiscoverMovieNoResultsCard";
-import DiscoverMovieEndOfResultsCard from "./_components/DiscoverMovieEndOfResultsCard";
 import { discoverMovies } from "./_api/discoverMovies";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -13,25 +10,53 @@ import {
     useWatchlistStore,
 } from "@/store/useStore";
 import { mapFormToDiscoverParams } from "./_utils/discoverUtils";
-import { TMDBDiscoverResponse, TMDBMovie } from "@/types/types";
+import { TMDBMovie } from "@/types/types";
 import z from "zod";
 import { FormSchema } from "./_schemas/FormSchema";
-import DiscoverMovieWelcomeCard from "./_components/DiscoverMovieWelcomeCard";
-import DiscoverMovieResultList from "./_components/DiscoverMovieResultList";
 import { updateDiscardedMovies } from "./_api/updateDiscardedMovies";
 import { getDiscardedMovies } from "./_api/getDiscardedMovies";
+import { DisplayDiscoverMovieResponse } from "./_components/DisplayDiscoverMovieResponse";
 
 export default function DiscoverMovieSection() {
     // discarded movie fetching supabase logic
+    useDiscardedMovieSync();
+    useNoScroll();
+    const { movieData, error, movieStoreHydrated, fetchWithUpdatedFormValues } =
+        useDiscoverMovies();
+    // movie finder logic
+    const formHydrated = useFormStore((state) => state.formHydrated);
+
+    return (
+        <>
+            {formHydrated ? (
+                <DiscoverMovieForm fetchWithUpdatedFormValues={fetchWithUpdatedFormValues} />
+            ) : null}
+
+            <div className="grid h-[100dvh] w-[100vw] place-items-center md:h-[750px] md:w-[500px]">
+                <Skeleton className="z-10 col-start-1 row-start-1 h-full w-full rounded-xl bg-[var(--border)]" />
+                <DisplayDiscoverMovieResponse
+                    error={error}
+                    movieData={movieData}
+                    movieStoreHydrated={movieStoreHydrated}
+                />
+            </div>
+        </>
+    );
+}
+
+function useDiscardedMovieSync() {
     const { discardedMovieData, setDiscardedMovieData } = useDiscardedMovieStore();
-    const lastLengthRef = useRef(0);
+
     const supabaseSyncedRef = useRef(false);
+    const lastLengthRef = useRef(0);
 
     useEffect(() => {
         const interval = setInterval(async () => {
             const currentLength = discardedMovieData.length;
 
             // we only update discarded movies in supabase if the intial supabase sync was successful
+            // and the discarded array has been added to (has greater length)
+
             if (currentLength > lastLengthRef.current && supabaseSyncedRef.current) {
                 const stored = localStorage.getItem("discarded-movie-storage");
                 if (stored) await updateDiscardedMovies(stored); // your update function
@@ -40,10 +65,6 @@ export default function DiscoverMovieSection() {
             }
         }, 10000);
 
-        return () => clearInterval(interval);
-    }, [discardedMovieData]);
-
-    useEffect(() => {
         async function syncSupabaseToLocalStorage() {
             const { movies, userIsGuest } = await getDiscardedMovies();
             if (userIsGuest === true) {
@@ -55,9 +76,22 @@ export default function DiscoverMovieSection() {
         }
 
         syncSupabaseToLocalStorage();
-    }, [setDiscardedMovieData]);
 
-    // movie finder logic
+        return () => clearInterval(interval);
+    }, [discardedMovieData, setDiscardedMovieData]);
+}
+
+function useNoScroll() {
+    useEffect(() => {
+        document.body.classList.add("no-scroll");
+
+        return () => {
+            document.body.classList.remove("no-scroll");
+        };
+    }, []);
+}
+
+function useDiscoverMovies() {
     const {
         movieData,
         error,
@@ -68,26 +102,17 @@ export default function DiscoverMovieSection() {
         movieStoreHydrated,
     } = useMovieStore();
 
-    const watchlistData = useWatchlistStore((state) => state.watchlistData);
-    const discardedMovieSet = useDiscardedMovieStore((state) => state.discardedMovieSet);
-    const watchRegion = useFormStore((state) => state.watchRegion);
-    const values = useFormStore((state) => state.values);
-    const formHydrated = useFormStore((state) => state.formHydrated);
+    const watchlistData = useWatchlistStore((s) => s.watchlistData);
+    const discardedMovieSet = useDiscardedMovieStore((s) => s.discardedMovieSet);
+    const watchRegion = useFormStore((s) => s.watchRegion);
+    const values = useFormStore((s) => s.values);
+
     const pageNumberRef = useRef(1);
-
-    // adding no-scroll to prevent scrollbars flickering in during movie card dismiss/save animations on desktop
-    useEffect(() => {
-        document.body.classList.add("no-scroll");
-
-        return () => {
-            document.body.classList.remove("no-scroll");
-        };
-    }, []);
 
     const filterOutWatchlistMovies = useCallback(
         (results: TMDBMovie[]) => {
-            const watchlistIds = watchlistData?.map((data) => data.movie_id);
-            return results.filter((result) => !watchlistIds?.includes(result.id));
+            const ids = watchlistData?.map((w) => w.movie_id);
+            return results.filter((r) => !ids?.includes(r.id));
         },
         [watchlistData]
     );
@@ -95,95 +120,69 @@ export default function DiscoverMovieSection() {
     const separateDiscardedMovies = useCallback(
         (results: TMDBMovie[]) => {
             setEndOfListMovieData((prev) =>
-                prev?.concat(results.filter((result) => discardedMovieSet.has(result.id)))
+                prev?.concat(results.filter((r) => discardedMovieSet.has(r.id)))
             );
-            return results.filter((result) => !discardedMovieSet.has(result.id));
+            return results.filter((r) => !discardedMovieSet.has(r.id));
         },
         [discardedMovieSet, setEndOfListMovieData]
     );
 
-    const fetchAvaliableMovies = useCallback(
-        async (data: z.infer<typeof FormSchema>) => {
+    const fetchMovies = useCallback(
+        async (data: z.infer<typeof FormSchema>, reset = false) => {
+            if (reset) {
+                setEndOfListMovieData([]);
+                pageNumberRef.current = 1;
+            }
+
             try {
                 const params = mapFormToDiscoverParams(data, pageNumberRef.current, watchRegion);
-                const res: TMDBDiscoverResponse = await discoverMovies(params);
-                res.results = filterOutWatchlistMovies(res.results);
-                res.results = separateDiscardedMovies(res.results);
+                const res = await discoverMovies(params);
+                res.results = separateDiscardedMovies(filterOutWatchlistMovies(res.results));
+
                 setError(null);
                 setMovieData(res);
             } catch (err) {
                 setError(err as Error);
             }
         },
-        [setError, setMovieData, filterOutWatchlistMovies, separateDiscardedMovies, watchRegion]
+        [
+            filterOutWatchlistMovies,
+            separateDiscardedMovies,
+            setError,
+            setMovieData,
+            watchRegion,
+            setEndOfListMovieData,
+        ]
     );
 
-    // this gets called from discover movie form if we ever change form values.
+    const fetchNextPageIfAvailable = useCallback(() => {
+        if (!movieData) return;
+        if (movieData.results.length === 0) {
+            if (movieData.page < movieData.total_pages) {
+                pageNumberRef.current = movieData.page + 1;
+                fetchMovies(values);
+            } else if (endOfListMovieData?.length) {
+                setMovieData((data) => (data ? { ...data, results: endOfListMovieData } : data));
+                setEndOfListMovieData([]);
+            }
+        }
+    }, [movieData, fetchMovies, values, endOfListMovieData, setMovieData, setEndOfListMovieData]);
+
+    useEffect(() => {
+        fetchNextPageIfAvailable();
+    }, [fetchNextPageIfAvailable]);
+
     function fetchWithUpdatedFormValues(data: z.infer<typeof FormSchema>) {
         setEndOfListMovieData([]);
         pageNumberRef.current = 1;
-        fetchAvaliableMovies(data);
+        fetchMovies(data);
     }
 
-    //
-    useEffect(() => {
-        function fetchNextPageIfAvailable() {
-            if (movieData?.results.length === 0) {
-                if (movieData.page < movieData.total_pages) {
-                    pageNumberRef.current = movieData.page + 1;
-                    fetchAvaliableMovies(values);
-                } else if (endOfListMovieData && endOfListMovieData.length) {
-                    setMovieData((data) =>
-                        data
-                            ? {
-                                  ...data,
-                                  results: endOfListMovieData,
-                              }
-                            : data
-                    );
-                    setEndOfListMovieData([]);
-                }
-            }
-        }
-        fetchNextPageIfAvailable();
-    }, [
+    return {
         movieData,
-        fetchAvaliableMovies,
-        values,
-        endOfListMovieData,
-        setEndOfListMovieData,
-        setMovieData,
-    ]);
-
-    function displayDiscoverMovieResults() {
-        if (error) {
-            return <DiscoverMovieErrorCard error={error} />;
-        }
-        if (movieStoreHydrated && movieData === null) {
-            return <DiscoverMovieWelcomeCard />;
-        }
-        if (movieData?.total_results === 0) {
-            return <DiscoverMovieNoResultsCard />;
-        }
-        if (movieData?.results.length === 0 && movieData.page === movieData.total_pages) {
-            return <DiscoverMovieEndOfResultsCard />;
-        }
-
-        if (movieData?.results) {
-            return <DiscoverMovieResultList />;
-        }
-    }
-
-    return (
-        <>
-            {formHydrated ? (
-                <DiscoverMovieForm fetchWithUpdatedFormValues={fetchWithUpdatedFormValues} />
-            ) : null}
-
-            <div className="grid h-[100dvh] w-[100vw] place-items-center md:h-[750px] md:w-[500px]">
-                <Skeleton className="z-10 col-start-1 row-start-1 h-full w-full rounded-xl bg-[var(--border)]" />
-                {displayDiscoverMovieResults()}
-            </div>
-        </>
-    );
+        error,
+        movieStoreHydrated,
+        fetchMovies,
+        fetchWithUpdatedFormValues,
+    };
 }
