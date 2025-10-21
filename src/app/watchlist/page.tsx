@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import fetchWatchlist from "./_api/fetchWatchlist";
+import fetchWatchlist from "./_api/watchlist";
 import { useWatchlistStore } from "@/store/useStore";
 import UnwatchedWatchlistList from "./_components/UnwatchedWatchlistList";
 import { Alert, AlertTitle } from "@/components/ui/alert";

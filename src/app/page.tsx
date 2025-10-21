@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef } from "react";
 import { DiscoverMovieForm } from "./_components/DiscoverMovieForm";
-import { discoverMovies } from "./_api/discoverMovies";
+import { discoverMovies } from "./_api/discoverMovieApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     useDiscardedMovieStore,
@@ -13,8 +13,8 @@ import { mapFormToDiscoverParams } from "./_utils/discoverUtils";
 import { TMDBMovie } from "@/types/types";
 import z from "zod";
 import { FormSchema } from "./_schemas/FormSchema";
-import { updateDiscardedMovies } from "./_api/updateDiscardedMovies";
-import { getDiscardedMovies } from "./_api/getDiscardedMovies";
+import { updateDiscardedMovies } from "./_api/discardedMovies";
+import { getDiscardedMovies } from "./_api/discardedMovies";
 import { DisplayDiscoverMovieResponse } from "./_components/DisplayDiscoverMovieResponse";
 
 export default function DiscoverMovieSection() {

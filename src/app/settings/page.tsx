@@ -12,13 +12,7 @@ import React from "react";
 import { toast } from "sonner";
 
 export default function Settings() {
-    const { watchRegion, setWatchRegion, formHydrated } = useFormStore(); // Access Zustand store
-
-    const handleRegionChange = (region: string) => {
-        setWatchRegion(region); // Update the watchRegion in the store
-        toast(`Updated watch region to ${region}`);
-    };
-
+    const { watchRegion, formHydrated, handleRegionChange } = useRegionChange();
     function returnSettingsOnHydrate() {
         if (formHydrated) {
             return (
@@ -50,4 +44,14 @@ export default function Settings() {
     }
 
     return <>{returnSettingsOnHydrate()}</>;
+}
+
+function useRegionChange() {
+    const { watchRegion, setWatchRegion, formHydrated } = useFormStore(); // Access Zustand store
+
+    const handleRegionChange = (region: string) => {
+        setWatchRegion(region); // Update the watchRegion in the store
+        toast(`Updated watch region to ${region}`);
+    };
+    return { watchRegion, formHydrated, handleRegionChange };
 }

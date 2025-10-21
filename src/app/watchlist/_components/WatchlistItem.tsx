@@ -10,7 +10,7 @@ import { WatchlistProps, WatchProvidersFlatrate } from "../_types/watchlistTypes
 import { Minimize2Icon } from "lucide-react";
 import MovieTitle from "@/components/typography/movieTitle";
 import { getGenreLabel } from "@/utils/tmdbData";
-import getWatchProviders from "../_api/getWatchProviders";
+import getWatchProviders from "../_api/watchProvidersApi";
 import Image from "next/image";
 import { filterWatchProviders } from "../_utils/watchlistUtils";
 import { Skeleton } from "@/components/ui/skeleton";

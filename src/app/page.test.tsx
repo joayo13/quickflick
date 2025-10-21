@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { useMovieStore } from "@/store/useStore";
+import DiscoverMovieSection from "./page";
 
 const baseURL = "https://api.themoviedb.org/3/discover/movie";
 
@@ -59,53 +60,53 @@ describe("DiscoverMovieDashboard UI", () => {
     beforeEach(() => {
         vi.restoreAllMocks();
     });
-    // it("renders a movie card from the API", async () => {
-    //     useMovieStore.getState().setMovieData(await fetchMovies(`${baseURL}?page=1`));
-    //     render(<DiscoverMovieDashboard />);
-    //     const movieTitle = await screen.findByText("Original Title");
-    //     expect(movieTitle).toBeInTheDocument();
-    // });
-    // it("renders an error text from error card when out of page range", async () => {
-    //     // directly set error in Zustand store
-    //     useMovieStore
-    //         .getState()
-    //         .setError(new Error("Invalid page: Pages start at 1 and max at 500."));
+    it("renders a movie card from the API", async () => {
+        useMovieStore.getState().setMovieData(await fetchMovies(`${baseURL}?page=1`));
+        render(<DiscoverMovieSection />);
+        const movieTitle = await screen.findByText("Original Title");
+        expect(movieTitle).toBeInTheDocument();
+    });
+    it("renders an error text from error card when out of page range", async () => {
+        // directly set error in Zustand store
+        useMovieStore
+            .getState()
+            .setError(new Error("Invalid page: Pages start at 1 and max at 500."));
 
-    //     // render the dashboard
-    //     render(<DiscoverMovieDashboard />);
+        // render the dashboard
+        render(<DiscoverMovieSection />);
 
-    //     // assert the error card shows up
-    //     const errorText = await screen.findByText("Error");
-    //     expect(errorText).toBeInTheDocument();
-    // });
-    // it("renders no results found card when results returned are empty", async () => {
-    //     // directly set movieData in Zustand store
-    //     useMovieStore.getState().setMovieData({
-    //         page: 1,
-    //         total_results: 0,
-    //         total_pages: 0,
-    //         results: [],
-    //     });
+        // assert the error card shows up
+        const errorText = await screen.findByText("Error");
+        expect(errorText).toBeInTheDocument();
+    });
+    it("renders no results found card when results returned are empty", async () => {
+        // directly set movieData in Zustand store
+        useMovieStore.getState().setMovieData({
+            page: 1,
+            total_results: 0,
+            total_pages: 0,
+            results: [],
+        });
 
-    //     render(<DiscoverMovieDashboard />);
+        render(<DiscoverMovieSection />);
 
-    //     // wait for the card to appear
-    //     const noResultsText = await screen.findByText("No results found.");
-    //     expect(noResultsText).toBeInTheDocument();
-    // });
-    // it("renders welcome card when no movie data is set", async () => {
-    //     // set movieData and mark store as hydrated
-    //     useMovieStore.setState({
-    //         movieData: null,
-    //         movieStoreHydrated: true,
-    //         endOfListMovieData: undefined,
-    //         error: null, // if you added error to the store
-    //     });
+        // wait for the card to appear
+        const noResultsText = await screen.findByText("No results found.");
+        expect(noResultsText).toBeInTheDocument();
+    });
+    it("renders welcome card when no movie data is set", async () => {
+        // set movieData and mark store as hydrated
+        useMovieStore.setState({
+            movieData: null,
+            movieStoreHydrated: true,
+            endOfListMovieData: undefined,
+            error: null, // if you added error to the store
+        });
 
-    //     render(<DiscoverMovieDashboard />);
+        render(<DiscoverMovieSection />);
 
-    //     // wait for the welcome card to appear
-    //     const letsGetStarted = await screen.findByText("Let's get started.");
-    //     expect(letsGetStarted).toBeInTheDocument();
-    // });
+        // wait for the welcome card to appear
+        const letsGetStarted = await screen.findByText("Let's get started.");
+        expect(letsGetStarted).toBeInTheDocument();
+    });
 });
