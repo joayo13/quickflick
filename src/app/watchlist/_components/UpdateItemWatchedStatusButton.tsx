@@ -11,6 +11,24 @@ export default function UpdateItemWatchedStatusButton({
 }: {
     selectedListItem: WatchlistData;
 }) {
+    const { handleUpdateWatchlistItemWatchedStatus } =
+        useUpdateWatchlistWatchedStatus(selectedListItem);
+
+    return (
+        <Button
+            aria-label={`toggle ${selectedListItem.movies.title} watch status`}
+            onClick={() => handleUpdateWatchlistItemWatchedStatus()}
+            className="absolute top-12 right-2 h-8 w-8 rounded-full"
+            variant={selectedListItem.watched ? "default" : "outline"}
+        >
+            <CheckIcon />
+        </Button>
+    );
+}
+
+// custom hook
+
+function useUpdateWatchlistWatchedStatus(selectedListItem: WatchlistData) {
     const setWatchlistData = useWatchlistStore((state) => state.setWatchlistData);
 
     async function handleUpdateWatchlistItemWatchedStatus() {
@@ -46,14 +64,5 @@ export default function UpdateItemWatchedStatusButton({
             }
         }
     }
-    return (
-        <Button
-            aria-label={`toggle ${selectedListItem.movies.title} watch status`}
-            onClick={() => handleUpdateWatchlistItemWatchedStatus()}
-            className="absolute top-12 right-2 h-8 w-8 rounded-full"
-            variant={selectedListItem.watched ? "default" : "outline"}
-        >
-            <CheckIcon />
-        </Button>
-    );
+    return { handleUpdateWatchlistItemWatchedStatus };
 }
