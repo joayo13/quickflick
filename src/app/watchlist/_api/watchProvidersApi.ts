@@ -20,8 +20,6 @@ export default async function getWatchProviders(movie_id: number) {
             throw new Error(data.status_message || "Unknown TMDB error");
         }
 
-        console.log(data);
-
         return data;
     } catch (err) {
         throw err;
