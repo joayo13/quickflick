@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
-import React, { startTransition } from "react";
+import React, { SetStateAction, startTransition } from "react";
 import { useWatchlistStore } from "@/store/useStore";
 import { toast } from "sonner";
 import {
@@ -16,32 +16,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { deleteWatchlistItem } from "../_api/watchlist";
 import { WatchlistProps } from "../_types/watchlistTypes";
+import { WatchlistData } from "@/types/types";
 
 export default function DeleteWatchlistItemButton({
     selectedListItem,
     setSelectedListItem,
 }: WatchlistProps) {
-    const { setWatchlistData } = useWatchlistStore();
-
-    async function handleDeleteWatchlistItem() {
-        if (selectedListItem) {
-            try {
-                await deleteWatchlistItem(selectedListItem.id);
-
-                setWatchlistData(
-                    (prev) => prev && prev.filter((item) => item.id !== selectedListItem.id)
-                );
-                toast(`Removed ${selectedListItem.movies.title} from your watchlist.`);
-                startTransition(() => {
-                    setSelectedListItem(null);
-                });
-            } catch (err) {
-                if (err instanceof Error) {
-                    toast(err.message);
-                }
-            }
-        }
-    }
+    const { handleDeleteWatchlistItem } = useDeleteWatchlistItem({
+        selectedListItem,
+        setSelectedListItem,
+    });
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -69,4 +53,34 @@ export default function DeleteWatchlistItemButton({
             </AlertDialogContent>
         </AlertDialog>
     );
+}
+function useDeleteWatchlistItem({
+    selectedListItem,
+    setSelectedListItem,
+}: {
+    selectedListItem: WatchlistData | null;
+    setSelectedListItem: React.Dispatch<SetStateAction<WatchlistData | null>>;
+}) {
+    const { setWatchlistData } = useWatchlistStore();
+
+    async function handleDeleteWatchlistItem() {
+        if (selectedListItem) {
+            try {
+                await deleteWatchlistItem(selectedListItem.id);
+
+                setWatchlistData(
+                    (prev) => prev && prev.filter((item) => item.id !== selectedListItem.id)
+                );
+                toast(`Removed ${selectedListItem.movies.title} from your watchlist.`);
+                startTransition(() => {
+                    setSelectedListItem(null);
+                });
+            } catch (err) {
+                if (err instanceof Error) {
+                    toast(err.message);
+                }
+            }
+        }
+    }
+    return { handleDeleteWatchlistItem };
 }

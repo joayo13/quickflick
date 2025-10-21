@@ -7,7 +7,6 @@ export default function UnwatchedWatchlistList({
     setSelectedListItem,
 }: WatchlistProps) {
     const watchlistData = useWatchlistStore((state) => state.watchlistData);
-
     const unwatchedWatchlistData = watchlistData?.filter((item) => item.watched === false);
 
     return (
