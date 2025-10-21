@@ -27,36 +27,9 @@ export function DiscoverMovieForm({
 }: {
     fetchWithUpdatedFormValues: (data: z.infer<typeof FormSchema>) => void;
 }) {
-    const values = useFormStore((state) => state.values);
-    const setValues = useFormStore((state) => state.setValues);
-    const resetValues = useFormStore((state) => state.resetValues);
-
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: values,
-        mode: "onSubmit",
-    });
-
-    const onSubmit = (data: z.infer<typeof FormSchema>) => {
-        if (deepEqual(data, values)) {
-            toast("Current filters already active.", { icon: <CircleAlertIcon /> });
-            return;
-        }
-        setValues(data);
-        toast("Filters updated successfully.", { icon: <CircleCheckIcon /> });
-        fetchWithUpdatedFormValues(data);
-    };
-
-    const onSubmitError = (errors: FieldErrors) => {
-        const firstError = Object.values(errors)[0]?.message;
-        toast(firstError as string, { icon: <CircleAlertIcon /> });
-    };
-
-    const resetFormValues = () => {
-        const defaults = resetValues();
-        form.reset(defaults);
-        toast("Filters reset to defaults.", { icon: <CircleCheckIcon /> });
-    };
+    const { form, onSubmit, onSubmitError, resetFormValues } = useDiscoverMovieForm(
+        fetchWithUpdatedFormValues
+    );
 
     return (
         <Form {...form}>
@@ -365,4 +338,45 @@ export function DiscoverMovieForm({
             </form>
         </Form>
     );
+}
+
+function useDiscoverMovieForm(
+    fetchWithUpdatedFormValues: (data: z.infer<typeof FormSchema>) => void
+) {
+    const values = useFormStore((state) => state.values);
+    const setValues = useFormStore((state) => state.setValues);
+    const resetValues = useFormStore((state) => state.resetValues);
+
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: values,
+        mode: "onSubmit",
+    });
+
+    const onSubmit = (data: z.infer<typeof FormSchema>) => {
+        if (deepEqual(data, values)) {
+            toast("Current filters already active.", { icon: <CircleAlertIcon /> });
+            return;
+        }
+        setValues(data);
+        toast("Filters updated successfully.", { icon: <CircleCheckIcon /> });
+        fetchWithUpdatedFormValues(data);
+    };
+
+    const onSubmitError = (errors: FieldErrors) => {
+        const firstError = Object.values(errors)[0]?.message;
+        toast(firstError as string, { icon: <CircleAlertIcon /> });
+    };
+
+    const resetFormValues = () => {
+        const defaults = resetValues();
+        form.reset(defaults);
+        toast("Filters reset to defaults.", { icon: <CircleCheckIcon /> });
+    };
+    return {
+        form,
+        onSubmit,
+        onSubmitError,
+        resetFormValues,
+    };
 }
