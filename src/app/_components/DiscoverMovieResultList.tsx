@@ -48,21 +48,6 @@ export default function DiscoverMovieResultList() {
                 ></DiscoverMovieResultCard>
             ))}
             <Button
-                aria-label="save movie"
-                // this onclick manually applies the values of a swipe left
-                onClick={() => handleMovieCardAction(30, currentMovieData)}
-                className="absolute top-1/2 -right-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
-            >
-                <HeartIcon className="size-16 text-green-500" fill="currentColor" />
-            </Button>
-            <Button
-                aria-label="discard movie"
-                onClick={() => handleMovieCardAction(-30, currentMovieData)}
-                className="absolute top-1/2 -left-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
-            >
-                <XIcon className="size-16 text-red-500" fill="currentColor" />
-            </Button>
-            <Button
                 aria-label="go back to previous movie"
                 className="absolute top-12 right-2 z-30 h-8 w-8 rounded-full"
                 variant="outline"
@@ -77,6 +62,21 @@ export default function DiscoverMovieResultList() {
                 onClick={() => handleTrailerToggle(currentMovieData)}
             >
                 <FilmIcon />
+            </Button>
+            <Button
+                aria-label="discard movie"
+                onClick={() => handleMovieCardAction(-30, currentMovieData)}
+                className="absolute top-1/2 -left-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
+            >
+                <XIcon className="size-16 text-red-500" fill="currentColor" />
+            </Button>
+            <Button
+                aria-label="save movie"
+                // this onclick manually applies the values of a swipe left
+                onClick={() => handleMovieCardAction(30, currentMovieData)}
+                className="absolute top-1/2 -right-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
+            >
+                <HeartIcon className="size-16 text-green-500" fill="currentColor" />
             </Button>
         </>
     );
