@@ -41,8 +41,8 @@ export default function DiscoverMovieResultCard({
     const setMovieData = useMovieStore((state) => state.setMovieData);
     const x = useMotionValue(0);
     const rotate = useTransform(x, [-600, 600], [-20, 20]);
-    const heartIconScale = useTransform(x, [-40, 0, 40], [10, 0, 0]);
-    const xIconScale = useTransform(x, [-40, 0, 40], [0, 0, 10]);
+    const heartIconScale = useTransform(x, [-40, 0, 40], [0, 0, 10]);
+    const xIconScale = useTransform(x, [-40, 0, 40], [10, 0, 0]);
 
     const movieYear = new Date(movieData.release_date).getFullYear();
 

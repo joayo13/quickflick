@@ -18,13 +18,12 @@ import { getDiscardedMovies } from "./_api/discardedMovies";
 import { DisplayDiscoverMovieResponse } from "./_components/DisplayDiscoverMovieResponse";
 
 export default function DiscoverMovieSection() {
-    // discarded movie fetching supabase logic
-    useDiscardedMovieSync();
-    useNoScroll();
     const { movieData, error, movieStoreHydrated, fetchWithUpdatedFormValues } =
         useDiscoverMovies();
-    // movie finder logic
     const formHydrated = useFormStore((state) => state.formHydrated);
+
+    useDiscardedMovieSync();
+    useNoScroll();
 
     return (
         <>

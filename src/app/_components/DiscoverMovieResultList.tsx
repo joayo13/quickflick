@@ -50,15 +50,15 @@ export default function DiscoverMovieResultList() {
             <Button
                 aria-label="save movie"
                 // this onclick manually applies the values of a swipe left
-                onClick={() => handleMovieCardAction(-30, currentMovieData)}
-                className="absolute top-1/2 -left-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
+                onClick={() => handleMovieCardAction(30, currentMovieData)}
+                className="absolute top-1/2 -right-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
             >
                 <HeartIcon className="size-16 text-green-500" fill="currentColor" />
             </Button>
             <Button
                 aria-label="discard movie"
-                onClick={() => handleMovieCardAction(30, currentMovieData)}
-                className="absolute top-1/2 -right-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
+                onClick={() => handleMovieCardAction(-30, currentMovieData)}
+                className="absolute top-1/2 -left-36 hidden h-32 w-32 -translate-y-1/2 rounded-full bg-[var(--border)] lg:flex"
             >
                 <XIcon className="size-16 text-red-500" fill="currentColor" />
             </Button>
@@ -113,7 +113,7 @@ function useMovieCardAction({
     async function handleMovieCardAction(x: number, movieData: TMDBMovie) {
         // this handles both swipe actions and button save/dismiss actions
         exitX.current = x;
-        if (x >= 30) {
+        if (x <= -30) {
             // discard
             setMovieTrailerData({ id: 0, trailerShowing: false, trailerLink: { key: "", id: "" } });
             setExitingMovie({ id: movieData.id, type: "discard" });
@@ -121,7 +121,7 @@ function useMovieCardAction({
                 !prev.includes(movieData.id) ? prev.concat(movieData.id) : prev
             );
             addMovieToPrevMovies(movieData);
-        } else if (x <= -30) {
+        } else if (x >= 30) {
             // save
             setMovieTrailerData({ id: 0, trailerShowing: false, trailerLink: { key: "", id: "" } });
             setExitingMovie({ id: movieData.id, type: "save" });
