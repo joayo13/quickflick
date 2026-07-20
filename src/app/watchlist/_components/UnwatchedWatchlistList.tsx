@@ -1,6 +1,7 @@
 import { useWatchlistStore } from "@/store/useStore";
-import React, { startTransition, unstable_ViewTransition as ViewTransition } from "react";
+import React from "react";
 import { WatchlistProps } from "../_types/watchlistTypes";
+import WatchlistThumbnail from "./WatchlistThumbnail";
 
 export default function UnwatchedWatchlistList({
     selectedListItem,
@@ -18,41 +19,15 @@ export default function UnwatchedWatchlistList({
                 <h1 className="col-span-full py-2 text-xl">
                     My Watchlist ({unwatchedWatchlistData?.length})
                 </h1>
-                {unwatchedWatchlistData?.map((data) => {
-                    const isSelected = selectedListItem?.movie_id === data.movie_id;
-
-                    const cardContent = (
-                        <button
-                            aria-hidden={selectedListItem ? "true" : "false"}
-                            tabIndex={selectedListItem ? -1 : 0}
-                            onClick={() => {
-                                startTransition(() => {
-                                    setSelectedListItem(data);
-                                });
-                            }}
-                            style={{
-                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(https://image.tmdb.org/t/p/original${data.movies.poster_path})`,
-                            }}
-                            className="z-20 col-start-1 row-start-1 flex h-full w-full rounded-lg bg-[var(--border)] bg-cover bg-center p-2"
-                        >
-                            <p className="mt-auto text-left text-xs font-bold">
-                                {data.movies.title}
-                            </p>
-                        </button>
-                    );
-
-                    return (
-                        <div key={data.id} className="h-[150px] w-[100px] cursor-pointer">
-                            {isSelected ? (
-                                cardContent
-                            ) : (
-                                <ViewTransition name={`movie-${data.movie_id.toString()}`}>
-                                    {cardContent}
-                                </ViewTransition>
-                            )}
-                        </div>
-                    );
-                })}
+                {unwatchedWatchlistData?.map((data) => (
+                    <WatchlistThumbnail
+                        key={data.id}
+                        data={data}
+                        isSelected={selectedListItem?.movie_id === data.movie_id}
+                        hidden={!!selectedListItem}
+                        onSelect={() => setSelectedListItem(data)}
+                    />
+                ))}
             </div>
         </>
     );

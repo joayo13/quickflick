@@ -1,10 +1,12 @@
 import { TMDBMovie, TrailerLink } from "@/types/types";
 import MovieTitle from "@/components/typography/movieTitle";
 import { useMovieStore } from "@/store/useStore";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "motion/react";
 import { HeartIcon, XIcon } from "lucide-react";
 import React, { SetStateAction } from "react";
 import { getGenreLabel } from "@/utils/tmdbData";
+import { DISCOVER_POSTER_SIZES } from "@/utils/tmdbImage";
+import { useAdaptivePosterUrl } from "@/hooks/useAdaptivePosterUrl";
 
 interface ResultCardProps {
     movieData: TMDBMovie;
@@ -39,6 +41,7 @@ export default function DiscoverMovieResultCard({
     ariaHidden,
 }: ResultCardProps) {
     const setMovieData = useMovieStore((state) => state.setMovieData);
+    const posterUrl = useAdaptivePosterUrl(movieData?.poster_path, DISCOVER_POSTER_SIZES);
     const x = useMotionValue(0);
     const rotate = useTransform(x, [-600, 600], [-20, 20]);
     const heartIconScale = useTransform(x, [-40, 0, 40], [0, 0, 10]);
@@ -75,7 +78,7 @@ export default function DiscoverMovieResultCard({
             transition={{ duration: 0.2 }}
             onDragEnd={handleDragEnd}
             style={{
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(https://image.tmdb.org/t/p/original${movieData?.poster_path})`,
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(${posterUrl})`,
                 x,
                 rotate,
             }}

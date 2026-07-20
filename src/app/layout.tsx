@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { GlobalNav } from "@/components/GlobalNav";
+import { ConnectionSpeedProbe } from "@/components/ConnectionSpeedProbe";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({
             <Analytics />
             <body className={`${geistSans.variable} ${geistMono.variable} dark antialiased`}>
                 <GlobalNav />
+                <ConnectionSpeedProbe />
                 <main className="flex min-h-[100dvh] items-center justify-center font-sans">
                     <Toaster />
                     <section className="relative flex justify-center">{children}</section>

@@ -7,15 +7,22 @@ import { getGenreLabel } from "@/utils/tmdbData";
 import UpdateItemWatchedStatusButton from "./UpdateItemWatchedStatusButton";
 import DeleteWatchlistItemButton from "./DeleteWatchlistItemButton";
 import DisplayWatchProvidersData from "./DisplayWatchProvidersData";
+import { WATCHLIST_POSTER_SIZES } from "@/utils/tmdbImage";
+import { useAdaptivePosterUrl } from "@/hooks/useAdaptivePosterUrl";
 
 export default function WatchlistItem({ selectedListItem, setSelectedListItem }: WatchlistProps) {
+    const posterUrl = useAdaptivePosterUrl(
+        selectedListItem?.movies?.poster_path,
+        WATCHLIST_POSTER_SIZES
+    );
+
     return (
         selectedListItem && (
             <div className="fixed inset-0 z-20 flex items-center justify-center">
                 <ViewTransition name={`movie-${selectedListItem.movie_id.toString()}`}>
                     <div
                         style={{
-                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(https://image.tmdb.org/t/p/original${selectedListItem.movies?.poster_path})`,
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),  url(${posterUrl})`,
                         }}
                         className="relative z-20 flex h-[100dvh] w-[100vw] rounded-xl bg-[var(--border)] bg-cover bg-center md:h-[750px] md:w-[500px]"
                     >
